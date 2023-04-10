@@ -1,0 +1,96 @@
+{
+    "models": {
+        "basic_model": "data/files/models/",
+        "tables_model": "data/files/models/",
+        "listbox_model": "data/files/models/"
+    },
+    "samples_path": {
+        "table_samples": "data/files/samples/",
+        "listbox_samples": "data/files/samples/",
+        "basic_samples": "data/files/samples/"
+    },
+    "patterns_path": {
+        "scroll_buttons": "data/files/patterns/scroll_buttons/"
+    },
+    "elements_parameters": {
+        "pattern_matching_threshold": 0,
+        "common_element": {
+            "preprocessing": {
+                "sample_dimension": [0, 0],
+                "contours_parameters": {
+                    "min_w": 0,
+                    "max_w": 0,
+                    "min_h": 0,
+                    "max_h": 0,
+                    "roi_shift": 0,
+                    "threshold_block_size": 0,
+                    "threshold_offset": 0
+                },
+                "harris_array_size": 0
+            },
+            "weights": {
+                "radiobutton": [0, 0, 0, 0, 0, 0, 0, 0],
+                "checkbox": [0, 0, 0, 0, 0, 0, 0, 0],
+                "scroll": [0, 0, 0, 0, 0, 0, 0, 0],
+                "non": [0, 0, 0, 0, 0, 0, 0, 0]
+            }
+        },
+        "listbox": {
+            "scrollbar_shift_threshold" : 0,
+            "preprocessing": {
+                "level_correction_1": [0, 0, 0, 0, 0],
+                "level_correction_2": [0, 0, 0, 0, 0],
+                "level_correction_3": [0, 0, 0, 0, 0],
+                "level_correction_4": [0, 0, 0, 0, 0],
+                "threshold_min": 0,
+                "threshold_max": 0,
+                "sample_dimension": [0, 0]
+            },
+            "contours_parameters": {
+                "min_w": 0,
+                "max_w": 0,
+                "min_h": 0,
+                "max_h": 0
+            },
+            "additional_borders": {
+                "left": 0,
+                "right": 0,
+                "top": 0,
+                "bottom": 0,
+                "colour": 0
+            }
+        },
+        "table": {
+            "fixed_size_for_preprocessing": [0, 0],
+            "scrollbar_shift_threshold" : 0,
+            "threshold_distance_between_tables": 0,
+            "preprocessing": {
+                "level_correction_1": [0, 0, 0, 0, 0],
+                "kernel1": [[0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0]]
+            },
+            "contours_parameters": {
+                "min_w": 0,
+                "max_w": 0,
+                "min_h": 0,
+                "max_h": 0,
+                "roi_shift": 0,
+                "contours_threshold_for_x": 0
+            },
+            "stitching": {
+                "table_cells": {
+                    "horizontal_stitching_shift": 0,
+                    "vertical_stitching_shift": 0,
+                    "horizontal_roi_shift": 0
+                },
+                "displacement_borders": {
+                    "horizontal_border": 0,
+                    "vertical_border": 0
+                }
+            }
+        }
+    }
+}
