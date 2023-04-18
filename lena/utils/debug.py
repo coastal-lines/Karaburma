@@ -38,3 +38,19 @@ def draw_custom_elements(screenshot_copy_debug, elements, element_type, rectangl
                                                                  element,
                                                                  rectangle_colour,
                                                                  rectangle_thickness)
+            
+def draw_pattern_matching_elements(screenshot_copy_debug, elements, rectangle_colour, rectangle_thickness):
+    for element in elements:
+        if (element.get_label() != "non" and
+            element.get_label() != "table" and
+            element.get_label() != "listbox" and
+            element.get_label() != "button" and
+            element.get_label() != "input" and
+            element.get_label() != "radiobutton" and
+            element.get_label() != "combobox" and
+            element.get_label() != "checkbox" and
+            element.get_label() != "slider"):
+            contours_helper.draw_rectangle_and_label_for_element(screenshot_copy_debug,
+                                                                 element,
+                                                                 rectangle_colour,
+                                                                 rectangle_thickness)
