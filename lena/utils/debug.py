@@ -84,3 +84,19 @@ def draw_tables(screenshot_copy_debug, screenshot_elements):
         # draw all cells
         #for cell in table.get_cells_area_element().get_list_cells():
         #    contours_helper.DrawRectangleByListXYWH(screenshot_copy_debug, [cell.get_roi_element().get_element_features()], TABLE_CELLS_COLOUR, TABLE_CELLS_THICKNES)
+
+def draw_elements(screenshot_copy_debug, screenshot_elements):
+    screenshot_copy_debug = general_helpers.extend_screenshot_by_rigth_border(screenshot_copy_debug, 120)
+
+    draw_tables(screenshot_copy_debug, screenshot_elements)
+    draw_listbox(screenshot_copy_debug, screenshot_elements)
+    draw_custom_elements(screenshot_copy_debug, screenshot_elements.get_elements(), "button", BUTTONS_COLOUR, BUTTONS_THICKNES)
+    draw_custom_elements(screenshot_copy_debug, screenshot_elements.get_elements(), "input", INPUT_COLOUR, INPUT_THICKNES)
+    draw_custom_elements(screenshot_copy_debug, screenshot_elements.get_elements(), "radiobutton", RADIOBUTTON_COLOUR, RADIOBUTTON_THICKNES)
+    draw_custom_elements(screenshot_copy_debug, screenshot_elements.get_elements(), "combobox", COMBOBOX_COLOUR, COMBOBOX_THICKNES)
+    draw_custom_elements(screenshot_copy_debug, screenshot_elements.get_elements(), "checkbox", CHECKBOX_COLOUR, CHECKBOX_THICKNES)
+    draw_custom_elements(screenshot_copy_debug, screenshot_elements.get_elements(), "slider", SLIDER_COLOUR, SLIDER_THICKNES)
+
+    draw_pattern_matching_elements(screenshot_copy_debug, screenshot_elements.get_elements(), (0, 255, 0), 2)
+    
+    general_helpers.show(screenshot_copy_debug)
