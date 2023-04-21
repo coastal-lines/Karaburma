@@ -98,5 +98,5 @@ def draw_elements(screenshot_copy_debug, screenshot_elements):
     draw_custom_elements(screenshot_copy_debug, screenshot_elements.get_elements(), "slider", SLIDER_COLOUR, SLIDER_THICKNES)
 
     draw_pattern_matching_elements(screenshot_copy_debug, screenshot_elements.get_elements(), (0, 255, 0), 2)
-    
+
     general_helpers.show(screenshot_copy_debug)
