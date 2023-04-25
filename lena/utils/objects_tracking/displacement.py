@@ -71,7 +71,7 @@ class AkazeKeyFeaturesDisplacement(DisplacementBase):
             sum_x += kp2[match.trainIdx].pt[0] - kp1[match.queryIdx].pt[0]
             sum_y += kp2[match.trainIdx].pt[1] - kp1[match.queryIdx].pt[1]
 
-        # Average of shiftins
+        # Average of shifting
         if(len(good_matches) > 0):
             average_offset_x = abs(general_helpers.custom_round(sum_x / len(good_matches)))
             average_offset_y = abs(general_helpers.custom_round(sum_y / len(good_matches)))
@@ -79,7 +79,35 @@ class AkazeKeyFeaturesDisplacement(DisplacementBase):
             average_offset_x = 0
             average_offset_y = 0
 
-        print("Смещение по X:", average_offset_x)
-        print("Смещение по Y:", average_offset_y)
+        print("Shift across X:", average_offset_x)
+        print("Shift across Y:", average_offset_y)
 
         return average_offset_x, average_offset_y
+
+class OpticalFlowDisplacement(DisplacementBase):
+    def calculate_displacement(self, before, after=None):
+
+        before = filters_helper.convert_to_grayscale(before)
+        after = filters_helper.convert_to_grayscale(after)
+
+        score = general_helpers.calculate_similarity(before, after)
+
+        if (score < 1.0):
+            #feature_params = dict(maxCorners=300, qualityLevel=0.01, minDistance=3, blockSize=99)
+
+            # good for tables
+            feature_params = dict(maxCorners=100, qualityLevel=0.3, minDistance=28, blockSize=7)
+            p0 = cv2.goodFeaturesToTrack(before, mask=None, **feature_params)
+
+            # Calculate optical flow
+            p1, st, err = cv2.calcOpticalFlowPyrLK(before, after, p0, None)
+
+            # Find displacement
+            displacement = np.mean(p1 - p0, axis=0)
+            x_displacement = abs(general_helpers.custom_round(displacement[0][0]))
+            y_displacement = abs(general_helpers.custom_round(displacement[0][1]))
+
+            return x_displacement, y_displacement
+
+        else:
+            print("Exception")
