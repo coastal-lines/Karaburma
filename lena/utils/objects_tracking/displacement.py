@@ -111,3 +111,14 @@ class OpticalFlowDisplacement(DisplacementBase):
 
         else:
             print("Exception")
+
+class DisplacementManager:
+    def __init__(self, displacement_strategy: DisplacementBase):
+        self.displacement_strategy = displacement_strategy
+
+    def calculate_displacement(self, before, after=None):
+        if after is None and self.displacement_strategy is not OcrVerticalDisplacement:
+            #TODO
+            print("error. empty after")
+
+        return self.displacement_strategy.calculate_displacement(before, after)
