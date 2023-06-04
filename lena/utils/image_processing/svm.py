@@ -45,3 +45,28 @@ def load_image_files(container_path):
 
     image_dataset = Bunch(data=flat_data,target=target,target_names=categories,images=images,DESCR=descr)
     return image_dataset, categories
+
+def train(path=r"\Python\IMAGES_GUI"):
+    X, y = load_image_files(path)
+    X_train, X_test, y_train, y_test = train_test_split(X.data, X.target, test_size=0.1, random_state=109)
+
+    svm_model = SVC(probability=True, class_weight='balanced')
+    #svm_model.fit(X_train, y_train)
+    svm_model.fit(X.data, X.target)
+    svm_predictions = svm_model.predict(X_test)
+    svm_accuracy = accuracy_score(y_test, svm_predictions)
+
+    return svm_model
+
+def check_one_image(model, image):
+    gr = convert_to_grayscale(image)
+    img = prepare_image(gr)
+    img = [img.flatten()]
+    predictions = model.predict(img)
+    predictions_proba = model.predict_proba(img)
+
+    return predictions, predictions_proba
+
+def check_predict_proba(predictions_proba, categories):
+    for i in range(len(categories)):
+        print(str(categories[i]) + ":" + str(predictions_proba[0][i]) + "; ")
