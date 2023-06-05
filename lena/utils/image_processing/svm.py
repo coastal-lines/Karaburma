@@ -70,3 +70,23 @@ def check_one_image(model, image):
 def check_predict_proba(predictions_proba, categories):
     for i in range(len(categories)):
         print(str(categories[i]) + ":" + str(predictions_proba[0][i]) + "; ")
+
+def check_one(model, list_gui_objects):
+    image_dir = Path(r"\Python\IMAGES_GUI")
+    folders = [directory for directory in image_dir.iterdir() if directory.is_dir()]
+    categories = [fo.name for fo in folders]
+
+    for i in range(len(list_gui_objects)):
+        predictions, predictions_proba = check_one_image(model, list_gui_objects[i].image)
+        #print(" is " + categories[predictions[0]])
+        list_gui_objects[i].label = categories[predictions[0]]
+        #check_predict_proba(predictions_proba, categories)
+        #print("----")
+
+    return list_gui_objects
+
+#print("SVM Accuracy:", svm_accuracy)
+def train_and_check(list_gui_objects):
+    svm_model = train()
+    list_gui_objects = check_one(svm_model, list_gui_objects)
+    return list_gui_objects
