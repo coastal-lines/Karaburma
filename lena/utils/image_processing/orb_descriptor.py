@@ -35,3 +35,43 @@ def show_ORB_matches_between_two_images(query_img, queryKeypoints, train_img, tr
     final_img = cv2.resize(final_img, (2000, 1000))
     cv2.imshow("Matches", final_img)
     cv2.waitKey(0)
+
+
+def match_keypoints(needle_img, original_image, patch_size=2):
+    min_match_count = 2
+
+    orb = cv2.ORB_create(edgeThreshold=0, patchSize=patch_size)
+    keypoints_needle, descriptors_needle = orb.detectAndCompute(needle_img, None)
+    orb2 = cv2.ORB_create(edgeThreshold=0, patchSize=patch_size, nfeatures=2000)
+    keypoints_haystack, descriptors_haystack = orb2.detectAndCompute(original_image, None)
+
+    FLANN_INDEX_LSH = 6
+    index_params = dict(algorithm=FLANN_INDEX_LSH,
+                        table_number=6,
+                        key_size=12,
+                        multi_probe_level=1)
+
+    search_params = dict(checks=50)
+
+    try:
+        flann = cv2.FlannBasedMatcher(index_params, search_params)
+        matches = flann.knnMatch(descriptors_needle, descriptors_haystack, k=2)
+    except cv2.error:
+        return None, None, [], [], None
+
+    # store all the good matches as per Lowe's ratio test.
+    good = []
+    points = []
+
+    for pair in matches:
+        if len(pair) == 2:
+            if pair[0].distance < 0.3 * pair[1].distance:
+                good.append(pair[0])
+
+    if len(good) > min_match_count:
+        print('match %03d, kp %03d' % (len(good), len(keypoints_needle)))
+        for match in good:
+            points.append(keypoints_haystack[match.trainIdx].pt)
+        # print(points)
+
+    return keypoints_needle, keypoints_haystack, good, points
