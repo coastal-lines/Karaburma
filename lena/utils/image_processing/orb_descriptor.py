@@ -75,3 +75,21 @@ def match_keypoints(needle_img, original_image, patch_size=2):
         # print(points)
 
     return keypoints_needle, keypoints_haystack, good, points
+
+def centeroid(point_list):
+    point_list = np.asarray(point_list, dtype=np.int32)
+    length = point_list.shape[0]
+    sum_x = np.sum(point_list[:, 0])
+    sum_y = np.sum(point_list[:, 1])
+    return [np.floor_divide(sum_x, length), np.floor_divide(sum_y, length)]
+
+def draw_crosshairs(haystack_img, points):
+    # these colors are actually BGR
+    marker_color = (255, 0, 255)
+    marker_type = cv2.MARKER_CROSS
+
+    for (center_x, center_y) in points:
+        # draw the center point
+        cv2.drawMarker(haystack_img, (center_x, center_y), marker_color, marker_type)
+
+    return haystack_img
