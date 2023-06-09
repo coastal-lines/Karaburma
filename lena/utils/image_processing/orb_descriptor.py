@@ -93,3 +93,22 @@ def draw_crosshairs(haystack_img, points):
         cv2.drawMarker(haystack_img, (center_x, center_y), marker_color, marker_type)
 
     return haystack_img
+
+'''
+if match_points:
+    # find the center point of all the matched features
+    center_point = centeroid(match_points)
+    # account for the width of the needle image that appears on the left
+    needle_w = query_img.shape[1]
+    center_point[0] += needle_w
+    # drawn the found center point on the output image
+    match_image = draw_crosshairs(match_image, [center_point])
+'''
+
+#show(match_image)
+
+
+#trainKeypointsSubject, trainDescriptorsSubject = PrepareKeypointsAndDescriptorsByORB(query_img)
+#queryKeypointsScreen, queryDescriptorsScreen = PrepareKeypointsAndDescriptorsByORB(train_img)
+#matches = PrepareMatchesByBFMatcher(queryDescriptorsScreen, trainDescriptorsSubject)
+#ShowORBMatchesBetweenTwoImages(query_img, trainKeypointsSubject, train_img, queryKeypointsScreen, matches)
