@@ -76,3 +76,34 @@ def LevelsCorrection(img, *args):
     img = np.clip(img, 0, 255).astype(np.uint8)
 
     return img
+
+def BwGammaCorrection2(img):
+
+    inBlack = np.array([14], dtype=np.float32)
+    inWhite = np.array([114], dtype=np.float32)
+    inGamma = np.array([0.25], dtype=np.float32)
+    outBlack = np.array([0], dtype=np.float32)
+    outWhite = np.array([255], dtype=np.float32)
+
+    img = np.clip((img - inBlack) / (inWhite - inBlack), 0, 255)
+    img = (img ** (1 / inGamma)) * (outWhite - outBlack) + outBlack
+    img = np.clip(img, 0, 255).astype(np.uint8)
+
+    return img
+
+def Levels(img, inGamma, inBlack=0, inWhite=255, outBlack=0, outWhite=255):
+
+    inBlack = np.array([inBlack], dtype=np.float32)
+    inWhite = np.array([inWhite], dtype=np.float32)
+    inGamma = np.array([inGamma], dtype=np.float32)
+    outBlack = np.array([outBlack], dtype=np.float32)
+    outWhite = np.array([outWhite], dtype=np.float32)
+
+    img = np.clip((img - inBlack) / (inWhite - inBlack), 0, 255)
+    img = (img ** (1 / inGamma)) * (outWhite - outBlack) + outBlack
+    img = np.clip(img, 0, 255).astype(np.uint8)
+
+    return img
+
+def Blur(img, kernel):
+    return cv2.GaussianBlur(img, kernel, 0)
