@@ -34,30 +34,14 @@ import traceback
 from lena.utils.logging_manager import LoggingManager
 
 
-def GammaCorrection(src, gamma):
+def gamma_correction(src, gamma):
     invGamma = 1 / gamma
     table = [((i / 255) ** invGamma) * 255 for i in range(256)]
     table = np.array(table, np.uint8)
 
     return cv.LUT(src, table)
 
-'''
-def LevelsCorrection(img, input_min, input_max, output_min, output_max, gamma):
-
-    inBlack = np.array([input_min], dtype=np.float32)
-    inWhite = np.array([input_max], dtype=np.float32)
-    inGamma = np.array([gamma], dtype=np.float32)
-    outBlack = np.array([output_min], dtype=np.float32)
-    outWhite = np.array([output_max], dtype=np.float32)
-
-    img = np.clip((img - inBlack) / (inWhite - inBlack), 0, 255)
-    img = (img ** (1 / inGamma)) * (outWhite - outBlack) + outBlack
-    img = np.clip(img, 0, 255).astype(np.uint8)
-
-    return img
-'''
-
-def LevelsCorrection(img, *args):
+def levels_correction(img, *args):
     if(len(args) == 5):
         input_min, input_max, output_min, output_max, gamma = args
     elif(len(args[0]) == 5):
@@ -77,7 +61,7 @@ def LevelsCorrection(img, *args):
 
     return img
 
-def BwGammaCorrection2(img):
+def bw_gamma_correction2(img):
 
     inBlack = np.array([14], dtype=np.float32)
     inWhite = np.array([114], dtype=np.float32)
@@ -91,7 +75,7 @@ def BwGammaCorrection2(img):
 
     return img
 
-def Levels(img, inGamma, inBlack=0, inWhite=255, outBlack=0, outWhite=255):
+def levels(img, inGamma, inBlack=0, inWhite=255, outBlack=0, outWhite=255):
 
     inBlack = np.array([inBlack], dtype=np.float32)
     inWhite = np.array([inWhite], dtype=np.float32)
@@ -105,5 +89,5 @@ def Levels(img, inGamma, inBlack=0, inWhite=255, outBlack=0, outWhite=255):
 
     return img
 
-def Blur(img, kernel):
+def blur(img, kernel):
     return cv2.GaussianBlur(img, kernel, 0)
