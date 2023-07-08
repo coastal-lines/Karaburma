@@ -91,3 +91,24 @@ def levels(img, inGamma, inBlack=0, inWhite=255, outBlack=0, outWhite=255):
 
 def blur(img, kernel):
     return cv2.GaussianBlur(img, kernel, 0)
+
+def sharp(img, type):
+
+    middle = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+    strong = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
+
+    if(type == "middle"):
+        img = cv2.filter2D(img, -1, middle)
+
+    if(type == "strong"):
+        img = cv2.filter2D(img, -1, strong)
+
+    return img
+
+def threshold(img, min, max):
+    ret, th = cv2.threshold(img, min, max, cv2.THRESH_BINARY)
+    return ret, th
+
+def adaptive_threshold(img, max_value, block_size, constant):
+    th = cv2.adaptiveThreshold(img ,max_value ,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY ,block_size ,constant)
+    return th
