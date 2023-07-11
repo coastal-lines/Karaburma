@@ -278,3 +278,16 @@ def try_threshold2(grayscale_image, block_size_min=3, block_size_max=11):
     plt.show()
 
     return binary_local, mean_binary, minimum_binary, otsu_binary, li_binary, isodata_binary, triangle_binary, yen_binary
+
+def convert_to_grayscale(img):
+    if img is None:
+        raise ValueError("Current screenshot or roi is empty")
+
+    if len(img.shape) == 3:
+        return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    else:
+        return img
+
+def convert_image_to_negative(image):
+    image = cv2.bitwise_not(image)
+    return image
