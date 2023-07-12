@@ -291,3 +291,18 @@ def convert_to_grayscale(img):
 def convert_image_to_negative(image):
     image = cv2.bitwise_not(image)
     return image
+
+def calculate_white_colour(image):
+    grey = convert_to_grayscale(image)
+    threshold_array = np.array(grey)
+    total_pixels = threshold_array.size
+    white_pixels = np.count_nonzero(threshold_array == 255)
+    black_pixels = np.count_nonzero(threshold_array == 0)
+    grey_pixels = np.count_nonzero((threshold_array >= 125) & (threshold_array <= 130))
+    percentage_white = white_pixels / total_pixels
+    percentage_black = black_pixels / total_pixels
+    percentage_grey = grey_pixels / total_pixels
+
+    return [percentage_white, percentage_grey, percentage_black]
+
+#def convolution(img):
