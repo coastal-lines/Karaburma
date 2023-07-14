@@ -81,3 +81,12 @@ def get_contours_by_different_thresholds(grayscale_image, needs_to_remove_simila
 
     #return all_contours, rectangles
     return all_contours
+
+def get_contours(image_bw):
+    contours, hierarchy = cv2.findContours(image_bw, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    return contours, hierarchy
+
+def get_contours_external_only(image_bw):
+    contours, hierarchy = cv2.findContours(image_bw, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    return contours, hierarchy
+
