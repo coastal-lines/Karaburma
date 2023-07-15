@@ -90,3 +90,30 @@ def get_contours_external_only(image_bw):
     contours, hierarchy = cv2.findContours(image_bw, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     return contours, hierarchy
 
+def GetCanny(image_bw, lower_threshold, upper_threshold):
+    detected_edges = cv2.Canny(image_bw, lower_threshold, upper_threshold)
+    return detected_edges
+
+def GetContoursByCanny(image_bw, lower_threshold, upper_threshold, external_only=False):
+    detected_edges = cv2.Canny(image_bw, lower_threshold, upper_threshold)
+    #CV_RETR_LIST - without grouping
+    #CV_CHAIN_APPROX_SIMPLE —
+    if(external_only):
+        contours, hierarchy = get_contours_external_only(detected_edges)
+    else:
+        contours, hierarchy = cv2.findContours(detected_edges, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    return contours, hierarchy
+
+def GetContoursByCannyAfterApproximation(image_bw, lower_threshold, upper_threshold, eps, approximation):
+
+    contours, hierarchy = GetContoursByCanny(image_bw, lower_threshold, upper_threshold)
+
+    new_contours = []
+    for cnt in contours:
+        arclen = cv2.arcLength(cnt, True)
+        epsilon = arclen * eps
+        approx = cv2.approxPolyDP(cnt, epsilon, False)
+        if len(approx) < approximation:
+            new_contours.append(cnt)
+
+    return new_contours
