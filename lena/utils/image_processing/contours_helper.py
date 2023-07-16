@@ -117,3 +117,17 @@ def GetContoursByCannyAfterApproximation(image_bw, lower_threshold, upper_thresh
             new_contours.append(cnt)
 
     return new_contours
+
+def get_contours_after_approximation(image_bw: np.array, approx: int, epsilon: float=0.05):
+    all_contours, hierarchy = get_contours(image_bw)
+
+    filtered_rectangles = []
+
+    for j in range(len(all_contours)):
+        peri = cv2.arcLength(all_contours[j], True)
+        current_approx = cv2.approxPolyDP(all_contours[j], epsilon * peri, True)
+        x, y, w, h = cv2.boundingRect(all_contours[j])
+        if len(current_approx) == approx:
+            filtered_rectangles.append((x, y, w, h))
+
+    return filtered_rectangles
