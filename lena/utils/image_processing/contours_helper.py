@@ -131,3 +131,16 @@ def get_contours_after_approximation(image_bw: np.array, approx: int, epsilon: f
             filtered_rectangles.append((x, y, w, h))
 
     return filtered_rectangles
+
+def GetContourLength(contour):
+    return cv2.arcLength(contour, True)
+
+def GetMatchShapes(contour1, contour2):
+    value = cv2.matchShapes(contour1, contour2, 1, 0.0)
+    return Decimal(value)
+
+def GetBoxFromContour(contour):
+    rect = cv2.minAreaRect(contour) #
+    box = cv2.boxPoints(rect) #
+    box = np.int0(box) #
+    return box
