@@ -144,3 +144,33 @@ def GetBoxFromContour(contour):
     box = cv2.boxPoints(rect) #
     box = np.int0(box) #
     return box
+
+def ConvertContoursToRectangles(cnt):
+    bounding_boxes = []
+    for contour in cnt:
+        x, y, w, h = cv2.boundingRect(contour)
+        bounding_boxes.append((x, y, x + w, y + h))
+        #bounding_boxes.append(x, y, x + w, y + h)
+
+    return bounding_boxes
+
+def DrawRectangleByContours(image, contours, color=(0, 255, 0)):
+    if(len(contours) > 0):
+        for cnt in contours:
+            rect = cv2.boundingRect(cnt)
+            x, y, w, h = rect
+            #print(x, y, w, h)
+            point1 = (x, y)
+            point2 = (x + w, y + h)
+            cv2.rectangle(image, point1, point2, color, 1)
+    else:
+        print("Contours were not found")
+
+    return image
+
+def DrawRectangleByRectangles(image, rectangles, color=(0, 255, 0)):
+    for rect in rectangles:
+        x1, y1, x2, y2 = rect
+        point1 = (x1, y1)
+        point2 = (x2, y2)
+        cv2.rectangle(image, point1, point2, color, 1)
