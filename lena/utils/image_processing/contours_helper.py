@@ -174,3 +174,19 @@ def DrawRectangleByRectangles(image, rectangles, color=(0, 255, 0)):
         point1 = (x1, y1)
         point2 = (x2, y2)
         cv2.rectangle(image, point1, point2, color, 1)
+
+def DrawRectangleByPoint(image, p1, p2, color=(0, 255, 0), thicknes = 1):
+    cv2.rectangle(image, p1, p2, color, thicknes)
+
+def DrawRectangle(image, startX, startY, endX, endY, color=(0, 255, 0)):
+    cv.rectangle(image, (startX, startY), (endX, endY), color, 5)
+
+def DrawRectangleByXYWH(image, x, y, w, h, color=(0, 255, 0), thicknes = 1):
+    cv.rectangle(image, (x, y), (x + w, y + h), color, thicknes)
+
+def DrawRectangleByListXYWH(image, rectangles, color=(0, 255, 0), thicknes=1):
+    for i in range(len(rectangles)):
+        x, y, w, h = rectangles[i][0],rectangles[i][1],rectangles[i][2],rectangles[i][3]
+        cv.rectangle(image, (x, y), (x + w, y + h), color, thicknes)
+
+    return image
