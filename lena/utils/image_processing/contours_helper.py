@@ -190,3 +190,9 @@ def DrawRectangleByListXYWH(image, rectangles, color=(0, 255, 0), thicknes=1):
         cv.rectangle(image, (x, y), (x + w, y + h), color, thicknes)
 
     return image
+
+def draw_filled_rectangle_with_frame(image, label, x, y, colour=(0, 0, 0)):
+    shift = 0
+    text_size = cv2.getTextSize(text=label, fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, thickness=1)[0]
+    cv2.rectangle(image, (x - shift, y + shift), (x + (text_size[0] + shift), y - text_size[1] - shift), (255, 255, 255), 4)
+    cv2.rectangle(image, (x - shift, y + shift), (x + (text_size[0] + shift), y - text_size[1] - shift), colour, -1)
