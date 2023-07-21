@@ -196,3 +196,27 @@ def draw_filled_rectangle_with_frame(image, label, x, y, colour=(0, 0, 0)):
     text_size = cv2.getTextSize(text=label, fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1, thickness=1)[0]
     cv2.rectangle(image, (x - shift, y + shift), (x + (text_size[0] + shift), y - text_size[1] - shift), (255, 255, 255), 4)
     cv2.rectangle(image, (x - shift, y + shift), (x + (text_size[0] + shift), y - text_size[1] - shift), colour, -1)
+
+def draw_rectangle_and_label(image, label, probability, x, y, w, h, colour=(255, 255, 255), thicknes=1):
+    point_1_rectangle = (x, y)
+    point_2_rectangle = (x + w, y + h)
+
+    #draw rectangle for element
+    cv.rectangle(image, point_1_rectangle, point_2_rectangle, colour, thicknes)
+
+    #shifting for big lements
+    if (h > 100):
+        y = y + (h // 2) + random.randint(7, 14)
+
+    point_1_line1 = (x + w, y)
+    point_2_line1 = (x + w + 20, y - 10)
+
+    #draw line
+    cv2.line(image, point_1_line1, point_2_line1, colour, 1)
+
+    #draw label
+    draw_filled_rectangle_with_frame(image, label, x + w + 20, y - 10)
+    cv2.putText(image, label, (x + w + 20, y - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1, cv2.LINE_AA)
+
+    #draw prediction
+    #cv2.putText(image, probability, (x2_line1, y - 40), cv2.FONT_HERSHEY_PLAIN, 1, colour, 1, cv2.LINE_AA)
