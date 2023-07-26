@@ -21,3 +21,16 @@ class FindManager(TemplateMatchingElement):
         self.__detection_mode.find_all_elements(image_source)
 
         return image_source
+
+    def find_element(self, element_type, *args):
+        image_source = self.__create_image_source(*args)
+        self.__detection_mode.find_element(image_source, element_type)
+
+        return image_source
+
+    def find_table_and_expand(self, table_index: int = 0):
+        if hasattr(self.__detection_mode, 'find_table_and_expand'):
+            image_source = self.__create_image_source()
+            self.__detection_mode.find_table_and_expand(image_source, table_index)
+        else:
+            print("Write operation not supported for this mode.")
