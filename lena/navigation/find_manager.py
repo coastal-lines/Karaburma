@@ -34,3 +34,17 @@ class FindManager(TemplateMatchingElement):
             self.__detection_mode.find_table_and_expand(image_source, table_index)
         else:
             print("Write operation not supported for this mode.")
+
+    def find_table_cell(self, column, row):
+        if hasattr(self.__detection_mode, 'find_table_cell'):
+            image_source = self.__create_image_source()
+            self.__detection_mode.find_table_cell(image_source, column, row)
+        else:
+            print("Error: expand operations are not supported for current mode. Impossible to find custom cell.")
+
+    def find_listbox_and_expand(self, listbox_index):
+        if hasattr(self.__detection_mode, 'find_listbox_and_expand'):
+            image_source = self.__create_image_source()
+            self.__detection_mode.find_listbox_and_expand(image_source, listbox_index)
+        else:
+            print("Write operation not supported for this mode.")
