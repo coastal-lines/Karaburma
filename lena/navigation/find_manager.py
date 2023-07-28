@@ -48,3 +48,15 @@ class FindManager(TemplateMatchingElement):
             self.__detection_mode.find_listbox_and_expand(image_source, listbox_index)
         else:
             print("Write operation not supported for this mode.")
+
+    def find_element_by_patterns(self, patterns, mode, threshold, user_label, *args):
+        image_source = self.__create_image_source(*args)
+        super().find_element_by_patterns(patterns, mode, threshold, user_label, image_source)
+
+        return image_source
+
+    def find_all_elements_include_patterns(self, patterns, mode, threshold, user_label, *args):
+        image_source_with_elements = self.find_all_elements(*args)
+        super().find_element_by_patterns(patterns, mode, threshold, user_label, image_source_with_elements)
+
+        return image_source_with_elements
