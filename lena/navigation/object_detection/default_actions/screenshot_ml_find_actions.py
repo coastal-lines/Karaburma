@@ -19,3 +19,6 @@ class ScreenshotMlFindActions(CommonMlFindActions):
         #TODO
         #get cell by index
         #APP_DATA.table_features.test_horizontal_sroll_and_stich(screenshot_elements)
+
+    def find_listbox_and_expand(self, image_source, listbox_index):
+        self.listbox_element_features.find_listbox_and_expand(image_source, listbox_index)
