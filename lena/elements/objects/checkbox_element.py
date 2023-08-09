@@ -6,3 +6,9 @@ class CheckboxElement(Element):
         self.__checkbox_square = None
         self.__checkbox_text = None
         self.__checbox_condition = None
+
+    def add_text(self, checkbox_text):
+        self.__checkbox_text = checkbox_text
+
+    def get_text(self):
+        return self.__checkbox_text
