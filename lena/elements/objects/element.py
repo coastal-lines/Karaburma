@@ -9,3 +9,6 @@ class Element:
 
     def get_label(self) -> str:
         return self.__label
+
+    def get_prediction_value(self) -> str:
+        return self.__prediction_value
