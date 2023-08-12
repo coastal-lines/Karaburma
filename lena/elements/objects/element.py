@@ -22,4 +22,3 @@ class Element:
 
     def update_prediction_value(self, prediction_value: str):
         __prediction_value = str("%.2f" % prediction_value)
-        
