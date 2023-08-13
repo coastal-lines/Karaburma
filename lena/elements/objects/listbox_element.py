@@ -23,3 +23,9 @@ class ListBoxElement(Element):
             return self.__v_scroll
         else:
             return None
+
+    def add_list_text(self, list_text):
+        self.__list_text = list_text
+
+    def get_list_text(self):
+        return self.__list_text
