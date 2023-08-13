@@ -29,3 +29,19 @@ class ListBoxElement(Element):
 
     def get_list_text(self):
         return self.__list_text
+
+    @property
+    def textarea(self):
+        return self.__textarea
+
+    @textarea.setter
+    def textarea(self, textarea: Element):
+        self.__textarea = textarea
+
+    @property
+    def full_text_area(self):
+        return self.__full_text_area
+
+    @full_text_area.setter
+    def full_text_area(self, full_text_area: Element):
+        self.__full_text_area = full_text_area
