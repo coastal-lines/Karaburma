@@ -12,3 +12,14 @@ class ListBoxElement(Element):
         self.__textarea = None
         self.__full_text_area = None
 
+    def add_scroll(self, label, scroll):
+        if(label == "h_scroll"):
+            self.__h_scroll = scroll
+        elif(label == "v_scroll"):
+            self.__v_scroll = scroll
+
+    def get_v_scroll(self):
+        if (self.__v_scroll != None):
+            return self.__v_scroll
+        else:
+            return None
