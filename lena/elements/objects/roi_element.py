@@ -42,3 +42,14 @@ class RoiElement:
 
     def get_shape(self):
         return self.__w, self.__h
+
+    def update_element_roi_area_by_screenshot(self):
+        x, y, w, h = self.get_element_features()
+        new_roi = general_helpers.do_screenshot()
+        new_roi = new_roi[y:y + h, x:x + w, :]
+        self.update_roi(new_roi)
+
+    def update_element_roi_area_by_image(self, img):
+        x, y, w, h = self.get_element_features()
+        new_roi = img[y:y + h, x:x + w, :]
+        self.update_roi(new_roi)
