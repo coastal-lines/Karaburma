@@ -9,4 +9,18 @@ class RoiElement:
         self.__w = w
         self.__h = h
         self.__class_feature = class_feature
-        
+
+    def get_element_features(self):
+        return self.__x, self.__y, self.__w, self.__h
+
+    def get_class_feature(self):
+        return self.__class_feature
+
+    def update_roi(self, updated_roi_area):
+        self.set_roi(updated_roi_area)
+
+    def get_roi(self):
+        return self.__roi
+
+    def set_roi(self, roi):
+        self.__roi = roi
