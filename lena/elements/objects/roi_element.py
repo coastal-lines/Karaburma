@@ -24,3 +24,12 @@ class RoiElement:
 
     def set_roi(self, roi):
         self.__roi = roi
+
+    def get_x(self):
+        return self.__x
+
+    def get_y(self):
+        return self.__y
+
+    def update_w(self, value):
+        self.__w += value
