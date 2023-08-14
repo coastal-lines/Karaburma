@@ -33,3 +33,12 @@ class RoiElement:
 
     def update_w(self, value):
         self.__w += value
+
+    def get_w(self):
+        return self.__w
+
+    def get_h(self):
+        return self.__h
+
+    def get_shape(self):
+        return self.__w, self.__h
