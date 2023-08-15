@@ -33,3 +33,7 @@ class ImageSourceObject:
 
     def get_table_elements(self) -> list:
         return [table for table in self.__list_elements if table.get_label() == ElementTypesEnum.table.name]
+
+    def update_current_elements(self, new_elements: list):
+        self.get_elements().clear()
+        self.add_elements(new_elements)
