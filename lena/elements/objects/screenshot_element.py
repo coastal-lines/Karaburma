@@ -19,3 +19,17 @@ class ImageSourceObject:
     def update_current_image_source(self, updated_image_source):
         self.__image_source = updated_image_source
 
+    def get_current_image_source_dimension(self):
+        return self.__image_source.shape[1], self.__image_source.shape[0]
+
+    def add_element(self, element: Element):
+        self.__list_elements.append(element)
+
+    def add_elements(self, elements: list):
+        self.__list_elements.extend(elements)
+
+    def get_elements(self) -> list:
+        return self.__list_elements
+
+    def get_table_elements(self) -> list:
+        return [table for table in self.__list_elements if table.get_label() == ElementTypesEnum.table.name]
