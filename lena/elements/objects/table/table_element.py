@@ -24,3 +24,12 @@ class TableElement(Element):
 
     def set_full_table_area(self, roi: RoiElement, cells_area_element):
         self.__full_table_area = TableElement("table", 1.0, roi, None, None, cells_area_element)
+
+    def get_full_table_area(self):
+        return self.__full_table_area
+
+    def get_v_scroll(self):
+        return self.__v_scroll
+
+    def get_h_scroll(self):
+        return self.__h_scroll
