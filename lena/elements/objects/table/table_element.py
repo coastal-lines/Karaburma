@@ -40,3 +40,9 @@ class TableElement(Element):
         else:
             #TODO
             print("EXCEPTION")
+
+    def get_cell_by_adress(self, column_index: int, row_index: int):
+        custom_cell = [cell for cell in self.get_cells_area_element().get_list_cells()
+                       if cell.get_adress() == [column_index, row_index]][0]
+
+        return custom_cell
