@@ -33,3 +33,10 @@ class TableElement(Element):
 
     def get_h_scroll(self):
         return self.__h_scroll
+
+    def get_cells_area_element(self):
+        if(self.__cells_area_element != None):
+            return self.__cells_area_element
+        else:
+            #TODO
+            print("EXCEPTION")
