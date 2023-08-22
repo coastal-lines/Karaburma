@@ -45,3 +45,43 @@ class ListboxElementFeatures(ListboxPreprocessing):
         roi = roi.astype(np.uint8)
 
         return roi
+
+    def __image_preprocessing_for_text_reading(self, roi):
+        #roi = augmentation.bicubic_resize(roi, (roi.shape[0] * 3, roi.shape[1] * 1))
+        roi = augmentation.bicubic_resize(roi, (roi.shape[0] * 3, roi.shape[1] * 3))
+        roi = filters_helper.Blur(roi, (3, 3))
+
+        return roi
+
+    def __get_stitched_list_box(self, temp_listbox, list_area):
+        scroll_features = ScrollActionsFeatures(temp_listbox, list_area, ScrollDirectionEnum.DOWN.name)
+        displacement_features = DisplacementFeatures(OcrVerticalDisplacement(), scroll_features)
+        stitching_features = StitchingFeatures(displacement_features)
+        stitched_listbox = stitching_features.vertical_stitch()
+        #general_helpers.show(temp_stitched_listbox)
+
+        return stitched_listbox
+
+
+    def __get_text_list_for_listbox(self, temp_listbox, list_area):
+
+        #scroll = ScrollFeatures(temp_listbox, list_area, ScrollDirectionEnum.DOWN.name, OcrVerticalDisplacement(), None, None, None)
+        #temp_stiched_listbox = scroll.vertical_scroll_and_accumulate_rois_difference()
+
+        temp_stitched_listbox = self.__get_stitched_list_box(temp_listbox, list_area)
+
+        extended_temp_stiched_listbox = self.__extend_stiched_listbox_roi(temp_stitched_listbox)
+        prepared_roi_for_reading_text = self.__image_preprocessing_for_text_reading(extended_temp_stiched_listbox)
+        general_helpers.show(prepared_roi_for_reading_text)
+        text_list = ocr_helper.get_text(prepared_roi_for_reading_text, "--psm 6 --oem 3")
+        #print(text_list)
+
+        return text_list
+
+    def find_listboxes(self, image_source):
+        self.__image_source = image_source
+        list_listboxes = super().listbox_element_classification(self.__image_source.get_current_image_source())
+        image_source.add_elements(list_listboxes)
+
+        return list_listboxes
+    
