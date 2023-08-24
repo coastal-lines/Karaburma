@@ -99,3 +99,36 @@ class CheckboxElementFeatures():
         x_centre = (rect[0] + rect[2]) / 2
         y_centre = (rect[1] + rect[3]) / 2
         return x_centre, y_centre
+
+    #not used for simple checkbox solution
+    def combine_text_rectangles(self, squares, text_rects):
+
+        final_checkbox_rect = []
+
+        temp_current_rectangles = []
+        for square in squares:
+            for i in range(len(text_rects)):
+                x_square_centre, y_square_centre = self.get_rectangle_centre(square)
+                x_text_centre, y_text_centre = self.get_rectangle_centre(text_rects[i])
+
+                x_difference = abs(x_text_centre - x_square_centre)
+                y_difference = abs(y_text_centre - y_square_centre)
+
+                if (x_difference < 100 and y_difference < 10):
+                    temp_current_rectangles.append(square)
+                    temp_current_rectangles.append(text_rects[i])
+
+            if (len(temp_current_rectangles) > 0):
+                x1, y1, x2, y2 = temp_current_rectangles[0][0], square[1] - 2, temp_current_rectangles[0][2], square[3] + 2
+                np_temp_current_rectangles = np.array(temp_current_rectangles)
+                for rect in np_temp_current_rectangles:
+                    if (rect[0] < x1):
+                        x1 = rect[0]
+                    if (rect[2] > x2):
+                        x2 = rect[2]
+
+                final_checkbox_rect.append((x1, y1, x2, y2))
+                print((x1, y1, x2, y2))
+                temp_current_rectangles.clear()
+
+        return final_checkbox_rect
