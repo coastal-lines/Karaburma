@@ -132,3 +132,31 @@ class CheckboxElementFeatures():
                 temp_current_rectangles.clear()
 
         return final_checkbox_rect
+
+    def find_contours_for_checkbox_elements(self, screenshot_elements):
+
+        list_of_roi = []
+
+        squares = self.try_to_find_squares(screenshot_elements.get_current_image_source())
+        text_rects = self.try_to_find_text(screenshot_elements.get_current_image_source(), squares)
+        #final_checkbox_rect = self.combine_text_rectangles(squares, text_rects)
+
+        #for rect in final_checkbox_rect:
+        for rect in text_rects:
+            #shift = 2
+            shift = 0 #it discard white borders
+
+            x = rect[0]
+            y = rect[1]
+            w = rect[2] - rect[0]
+            h = rect[3] - rect[1]
+
+            temp_image = screenshot_elements.get_current_image_source()[y - 2:y + h + 2, x - 2:x + w + 2, :]
+            temp_image_with_board = np.ones((h + (shift * 2) + 4, w + (shift * 2) + 4, 3), dtype=np.uint8) * 255
+            temp_image_with_board[shift:temp_image_with_board.shape[0] - shift, shift:temp_image_with_board.shape[1] - shift, :] = temp_image
+            #general_helpers.show(temp_image_with_board)
+
+            #screenshot_elements.add_roi(RoiElement(temp_image_with_board, x, y, w, h, "checkbox"))
+            list_of_roi.append(RoiElement(temp_image_with_board, x, y, w, h, "checkbox"))
+
+        return list_of_roi
