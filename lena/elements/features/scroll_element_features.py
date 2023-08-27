@@ -18,3 +18,10 @@ class TempScrollAttributes:
         self.next_x, self.next_y, self.next_w, self.next_h = contours_helper.extract_xywh(sorted_rectangles, index + 1)
         self.next_center_x = contours_helper.get_x_center(self.next_x, self.next_w)
         self.next_center_y = contours_helper.get_y_center(self.next_y, self.next_h)
+
+class ScrollElementDetectionsFeatures():
+
+    def __init__(self, common_element_features, scroll_buttons_patterns, shift_threshold_for_scrolls = 0):
+        self.__common_element_features = common_element_features
+        self.__scroll_buttons_patterns = scroll_buttons_patterns
+        self.__shift_threshold_for_scrolls = shift_threshold_for_scrolls
