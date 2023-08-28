@@ -25,3 +25,28 @@ class ScrollElementDetectionsFeatures():
         self.__common_element_features = common_element_features
         self.__scroll_buttons_patterns = scroll_buttons_patterns
         self.__shift_threshold_for_scrolls = shift_threshold_for_scrolls
+
+    def __get_rectangles_by_patterns(self, temp_roi: np.array, similarity_threshold: float=0.8) -> list:
+        scroll_rectangles = []
+
+        for pattern in self.__scroll_buttons_patterns:
+            template_height, template_width = pattern.shape
+            _, max_val, _, max_loc = pattern_matching.calculate_min_max(temp_roi, pattern)
+
+            top_left, bottom_right = None, None
+            if max_val >= similarity_threshold:
+                top_left = max_loc
+                bottom_right = (top_left[0] + template_width, top_left[1] + template_height)
+
+            if top_left is not None and bottom_right is not None:
+                scroll_rectangles.append((top_left[0], top_left[1], template_width, template_height))
+
+        return scroll_rectangles
+
+    def __get_rectangles(self, temp_table_roi):
+        ref_gray = filters_helper.convert_to_grayscale(temp_table_roi)
+        ref_gray_sharp = filters_helper.Sharp(ref_gray, "strong")
+        ret, thresh = cv2.threshold(ref_gray_sharp, 180, 255, 0)
+        filtered_rectangles = contours_helper.get_contours_after_approximation(thresh, 3)
+
+        return filtered_rectangles
