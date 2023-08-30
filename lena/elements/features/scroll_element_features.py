@@ -90,3 +90,50 @@ class ScrollElementDetectionsFeatures():
         temp_scroll_absolute_x, temp_scroll_absolute_y = general_helpers.calculate_absolute_coordinates(source_element, x, y)
         temp_scroll_roi = RoiElement(source_element.get_roi()[y:y + h, x:x + w, :], temp_scroll_absolute_x, temp_scroll_absolute_y, w, h, scroll_type)
         return ScrollElement(scroll_type, 1.0, temp_scroll_roi, first_button, second_button)
+
+    def __try_to_detect_scrolls(self, rectangles, source_element: RoiElement):
+        temp_h_scrolls = []
+        temp_v_scrolls = []
+
+        '''
+            # calculate the length and width of the window and take 85%
+            # according to logic, the scroll cannot be smaller than these dimensions
+        '''
+        w_border = int((source_element.get_w() / 100) * 70)
+        h_border = int((source_element.get_h() / 100) * 50)
+
+        rectangles = np.array(rectangles)
+        sorted_rectangles_by_x = rectangles[rectangles[:, 0].argsort()]
+        sorted_rectangles_by_y = rectangles[rectangles[:, 1].argsort()]
+
+        for i in range(len(sorted_rectangles_by_x) - 1):
+            temp_attributes = TempScrollAttributes(sorted_rectangles_by_x, i)
+
+            if temp_attributes.current_center_x - 1 <= temp_attributes.next_center_x <= temp_attributes.current_center_x + 1:
+                y_max = np.max([temp_attributes.current_y, temp_attributes.next_y])
+                y_min = np.min([temp_attributes.current_y, temp_attributes.next_y])
+                x, y, w, h = self.__prepare_rectangle_for_vertical_scroll(temp_attributes, y_max, y_min)
+
+                # additionally, check that the height is sufficiently large and that
+                # the target point is approximately on the right
+                if (h > h_border and x > w_border):
+                    x = x - self.__shift_threshold_for_scrolls
+                    y = y - self.__shift_threshold_for_scrolls
+                    temp_v_scrolls.append(self.__init_v_scroll(source_element, x, y, w, h))
+
+        for i in range(len(sorted_rectangles_by_y) - 1):
+            temp_attributes = TempScrollAttributes(sorted_rectangles_by_y, i)
+
+            if (temp_attributes.current_center_y - 1 <= temp_attributes.next_center_y <= temp_attributes.current_center_y + 1):
+                x_min = np.min([temp_attributes.current_x, temp_attributes.next_x])
+                x_max = np.max([temp_attributes.current_x, temp_attributes.next_x])
+                x, y, w, h = self.__prepare_rectangle_for_horizontal_scroll(temp_attributes, x_max, x_min)
+
+                # additionally, check that the width is sufficiently large and that
+                # the target point is approximately at the bottom
+                if (w > w_border and y > h_border):
+                    x = x - self.__shift_threshold_for_scrolls
+                    y = y - self.__shift_threshold_for_scrolls
+                    temp_h_scrolls.append(self.__init_h_scroll(source_element, x, y, w, h))
+
+        return temp_h_scrolls, temp_v_scrolls
