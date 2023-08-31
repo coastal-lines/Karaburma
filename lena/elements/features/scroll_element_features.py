@@ -137,3 +137,23 @@ class ScrollElementDetectionsFeatures():
                     temp_h_scrolls.append(self.__init_h_scroll(source_element, x, y, w, h))
 
         return temp_h_scrolls, temp_v_scrolls
+
+    def __classify_horizontal_scroll(self, potential_h_scrolls):
+        for i in range(len(potential_h_scrolls)):
+            label, prediction_value = self.__common_element_features.calculate_scores_for_element(potential_h_scrolls[i].get_roi_element())
+
+            if label == ElementTypesEnum.h_scroll.name:
+                potential_h_scrolls[i].update_prediction_value(prediction_value)
+                return potential_h_scrolls[i]
+
+    def __classify_vertical_scroll(self, potential_v_scrolls):
+        for i in range(len(potential_v_scrolls)):
+            original_v_scroll_roi = potential_v_scrolls[i].get_roi_element().get_roi()
+            turned_left_temp_v_scroll = geometric_transformations.turn_left(potential_v_scrolls[i].get_roi_element().get_roi())
+            potential_v_scrolls[i].get_roi_element().set_roi(turned_left_temp_v_scroll)
+            label, prediction_value = self.__common_element_features.calculate_scores_for_element(potential_v_scrolls[i].get_roi_element())
+
+            if label == ElementTypesEnum.h_scroll.name:
+                potential_v_scrolls[i].get_roi_element().set_roi(original_v_scroll_roi)
+                potential_v_scrolls[i].update_prediction_value(prediction_value)
+                return potential_v_scrolls[i]
