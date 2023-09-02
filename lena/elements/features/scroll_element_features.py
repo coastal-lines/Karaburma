@@ -157,3 +157,27 @@ class ScrollElementDetectionsFeatures():
                 potential_v_scrolls[i].get_roi_element().set_roi(original_v_scroll_roi)
                 potential_v_scrolls[i].update_prediction_value(prediction_value)
                 return potential_v_scrolls[i]
+
+    def __classify_potential_scrolls(self, potential_h_scrolls, potential_v_scrolls):
+        h_scroll, v_scroll = None, None
+
+        if len(potential_h_scrolls) > 0:
+            h_scroll = self.__classify_horizontal_scroll(potential_h_scrolls)
+
+        if len(potential_v_scrolls) > 0:
+            v_scroll = self.__classify_vertical_scroll(potential_v_scrolls)
+
+        return h_scroll, v_scroll
+
+    def find_scrolls(self, temp_roi: RoiElement) -> tuple:
+        rectangles = []
+        rectangles.extend(self.__get_rectangles(temp_roi.get_roi()))
+        rectangles.extend(self.__get_rectangles_by_patterns(temp_roi.get_roi(), 0.6))
+
+        if len(rectangles) > 0:
+            temp_h_scrolls, temp_v_scrolls = self.__try_to_detect_scrolls(rectangles, temp_roi)
+            h_scroll, v_scroll = self.__classify_potential_scrolls(temp_h_scrolls, temp_v_scrolls)
+
+            return h_scroll, v_scroll
+        else:
+            return None, None
