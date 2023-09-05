@@ -38,3 +38,24 @@ class TableElementFeatures(TablePreprocessing):
     def image_source(self, screenshot: ImageSourceObject):
         print("Setting value")
         self.__image_source = screenshot
+
+    def __blur_table_area(self, table_roi):
+
+        # Do blur for current roi
+        updated_screenshot = self.image_source.get_current_image_source().copy()
+
+        updated_screenshot_w = table_roi.get_x() + table_roi.get_w()
+        updated_screenshot_h = table_roi.get_y() + table_roi.get_h()
+
+        updated_screenshot[table_roi.get_y(): updated_screenshot_h, table_roi.get_x(): updated_screenshot_w,:] = filters_helper.Blur(updated_screenshot[table_roi.get_y(): updated_screenshot_h, table_roi.get_x(): updated_screenshot_w, :], (99, 99))
+
+        self.image_source.update_current_image_source(updated_screenshot)
+
+    def __prepare_parameters_for_stitching_features(self):
+        horizontal_roi_shift = ConfigManager().config.elements_parameters.table.stitching.table_cells["horizontal_roi_shift"]
+        horizontal_stitching_shift = ConfigManager().config.elements_parameters.table.stitching.table_cells["horizontal_stitching_shift"]
+        vertical_stitching_shift = ConfigManager().config.elements_parameters.table.stitching.table_cells["vertical_stitching_shift"]
+        horizontal_border = ConfigManager().config.elements_parameters.table.stitching.displacement_borders["horizontal_border"]
+        vertical_border = ConfigManager().config.elements_parameters.table.stitching.displacement_borders["vertical_border"]
+
+        return horizontal_roi_shift, horizontal_stitching_shift, vertical_stitching_shift, horizontal_border, vertical_border
