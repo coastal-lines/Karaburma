@@ -59,3 +59,17 @@ class TableElementFeatures(TablePreprocessing):
         vertical_border = ConfigManager().config.elements_parameters.table.stitching.displacement_borders["vertical_border"]
 
         return horizontal_roi_shift, horizontal_stitching_shift, vertical_stitching_shift, horizontal_border, vertical_border
+
+    def __prepare_stitching_features(self, desired_table, desired_table_cells_area, direction):
+        horizontal_roi_shift, horizontal_stitching_shift, vertical_stitching_shift, horizontal_border, vertical_border \
+            = self.__prepare_parameters_for_stitching_features()
+
+        scroll_features = ScrollActionsFeatures(desired_table, desired_table_cells_area, direction)
+
+        displacement_features = DisplacementFeatures(OrbBfHomographicalDisplacement(), scroll_features,
+                                                     horizontal_border, vertical_border)
+
+        stitching_features = StitchingFeatures(displacement_features, horizontal_stitching_shift,
+                                               horizontal_roi_shift, vertical_stitching_shift)
+
+        return stitching_features
