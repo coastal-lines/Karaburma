@@ -84,3 +84,26 @@ class TableElementFeatures(TablePreprocessing):
         stitched_table_roi_element = RoiElement(stitched_table, 0, 0, stitched_table.shape[1], stitched_table.shape[0], "table")
         stitched_table_element = self.__find_table_on_extended_table(stitched_table_roi_element)
         desired_table.set_full_table_area(stitched_table_roi_element, stitched_table_element)
+
+    def find_all_tables(self, image_source, blur_after_searching=True):
+        self.image_source = image_source
+        tables_groups = super().table_element_classification(self.__tables_model, self.image_source)
+
+        for tables_group in tables_groups:
+            best_roi = sorted(tables_group, key=itemgetter(1), reverse=True)[0][0]
+            #general_helpers.show(best_roi.get_roi())
+            #files_helper.save_image(best_roi.get_roi())
+
+            # Find scrolls here
+            h_scroll, v_scroll = self.__scroll_element_features.find_scrolls(best_roi)
+
+            # Find cells here
+            table_cells_element = self.__table_cells_features.find_table_cells(best_roi)
+
+            # Create table element
+            current_table_element = TableElement(ElementTypesEnum.table.name, 1.0, best_roi, h_scroll, v_scroll, table_cells_element)
+            self.image_source.add_element(current_table_element)
+
+        if(blur_after_searching):
+            for table in self.image_source.get_table_elements():
+                self.__blur_table_area(table.get_roi_element())
