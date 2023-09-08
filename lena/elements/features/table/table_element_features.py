@@ -73,3 +73,14 @@ class TableElementFeatures(TablePreprocessing):
                                                horizontal_roi_shift, vertical_stitching_shift)
 
         return stitching_features
+
+    def __find_table_on_extended_table(self, table_roi_element):
+        table_cells_element = self.__table_cells_features.find_table_cells(table_roi_element)
+        current_table_element = TableElement(ElementTypesEnum.table.name, "1", table_roi_element, None, None, table_cells_element)
+
+        return current_table_element
+
+    def __set_full_table_to_element(self, desired_table, stitched_table):
+        stitched_table_roi_element = RoiElement(stitched_table, 0, 0, stitched_table.shape[1], stitched_table.shape[0], "table")
+        stitched_table_element = self.__find_table_on_extended_table(stitched_table_roi_element)
+        desired_table.set_full_table_area(stitched_table_roi_element, stitched_table_element)
