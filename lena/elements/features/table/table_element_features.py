@@ -107,3 +107,39 @@ class TableElementFeatures(TablePreprocessing):
         if(blur_after_searching):
             for table in self.image_source.get_table_elements():
                 self.__blur_table_area(table.get_roi_element())
+
+    def find_table_and_expand(self, table_index: int = 0):
+        self.find_all_tables(self.image_source, False)
+
+        if len(self.image_source.get_table_elements()) > 0:
+            if table_index < len(self.image_source.get_table_elements()):
+                desired_table = self.image_source.get_table_elements()[table_index]
+                desired_table_cells_area = desired_table.get_cells_area_element()
+
+                if desired_table.get_v_scroll() is not None and desired_table.get_h_scroll() is not None:
+                    stitching_features = self.__prepare_stitching_features(desired_table, desired_table_cells_area, ScrollDirectionEnum.RIGHT_DOWN.name)
+                    stitched_table = stitching_features.right_down_stitch()
+                    self.__set_full_table_to_element(desired_table, stitched_table)
+
+                elif desired_table.get_h_scroll() is not None and desired_table.get_v_scroll() is None:
+                    stitching_features = self.__prepare_stitching_features(desired_table, desired_table_cells_area, ScrollDirectionEnum.RIGHT.name)
+                    stitched_table = stitching_features.right_down_stitch()
+                    self.__set_full_table_to_element(desired_table, stitched_table)
+
+                elif desired_table.get_v_scroll() is not None and desired_table.get_h_scroll() is None:
+                    stitching_features = self.__prepare_stitching_features(desired_table, desired_table_cells_area, ScrollDirectionEnum.DOWN.name)
+                    stitched_table = stitching_features.right_down_stitch()
+                    self.__set_full_table_to_element(desired_table, stitched_table)
+
+                elif desired_table.get_v_scroll() is None and desired_table.get_h_scroll() is None:
+                    # TODO
+                    print("Table doesn't have any scrolls")
+
+                general_helpers.show(self.image_source.get_table_elements()[table_index].get_full_table_area().get_roi_element().get_roi())
+
+            else:
+                #TODO
+                print("Wrong table index")
+        else:
+            # TODO
+            print("Tables were no found")
