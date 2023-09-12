@@ -147,3 +147,19 @@ class TableCellsFeatures():
         #general_helpers.show(grey_)
 
         return grey_
+
+    def __remove_noise_from_table(self, prepared_table_roi, original_table_roi):
+        all, _ = contours_helper.GetContoursByCanny(prepared_table_roi, 0, 255)
+
+        original_table_roi = filters_helper.convert_to_grayscale(original_table_roi)
+
+        for contour in all:
+            epsilon = 0.005 * cv2.arcLength(contour, True)
+            approx = cv2.approxPolyDP(contour, epsilon, True)
+
+            x, y, w, h = cv2.boundingRect(approx)
+            #if (w > 3 and h > 3):
+            if (w > 3 and h > 3 and w < 100 and h < 30):
+                original_table_roi[y - 0:y + h + 0, x - 0:x + w + 0] = 255
+
+        return original_table_roi
