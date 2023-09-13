@@ -163,3 +163,52 @@ class TableCellsFeatures():
                 original_table_roi[y - 0:y + h + 0, x - 0:x + w + 0] = 255
 
         return original_table_roi
+
+    def __get_contours_for_table_cells(self, prepared_table_roi, original_table_roi):
+        #general_helpers.show(prepared_table_roi)
+        #general_helpers.show(original_table_roi)
+        cleaned_table_roi = self.__remove_noise_from_table(prepared_table_roi, original_table_roi)
+
+        #general_helpers.show(cleaned_table_roi)
+
+        grey_ = filters_helper.LevelsCorrection(cleaned_table_roi, 190, 236, 0, 111, 0.38)
+        grey_ = filters_helper.LevelsCorrection(grey_, 121, 160, 98, 255, 0.4)
+
+        grey_ = morphological_helpers.erosion(grey_)
+
+        #DEBUG
+        #grey_ = filters_helper.Sharp(grey_, "strong")
+        kernel1 = np.array([[0, 0, 1, 0, 0],
+                            [0, 0, 1, 3, 0],
+                            [1, 0, 1, -1, -1],
+                            [0, -2, -1, 0, 0],
+                            [0, 0, 0, 0, 0]])
+        #grey_ = cv2.filter2D(src=grey_, ddepth=-1, kernel=kernel1)
+
+        #grey_ = filters_helper.Blur(grey_, (3, 3))
+
+
+        grey_ = skimage.img_as_ubyte(grey_.copy() > threshold_mean(grey_))
+
+        #grey_ = skimage.img_as_ubyte(grey_.copy() > threshold_minimum(grey_))
+
+        #general_helpers.show(grey_)
+
+        contours, hierarchy = cv2.findContours(grey_, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        temp_contours = []
+
+        for contour in contours:
+
+            #cv2.drawContours(original_table_roi, [contour], -1, (0, 255, 0), 1)
+
+            epsilon = 0.001 * cv2.arcLength(contour, True)
+            approx = cv2.approxPolyDP(contour, epsilon, True)
+            x, y, w, h = cv2.boundingRect(approx)
+
+            if(w > h and w > 60 and h > 7 and w < 400 and h < 200):
+                temp_contours.append((x, y, w, h))
+
+        #contours_helper.DrawRectangleByListXYWH(original_table_roi, temp_contours)
+        #general_helpers.show(original_table_roi)
+
+        return temp_contours
