@@ -212,3 +212,44 @@ class TableCellsFeatures():
         #general_helpers.show(original_table_roi)
 
         return temp_contours
+
+    def __calculate_most_frequent_cell_x_y(self, prepared_cells_contours):
+        # find the most similar contours
+        all_x = [arr[0] for arr in prepared_cells_contours]
+        most_frequent_x = np.bincount(all_x).argmax()
+
+        all_y = [arr[1] for arr in prepared_cells_contours]
+        most_frequent_y = np.bincount(all_y).argmax()
+
+        return most_frequent_x, most_frequent_y
+
+    def __calculate_most_frequent_cell_dimension(self, prepared_cells_contours):
+        #find the most similar contours
+        all_width = [arr[2] for arr in prepared_cells_contours]
+        most_frequent_width = np.bincount(all_width).argmax()
+
+        all_height = [arr[3] for arr in prepared_cells_contours]
+        most_frequent_height = np.bincount(all_height).argmax()
+
+        return most_frequent_width, most_frequent_height
+
+    def __calculate_most_frequent_cell_dimension2(self, prepared_cells_contours):
+        #find the most similar contours
+        all_width = [arr[2] for arr in prepared_cells_contours]
+        most_frequent_width = np.bincount(all_width).argmax()
+
+        all_height = [arr[3] for arr in prepared_cells_contours]
+        most_frequent_height = np.bincount(all_height).argmax()
+
+        return most_frequent_width, most_frequent_height
+
+    def __calculate_cells_coordinates(self, prepared_cells_contours, most_frequent_width, most_frequent_height):
+        #get coordinates of table
+        all_x = np.sort([arr[0] for arr in prepared_cells_contours])
+        x1 = all_x[0]
+        x2 = all_x[-1] + most_frequent_width
+        all_y = np.sort([arr[1] for arr in prepared_cells_contours])
+        y1 = all_y[0]
+        y2 = all_y[-1] + most_frequent_height
+
+        return x1, y1, x2, y2
