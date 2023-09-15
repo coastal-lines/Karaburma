@@ -253,3 +253,9 @@ class TableCellsFeatures():
         y2 = all_y[-1] + most_frequent_height
 
         return x1, y1, x2, y2
+
+    def __calculate_columns_and_rows_number(self, cells_area_x2, cells_area_y2, most_frequent_width, most_frequent_height):
+        table_columns = cells_area_x2 // most_frequent_width
+        table_rows = cells_area_y2 // most_frequent_height
+
+        return table_columns, table_rows
