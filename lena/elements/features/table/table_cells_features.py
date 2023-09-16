@@ -259,3 +259,56 @@ class TableCellsFeatures():
         table_rows = cells_area_y2 // most_frequent_height
 
         return table_columns, table_rows
+
+    def __prepare_list_cells(self, temp_table_roi, table_columns, table_rows, cells_area_x1, cells_area_y1, most_frequent_width, most_frequent_height, prepared_cells_contours):
+        list_cells = []
+
+        threshold = 12
+
+        for column_index in range(table_columns):
+            for row_index in range(table_rows):
+                for cell_contour in prepared_cells_contours:
+                    #TODO - try to simplify
+                    contour_x, contour_y, contour_w, contour_h = cell_contour[0], cell_contour[1], cell_contour[2], cell_contour[3]
+
+                    #DEBUG
+                    #contour_w = (most_frequent_width + contour_w) // 2
+                    #contour_h = (most_frequent_height + contour_h) // 2
+
+                    current_x = cells_area_x1 + (most_frequent_width * column_index)
+                    current_y = cells_area_y1 + (most_frequent_height * row_index)
+
+                    # It is necessary to check for displacement, as cells may not necessarily have exactly the same width and height
+                    if ((contour_x - threshold <= current_x <= contour_x + threshold) and (contour_y - threshold <= current_y <= contour_y + threshold)):
+                        current_roi = temp_table_roi.get_roi()[contour_y:contour_y + most_frequent_height, contour_x:contour_x + most_frequent_width]
+                        #current_text = ocr_helper.get_text(current_roi)
+                        absolute_current_x, absolute_current_y = general_helpers.calculate_absolute_coordinates(temp_table_roi, contour_x, contour_y)
+                        current_cell = TableCell("table_cell", "1", RoiElement(current_roi, absolute_current_x, absolute_current_y, contour_w, contour_h), "", column_index, row_index)
+
+                        list_cells.append(current_cell)
+                        break
+
+                    else:
+                        current_roi = temp_table_roi.get_roi()[current_y:current_y + most_frequent_height, current_x:current_x + most_frequent_width]
+                        #current_text = ocr_helper.get_text(current_roi)
+
+                        absolute_current_x, absolute_current_y = general_helpers.calculate_absolute_coordinates(temp_table_roi, current_x, current_y)
+                        current_cell = TableCell("table_cell", "1", RoiElement(current_roi, absolute_current_x, absolute_current_y, contour_w, contour_h), "", column_index, row_index)
+
+                        list_cells.append(current_cell)
+                        break
+
+        return list_cells
+
+    '''
+    def __custom_round(self, number):
+        # Separate the integer and decimal parts
+        integer_part = int(number)
+        decimal_part = number - integer_part
+
+        # Custom rounding logic
+        if decimal_part < 0.5 or integer_part == 0:
+            return integer_part
+        else:
+            return integer_part + 1
+    '''
