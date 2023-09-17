@@ -312,3 +312,49 @@ class TableCellsFeatures():
         else:
             return integer_part + 1
     '''
+    
+    def __get_most_frequent_features_of_nearest_cells(self, cell_contour, prepared_cells_contours, most_frequent_width, most_frequent_height):
+        # take a cross-shaped matrix with the current contour in the center
+        # calculate the most popular values and return them
+
+        contour_x, contour_y, contour_w, contour_h = cell_contour[0], cell_contour[1], cell_contour[2], cell_contour[3]
+
+        #left
+        contour_1_x = contour_x - most_frequent_width
+        contour_1_y = contour_y
+
+        for temp_contour in prepared_cells_contours:
+            if(temp_contour[0] <= contour_1_x <= temp_contour[0]):
+                pass
+
+        #up
+        contour_1_x = contour_x
+        contour_1_y = contour_y - most_frequent_height
+
+
+        #right
+        contour_1_x = contour_x + most_frequent_width
+        contour_1_y = contour_y
+
+        #bottom
+        contour_1_x = contour_x
+        contour_1_y = contour_y + most_frequent_height
+
+
+
+        contour_1 = None
+        contour_2 = None
+        contour_3 = None
+        contour_4 = None
+
+    def __calculate_current_adress(self, x, y, most_frequent_width, most_frequent_height):
+        row_index = general_helpers.custom_round(y / most_frequent_height)
+        column_index = general_helpers.custom_round(x / most_frequent_width)
+
+        test_y = row_index * most_frequent_height
+        if(test_y != y and test_y > y):
+            row_index -= 1
+
+        print(row_index, column_index)
+
+        return row_index, column_index
