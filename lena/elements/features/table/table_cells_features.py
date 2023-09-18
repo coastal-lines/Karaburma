@@ -312,7 +312,7 @@ class TableCellsFeatures():
         else:
             return integer_part + 1
     '''
-    
+
     def __get_most_frequent_features_of_nearest_cells(self, cell_contour, prepared_cells_contours, most_frequent_width, most_frequent_height):
         # take a cross-shaped matrix with the current contour in the center
         # calculate the most popular values and return them
@@ -358,3 +358,58 @@ class TableCellsFeatures():
         print(row_index, column_index)
 
         return row_index, column_index
+
+    def __prepare_list_cells2(self, temp_table_roi, table_columns, table_rows, cells_area_x1, cells_area_y1, most_frequent_width, most_frequent_height, prepared_cells_contours):
+        list_cells = []
+
+        threshold = 1
+
+        shift_from_find_best_contours_for_table_method = 3
+
+        for cell_contour in prepared_cells_contours:
+            contour_x, contour_y, contour_w, contour_h = cell_contour[0], cell_contour[1], cell_contour[2], cell_contour[3]
+
+            #DEBUG
+            #self.__calculate_current_adress(14, 9, most_frequent_width, most_frequent_height)
+
+            row_index = general_helpers.custom_round(contour_y / most_frequent_height)
+            column_index = general_helpers.custom_round(contour_x / most_frequent_width)
+            print(column_index, row_index)
+
+            #row_index, column_index = self.__calculate_current_adress(contour_x, contour_y, most_frequent_width, most_frequent_height)
+
+            #shift
+            #contour_x -= 3
+            #contour_y -= 3
+
+            current_cell = None
+
+            if(most_frequent_height - threshold <= contour_h <= most_frequent_height + threshold and most_frequent_width - threshold <= contour_w <= most_frequent_width + threshold):
+
+                current_roi = temp_table_roi.get_roi()[contour_y:contour_y + contour_h, contour_x:contour_x + contour_w]
+                absolute_current_x, absolute_current_y = general_helpers.calculate_absolute_coordinates(temp_table_roi, contour_x, contour_y)
+
+                absolute_current_x = absolute_current_x - shift_from_find_best_contours_for_table_method
+                absolute_current_y = absolute_current_y - shift_from_find_best_contours_for_table_method
+
+                current_cell = TableCell("table_cell", "1", RoiElement(current_roi, absolute_current_x, absolute_current_y, contour_w, contour_h), "", column_index, row_index)
+            else:
+                #if(contour_h != most_frequent_height):
+                #    contour_h = most_frequent_height
+
+                #if(contour_w != most_frequent_width):
+                #    contour_w = most_frequent_width
+
+                if(contour_w > 60 and contour_h > 8):
+                    current_roi = temp_table_roi.get_roi()[contour_y:contour_y + contour_h, contour_x:contour_x + contour_w]
+                    absolute_current_x, absolute_current_y = general_helpers.calculate_absolute_coordinates(temp_table_roi, contour_x, contour_y)
+
+                    absolute_current_x = absolute_current_x - shift_from_find_best_contours_for_table_method
+                    absolute_current_y = absolute_current_y - shift_from_find_best_contours_for_table_method
+
+                    current_cell = TableCell("table_cell", "1", RoiElement(current_roi, absolute_current_x, absolute_current_y, contour_w, contour_h), "", column_index, row_index)
+
+            if(current_cell != None):
+                list_cells.append(current_cell)
+
+        return list_cells
