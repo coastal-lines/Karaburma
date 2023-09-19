@@ -413,3 +413,85 @@ class TableCellsFeatures():
                 list_cells.append(current_cell)
 
         return list_cells
+
+    def __prepare_list_cells3(self, temp_table_roi, table_columns, table_rows, cells_area_x1, cells_area_y1, most_frequent_width, most_frequent_height, prepared_cells_contours):
+        list_cells = []
+
+        files_helper.save_image("Projects\!", temp_table_roi.get_roi(), "t")
+
+        threshold = 1
+
+        shift_from_find_best_contours_for_table_method = 3
+        shift_for_cells = 2
+
+        for i in range(0, table_columns):
+            x_0 = (i * most_frequent_width) + cells_area_x1
+            x_1 = ((i * most_frequent_width) + most_frequent_width) + cells_area_x1
+
+            for j in range(0, table_rows):
+                y_0 =(j * most_frequent_height) + cells_area_y1
+                y_1 = ((j * most_frequent_height) + most_frequent_height) + cells_area_y1
+
+                if(i == 0 and j == 0):
+                    print("")
+
+                for cell_contour in prepared_cells_contours:
+                    contour_x, contour_y, contour_w, contour_h = cell_contour[0], cell_contour[1], cell_contour[2], cell_contour[3]
+
+                    if (contour_x == 17 and contour_y == 18):
+                        print("")
+
+                    centre_x = contour_x + (contour_w // 2)
+                    centre_y = contour_y + (contour_h // 2)
+
+                    if (x_0 - shift_for_cells <= contour_x <= x_1 + shift_for_cells
+                            and y_0 - shift_for_cells <= contour_y <= y_1 + shift_for_cells):
+
+                        cv2.putText(temp_table_roi.get_roi(), str(i) + " " + str(j), (centre_x, centre_y), cv2.FONT_HERSHEY_PLAIN, 1,
+                                    (0, 0, 0), 1, cv2.LINE_AA)
+
+                        # DEBUG
+                        # self.__calculate_current_adress(14, 9, most_frequent_width, most_frequent_height)
+
+                        column_index = i
+                        row_index = j
+                        print(column_index, row_index)
+
+                        # row_index, column_index = self.__calculate_current_adress(contour_x, contour_y, most_frequent_width, most_frequent_height)
+
+                        # shift
+                        # contour_x -= 3
+                        # contour_y -= 3
+
+                        current_cell = None
+
+                        if (most_frequent_height - threshold <= contour_h <= most_frequent_height + threshold and most_frequent_width - threshold <= contour_w <= most_frequent_width + threshold):
+                            current_roi = temp_table_roi.get_roi()[contour_y:contour_y + contour_h, contour_x:contour_x + contour_w]
+                            absolute_current_x, absolute_current_y = general_helpers.calculate_absolute_coordinates(temp_table_roi, contour_x, contour_y)
+
+                            absolute_current_x = absolute_current_x - shift_from_find_best_contours_for_table_method
+                            absolute_current_y = absolute_current_y - shift_from_find_best_contours_for_table_method
+
+                            current_cell = TableCell("table_cell", "1", RoiElement(current_roi, absolute_current_x, absolute_current_y, contour_w, contour_h), "", column_index, row_index)
+                        else:
+                            # if(contour_h != most_frequent_height):
+                            #    contour_h = most_frequent_height
+
+                            # if(contour_w != most_frequent_width):
+                            #    contour_w = most_frequent_width
+
+                            if (contour_w > 60 and contour_h > 8):
+                                current_roi = temp_table_roi.get_roi()[contour_y:contour_y + contour_h, contour_x:contour_x + contour_w]
+                                absolute_current_x, absolute_current_y = general_helpers.calculate_absolute_coordinates(temp_table_roi, contour_x, contour_y)
+
+                                absolute_current_x = absolute_current_x - shift_from_find_best_contours_for_table_method
+                                absolute_current_y = absolute_current_y - shift_from_find_best_contours_for_table_method
+
+                                current_cell = TableCell("table_cell", "1", RoiElement(current_roi, absolute_current_x, absolute_current_y, contour_w, contour_h), "", column_index, row_index)
+
+                        if (current_cell != None):
+                            list_cells.append(current_cell)
+
+        #general_helpers.show(temp_table_roi.get_roi())
+
+        return list_cells
