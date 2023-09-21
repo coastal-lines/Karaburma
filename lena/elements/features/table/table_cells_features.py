@@ -646,3 +646,21 @@ class TableCellsFeatures():
         #general_helpers.show(temp_table_roi.get_roi())
 
         return list_cells
+
+    def get_roi_rectangle_for_table_cells(self, temp_table_roi):
+        prepared_table_roi = self.__preprocessing_for_table_cells4(temp_table_roi.get_roi())
+        prepared_cells_contours = self.__get_contours_for_table_cells(prepared_table_roi, temp_table_roi.get_roi())
+
+        min_x = min(rectangle[0] for rectangle in prepared_cells_contours)
+        min_y = min(rectangle[1] for rectangle in prepared_cells_contours)
+        max_x = max(rectangle[0] + rectangle[2] for rectangle in prepared_cells_contours)
+        max_y = max(rectangle[1] + rectangle[3] for rectangle in prepared_cells_contours)
+
+        width = max_x - min_x
+        height = max_y - min_y
+
+        combined_rectangle = [min_x, min_y, width, height]
+
+        print("")
+
+        return combined_rectangle
