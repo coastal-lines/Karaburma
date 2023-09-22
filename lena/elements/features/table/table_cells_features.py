@@ -664,3 +664,23 @@ class TableCellsFeatures():
         print("")
 
         return combined_rectangle
+
+    def find_table_cells(self, temp_table_roi):
+        prepared_table_roi = self.__preprocessing_for_table_cells4(temp_table_roi.get_roi())
+
+        prepared_cells_contours = self.__get_contours_for_table_cells(prepared_table_roi, temp_table_roi.get_roi())
+
+        if(len(prepared_cells_contours) > 0):
+            most_frequent_width, most_frequent_height = self.__calculate_most_frequent_cell_dimension2(prepared_cells_contours)
+            #most_frequent_x, most_frequent_y = self.__calculate_most_frequent_cell_x_y(prepared_cells_contours)
+            cells_area_x1, cells_area_y1, cells_area_x2, cells_area_y2 = self.__calculate_cells_coordinates(prepared_cells_contours, most_frequent_width, most_frequent_height)
+            table_columns, table_rows = self.__calculate_columns_and_rows_number(cells_area_x2, cells_area_y2, most_frequent_width, most_frequent_height)
+            list_cells = self.__prepare_list_cells5(temp_table_roi, table_columns, table_rows, cells_area_x1, cells_area_y1, most_frequent_width, most_frequent_height, prepared_cells_contours)
+
+            absolute_cells_area_x1, absolute_cells_area_y1 = general_helpers.calculate_absolute_coordinates(temp_table_roi, cells_area_x1, cells_area_y1)
+            table_cells_element = TableCellsElement("table_cells", 1.0, RoiElement(temp_table_roi.get_roi()[cells_area_y1:cells_area_y2, cells_area_x1:cells_area_x2], absolute_cells_area_x1, absolute_cells_area_y1, cells_area_x2 - cells_area_x1, cells_area_y2 - cells_area_y1), list_cells)
+
+            return table_cells_element
+        else:
+            print("No cells")
+            return None
