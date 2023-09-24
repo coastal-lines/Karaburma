@@ -21,3 +21,25 @@ class StitchingFeatures:
 
         self.nested_element_w, self.nested_element_h = self.displacement_features.scroll_features.nested_element.get_roi_element().get_shape()
         print("")
+
+    def __prepare_displacement_values(self) -> tuple[int, int]:
+        x_displacement, y_displacement = self.displacement_features.try_to_find_displacement()
+
+        if (self.horizontal_stitching_shift != None):
+            x_displacement += self.horizontal_stitching_shift
+
+        if (self.vertical_stitching_shift != None):
+            y_displacement += self.vertical_stitching_shift
+
+        print("x_displacement", x_displacement,"y_displacement", y_displacement)
+        return x_displacement, y_displacement
+
+    def __get_crop_after_scroll(self, temp_nested_element):
+        match self.displacement_features.scroll_features.direction:
+            case ScrollDirectionEnum.RIGHT.name:
+                roi_after = temp_nested_element[:, self.nested_element_w - self.x_displacement: self.nested_element_w, :]
+                return roi_after
+
+            case ScrollDirectionEnum.DOWN.name:
+                roi_after = temp_nested_element[self.nested_element_h - self.y_displacement: self.nested_element_h, :, :]
+                return roi_after
