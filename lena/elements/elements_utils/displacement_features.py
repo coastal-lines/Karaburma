@@ -46,3 +46,23 @@ class DisplacementFeatures(DisplacementManager):
                 x_displacement = self.__calculate_horizontal_displacement(before, after)
 
         return x_displacement, y_displacement
+
+    def try_to_find_displacement(self):
+        before = filters_helper.convert_to_grayscale(copy.copy(self.__scroll_features.element_with_scroll.get_roi_element().get_roi()))
+
+
+        if self.__scroll_features.direction == ScrollDirectionEnum.RIGHT_DOWN.name:
+            was_scrolled, roi_element_after_scroll = self.__scroll_features.scroll_element(ScrollDirectionEnum.RIGHT.name)
+            x_displacement, _ = self.calculate_displacement_for_scrolling(before, roi_element_after_scroll, ScrollDirectionEnum.RIGHT.name)
+            self.__scroll_features.scroll_element(ScrollDirectionEnum.LEFT.name)
+
+            was_scrolled, roi_element_after_scroll = self.__scroll_features.scroll_element(ScrollDirectionEnum.DOWN.name)
+            _, y_displacement = self.calculate_displacement_for_scrolling(before, roi_element_after_scroll, ScrollDirectionEnum.DOWN.name)
+            self.__scroll_features.scroll_element(ScrollDirectionEnum.UP.name)
+
+        else:
+            was_scrolled, roi_element_after_scroll = self.__scroll_features.scroll_element()
+            x_displacement, y_displacement = self.calculate_displacement_for_scrolling(before, roi_element_after_scroll, self.__scroll_features.direction)
+            self.__scroll_features.scroll_element(self.scroll_features.reversed_direction)
+
+        return x_displacement, y_displacement
