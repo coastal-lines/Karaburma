@@ -23,3 +23,26 @@ class DisplacementFeatures(DisplacementManager):
         x_displacement, _ = super().calculate_displacement(before, after)
 
         return x_displacement
+
+    def __calculate_vertical_displacement(self, before, after) -> int:
+        before = before[self.__vertical_border:before.shape[0] - self.__vertical_border, self.__horizontal_border:before.shape[1] - self.__horizontal_border]
+        after = after[self.__vertical_border:after.shape[0] - self.__vertical_border, self.__horizontal_border:after.shape[1] - self.__horizontal_border]
+        _, y_displacement = super().calculate_displacement(before, after)
+
+        return y_displacement
+
+    def calculate_displacement_for_scrolling(self, before, after, direction: str) -> tuple[int, int]:
+        x_displacement = 0
+        y_displacement = 0
+
+        match direction:
+            case ScrollDirectionEnum.DOWN.name | ScrollDirectionEnum.UP.name:
+                #if type(super()) == OcrVerticalDisplacement:
+                #    y_displacement = super().calculate_displacement(before)
+                #else:
+                y_displacement = self.__calculate_vertical_displacement(before, after)
+
+            case ScrollDirectionEnum.RIGHT.name | ScrollDirectionEnum.LEFT.name:
+                x_displacement = self.__calculate_horizontal_displacement(before, after)
+
+        return x_displacement, y_displacement
