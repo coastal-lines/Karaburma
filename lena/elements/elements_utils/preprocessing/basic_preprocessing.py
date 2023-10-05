@@ -24,3 +24,25 @@ class BasicPreprocessing:
         th = sk.img_as_ubyte(th)
 
         return th
+
+    def load_parameters(self):
+        min_w = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["min_w"]
+        min_h = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["min_h"]
+        max_w = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["max_w"]
+        max_h = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["max_h"]
+        return min_w, min_h, max_w, max_h
+
+    def prepare_contours(self, contours):
+        min_w, min_h, max_w, max_h = self.load_parameters()
+
+        result_contours = []
+        result_rectangles = []
+        for i in range(len(contours)):
+            x, y, w, h = cv2.boundingRect(contours[i])
+            if ((w > h) and (w > min_w) and (h < max_h) and (h > min_h) and (w < max_w)):
+                result_contours.append(contours[i])
+                result_rectangles.append((x, y, w, h))
+
+        result_contours = contours_helper.filter_very_similar_contours(result_rectangles)
+
+        return result_contours
