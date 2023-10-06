@@ -46,3 +46,22 @@ class BasicPreprocessing:
         result_contours = contours_helper.filter_very_similar_contours(result_rectangles)
 
         return result_contours
+
+    def find_contours_for_common_elements(self, image_source):
+        list_of_roi = []
+
+        th = self.prepare_image(image_source)
+        contours, hierarchy = contours_helper.get_contours(th)
+        result_contours = self.prepare_contours(contours)
+
+        shift = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["roi_shift"]
+        for i in range(len(result_contours)):
+            x, y, w, h = result_contours[i][0], result_contours[i][1], result_contours[i][2], result_contours[i][3]
+            temp_image = image_source.get_current_image_source()[y:y + h, x:x + w, :]
+            temp_image_with_board = np.ones((h + (shift * 2), w + (shift * 2), 3), dtype=np.uint8) * 255
+            temp_image_with_board[shift:temp_image_with_board.shape[0] - shift,
+            shift:temp_image_with_board.shape[1] - shift, :] = temp_image
+
+            list_of_roi.append(RoiElement(temp_image_with_board, x, y, w, h))
+
+        return list_of_roi
