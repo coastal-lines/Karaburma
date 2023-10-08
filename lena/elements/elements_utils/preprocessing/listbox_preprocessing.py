@@ -12,3 +12,10 @@ from lena.utils.image_processing import filters_helper, morphological_helpers
 
 
 class ListboxPreprocessing:
+    def __init__(self, model_for_common_elements, model_for_listbox, common_element_features,
+                 scroll_buttons_patterns, shift_threshold_for_scrolls):
+        self.model_for_common_elements = model_for_common_elements
+        self.__model_for_listbox = model_for_listbox
+        self.__scroll_element_features = ScrollElementDetectionsFeatures(common_element_features,
+                                                                         scroll_buttons_patterns,
+                                                                         shift_threshold_for_scrolls)
