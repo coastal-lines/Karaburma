@@ -65,3 +65,28 @@ class BasicPreprocessing:
             list_of_roi.append(RoiElement(temp_image_with_board, x, y, w, h))
 
         return list_of_roi
+
+    def prepare_features_for_basic_elements(self, roi, dim):
+        #number of harris coordinates for each sample
+        harris_array = ConfigManager().config.elements_parameters.common_element.preprocessing["harris_array_size"]
+
+        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+        gray = cv2.resize(gray, dim)
+        mean_binary = gray.copy() > threshold_mean(gray)
+        mean_binary = skimage.img_as_ubyte(mean_binary)
+        coordinates = harris.applay_harris_and_get_coordinates(mean_binary)
+        coords = np.zeros((harris_array, 2))
+        #fill coordinates according "harris_array_size" parameter
+        coords[:coordinates.shape[0], :] = coordinates[0:harris_array, :]
+
+        image_flat = gray.flatten()
+        coords_flat = coords.flatten()
+
+        feature = []
+        for th in image_flat:
+            feature.append(th)
+
+        for coord in coords_flat:
+            feature.append(coord)
+
+        return feature
