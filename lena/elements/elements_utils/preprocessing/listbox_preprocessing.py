@@ -52,4 +52,35 @@ class ListboxPreprocessing:
         concatenated_features = np.concatenate((image_features, colours))
 
         return concatenated_features
-    
+
+    def get_contours_for_listbox(self, image):
+        results = []
+
+        grey_ = self.image_processing_for_listbox(image)
+
+        min_w = ConfigManager().config.elements_parameters.listbox.contours_parameters["min_w"]
+        max_w = ConfigManager().config.elements_parameters.listbox.contours_parameters["max_w"]
+        min_h = ConfigManager().config.elements_parameters.listbox.contours_parameters["min_h"]
+        max_h = ConfigManager().config.elements_parameters.listbox.contours_parameters["max_h"]
+        contours, hierarchy = cv2.findContours(grey_, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        for i in range(len(contours)):
+            x, y, w, h = cv2.boundingRect(contours[i])
+            if (min_w < w < max_w and min_h < h < max_h):
+                parent_index = hierarchy[0][i][3]
+                #print(parent_index)
+
+                # the parent contour may turn out to be the global contour, i.e., it can be excluded
+                # check the parent even if its parent index is not equal to "-1"
+                if(parent_index != -1):
+                    temp_parent_x, temp_parent_y, temp_parent_w, temp_parent_h = cv2.boundingRect(contours[parent_index])
+                    if(temp_parent_w > w * 1.5 or temp_parent_h > h * 1.5):
+                        results.append((x, y, w, h))
+                        #cv2.drawContours(screenshot, [contours[i]], -1, (0, 255, 0), 1)
+
+        #general_helpers.show(screenshot)
+
+        #DEBUG - most likely no need to filter. Cleared through contours.
+        #filtered_contours = contours_helper.remove_similar_contours(results, 0.1)
+        filtered_contours = results
+
+        return filtered_contours
