@@ -84,3 +84,15 @@ class ListboxPreprocessing:
         filtered_contours = results
 
         return filtered_contours
+
+    def get_label_for_roi(self, cnt, image, shift):
+        x, y, w, h = cnt[0], cnt[1], cnt[2], cnt[3]
+        roi = image[y - shift:y + h + shift, x - shift:x + w + shift, :]
+        concatenated_features = self.prepare_features_for_listbox(roi)
+
+        predictions = self.__model_for_listbox.predict([concatenated_features])
+        predictions_proba = self.__model_for_listbox.predict_proba([concatenated_features])
+        unique_labels, counts = np.unique(predictions, return_counts=True)
+        most_common_label = unique_labels[np.argmax(counts)]
+
+        return most_common_label, predictions_proba
