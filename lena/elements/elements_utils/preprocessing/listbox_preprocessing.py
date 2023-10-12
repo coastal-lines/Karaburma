@@ -96,3 +96,15 @@ class ListboxPreprocessing:
         most_common_label = unique_labels[np.argmax(counts)]
 
         return most_common_label, predictions_proba
+
+    def prepare_roi_element(self, cnt, image, shift):
+        x_ = cnt[0] + shift
+        y_ = cnt[1] + shift
+        x2_ = cnt[0] + cnt[2] - shift
+        y2_ = cnt[1] + cnt[3] - shift
+        w_ = x2_ - x_
+        h_ = y2_ - y_
+        roi_without_shift = image[y_:y2_, x_:x2_, :]
+        temp_roi = RoiElement(roi_without_shift, x_, y_, w_, h_)
+
+        return temp_roi
