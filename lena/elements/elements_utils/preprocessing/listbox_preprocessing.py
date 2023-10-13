@@ -108,3 +108,31 @@ class ListboxPreprocessing:
         temp_roi = RoiElement(roi_without_shift, x_, y_, w_, h_)
 
         return temp_roi
+
+    def listbox_element_classification(self, image: np.array):
+        list_listboxes = []
+
+        contours = self.get_contours_for_listbox(image)
+        shift = 3 #TODO - move to config
+
+        for cnt in contours:
+            most_common_label, predictions_proba = self.get_label_for_roi(cnt, image, shift)
+
+            if (most_common_label == 0):
+                temp_roi = self.prepare_roi_element(cnt, image, shift)
+                temp_listbox = ListBoxElement("listbox", predictions_proba[0][0], temp_roi)
+
+                _, v_scroll = self.__scroll_element_features.find_scrolls(temp_listbox.get_roi_element())
+                if v_scroll is not None:
+                    temp_listbox.add_scroll("v_scroll", v_scroll)
+
+                    text_area = temp_listbox.get_roi_element().get_roi()[:, 0:temp_listbox.get_roi_element().get_w() - v_scroll.get_roi_element().get_w(), :]
+                    temp_listbox.textarea = Element("listbox",
+                                                    1.0,
+                                                    RoiElement(text_area, cnt[0] + shift, cnt[1] + shift,
+                                                               temp_listbox.get_roi_element().get_w() - v_scroll.get_roi_element().get_w(),
+                                                               temp_listbox.get_roi_element().get_h()))
+
+                list_listboxes.append(temp_listbox)
+
+        return list_listboxes
