@@ -40,3 +40,24 @@ class TablePreprocessing:
         dl = morphological_helpers.dilation(er)
 
         return dl
+
+    def __find_structure(self, resized_image, features_size):
+        otsu_binary = skimage.img_as_ubyte(resized_image.copy() > threshold_otsu(resized_image))
+        contours, _ = cv2.findContours(otsu_binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        for contour in contours:
+            x, y, w, h = cv2.boundingRect(contour)
+            if (w < len(otsu_binary[0]) // 2):
+                otsu_binary[y:y + h, x:x + w] = 255
+
+        otsu_binary = otsu_binary[30:len(otsu_binary[1]) - 60, 30:len(otsu_binary[0]) - 60]
+        otsu_binary_as_feature = np.array(PIL_Image.fromarray(otsu_binary).resize(features_size, PIL_Image.BICUBIC))
+
+        return otsu_binary_as_feature
+
+    def __table_image_processing_otsu16(self, roi):
+        resized_image = self.__resize_source_image_and_apply_filter(roi)
+        preprocessed_image = self.__find_structure(resized_image, (16, 16))
+        scaled_image = data_normalization.scaling_by_min_max(preprocessed_image)
+
+        return scaled_image
+
