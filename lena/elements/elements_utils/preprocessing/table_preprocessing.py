@@ -61,3 +61,59 @@ class TablePreprocessing:
 
         return scaled_image
 
+    def __table_image_processing(self, roi):
+        points = []
+
+        resized_image = self.__resize_source_image_and_apply_filter(roi)
+        preprocessed_image = self.__find_structure(resized_image, (800, 800))
+
+        #cv2.imwrite("Projects\\test6" + "\\" + f, otsu_binary)
+        #general_helpers.show(otsu_binary)
+
+        harris_corners = cv2.cornerHarris(preprocessed_image, 2, 3, 0.04)
+        threshold = 0.01 * harris_corners.max()
+        corner_response_thresholded = harris_corners > threshold
+        current_points = np.argwhere(corner_response_thresholded)
+
+        #points.append(len(current_points))
+        #print("Points: " + str(len(current_points)))
+
+        num_clusters = 16
+        # random_state=102 - It is important because, for tasks like Harris corner detection and table recognition,
+        # the accuracy of contour identification is critical.
+        # Inconsistent or excessive points in the contours can lead to inaccurate results,
+        # affecting the performance of algorithms that rely on precise contour information.
+        kmeans = KMeans(n_clusters=num_clusters, random_state=102)
+
+        try:
+            kmeans.fit(current_points)
+            cluster_centers = kmeans.cluster_centers_.astype(int)
+            #print("Centres: " + str(len(cluster_centers)))
+
+            X = np.sort(cluster_centers[:, 0])
+            Y = np.sort(cluster_centers[:, 1])
+
+            original_min = np.min(X)
+            original_max = np.max(X)
+            desired_min = 0
+            desired_max = 800
+            X_converted_values = (X - original_min) * (desired_max - desired_min) / (
+                        original_max - original_min) + desired_min
+
+            original_min = np.min(Y)
+            original_max = np.max(Y)
+            desired_min = 0
+            desired_max = 800
+            Y_converted_values = (Y - original_min) * (desired_max - desired_min) / (original_max - original_min) + desired_min
+
+            combined_array = np.column_stack((X_converted_values, Y_converted_values))
+
+        except:
+            print("Error. No cluster centres for: ")
+            #cv2.imwrite("Projects\\test6" + "\\" + image_path.split("\\")[-1], otsu_binary)
+            combined_array = [np.array([0, 0]) for _ in range(num_clusters)]
+
+        scaler = MinMaxScaler()
+        combined_array = scaler.fit_transform(combined_array)
+
+        return combined_array
