@@ -216,3 +216,21 @@ class TablePreprocessing:
             print("Potential table was not found")
 
         return list_of_roi
+
+    def prepare_features_for_table_image(self, roi: np.ndarray):
+        image_as_scaled_data = self.__table_image_processing_otsu16(roi)
+        colours = filters_helper.calculate_white_colour(roi)
+        filtered_centers = self.__table_image_processing(roi)
+        filtered_centers = np.squeeze(filtered_centers.reshape((filtered_centers.shape[0], -1))).flatten()
+        concatenated_features = None
+
+        for j in range(len(filtered_centers)):
+            if (math.isnan(filtered_centers[j])):
+                print("NaN for: " + str(" roi"))
+                filtered_centers[j] = 0.0
+
+        image_features = np.array(image_as_scaled_data)
+        image_features = image_features.reshape(image_features.shape[0], -1).flatten()
+        concatenated_features = np.concatenate((filtered_centers, image_features, colours))
+
+        return concatenated_features
