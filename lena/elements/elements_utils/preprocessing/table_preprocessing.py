@@ -117,3 +117,102 @@ class TablePreprocessing:
         combined_array = scaler.fit_transform(combined_array)
 
         return combined_array
+
+    def __find_best_contours_for_table(self):
+        list_of_roi = []
+
+        grey_ = filters_helper.convert_to_grayscale(self.image_source.get_current_image_source())
+        grey_ = filters_helper.LevelsCorrection(grey_, ConfigManager().config.elements_parameters.table.preprocessing["level_correction_1"])
+        kernel1 = np.array(ConfigManager().config.elements_parameters.table.preprocessing["kernel1"])
+        grey_ = cv2.filter2D(src=grey_, ddepth=-1, kernel=kernel1)
+        grey_ = morphological_helpers.dilation(grey_)
+
+        #general_helpers.show(grey_)
+
+        # get contours
+        contours, hierarchy = contours_helper.GetContoursByCanny(grey_, 0, 255, True)
+        filtered_contours = contours
+
+        #threshold_similarity = 0.5  # Adjust this threshold according to your specific use case
+        #filtered_contours = contours_helper.remove_similar_contours(contours, threshold_similarity)
+        rectangles = []
+        for i in range(len(filtered_contours)):
+            x, y, w, h = cv2.boundingRect(filtered_contours[i])
+            rectangles.append((x, y, w, h))
+            #DrawRectangleByXYWH(screenshot_elements.get_current_screenshot(), x, y, w, h)
+
+        #general_helpers.show(screenshot_elements.get_current_screenshot())
+
+        min_w = ConfigManager().config.elements_parameters.table.contours_parameters["min_w"]
+        max_w = ConfigManager().config.elements_parameters.table.contours_parameters["max_w"]
+        min_h = ConfigManager().config.elements_parameters.table.contours_parameters["min_h"]
+        max_h = ConfigManager().config.elements_parameters.table.contours_parameters["max_h"]
+
+        result_rectangles = []
+        for i in range(len(contours)):
+            x, y, w, h = cv2.boundingRect(contours[i])
+
+            #if ((w > min_w) and (h < max_h) and (h > min_h) and (w < max_w)):
+            if min_w < w < max_w and min_h < h < max_h:
+                result_rectangles.append((x, y, w, h))
+
+                #DEBUG
+                #DrawRectangleByXYWH(screenshot_elements.get_current_screenshot(), x, y, w, h)
+                #print(i)
+
+        if(len(result_rectangles) > 0):
+            #result_rectangles = keep_one_rectangle_per_cluster(result_rectangles)
+
+            contours_threshold_for_x = ConfigManager().config.elements_parameters.table.contours_parameters["contours_threshold_for_x"]
+            #final_contours_threshold = 2
+            groups_x = []
+            df = pd.DataFrame(result_rectangles)
+            sorted_df = df.sort_values(by=0)
+            groups_x.append(sorted_df.iloc[0, 0])
+            for row_index in range(1, sorted_df.shape[0], 1):
+                if(groups_x[len(groups_x) - 1] + contours_threshold_for_x < sorted_df.iloc[row_index, 0]):
+                    groups_x.append(sorted_df.iloc[row_index, 0])
+
+            super_result_rectangles = []
+            for i in range(len(groups_x)):
+                for row_index in range(0, sorted_df.shape[0], 1):
+                    if(groups_x[i] == sorted_df.iloc[row_index, 0]):
+                        super_result_rectangles.append(list(sorted_df.iloc[row_index, :]))
+                        break
+
+            if(len(super_result_rectangles) > 0):
+                # cut images
+                #for i in range(len(result_contours)):
+                for i in range(len(super_result_rectangles)):
+                    shift = ConfigManager().config.elements_parameters.table.contours_parameters["roi_shift"]
+                    #DEBUG
+                    #shift = 9
+                    #shift = 4
+
+                    x = super_result_rectangles[i][0]
+                    y = super_result_rectangles[i][1]
+                    w = super_result_rectangles[i][2]
+                    h = super_result_rectangles[i][3]
+                    #w = result_rectangles[i][2] - result_rectangles[i][0]
+
+                    #h = result_rectangles[i][3] - result_rectangles[i][1]
+
+                    #DrawRectangleByXYWH(screenshot_elements.get_current_screenshot(), x, y, w, h)
+
+                    if(y - shift > 0 and x - shift > 0):
+                        temp_image = self.image_source.get_current_image_source()[y - shift:y + h + shift, x - shift:x + w + shift, :]
+                        list_of_roi.append(RoiElement(temp_image, x, y, w, h))
+                    else:
+                        temp_image = self.image_source.get_current_image_source()[y:y + h + shift, x:x + w + shift, :]
+                        list_of_roi.append(RoiElement(temp_image, x, y, w, h))
+                    #general_helpers.show(temp_image)
+
+                    #cv2.imwrite(r"Projects\temp_for_contours" + "\\" + screen.path + str(generate_random_string(9)) + ".png", cv2.cvtColor(temp_image, cv2.COLOR_BGR2RGB))
+
+                    #screenshot_elements.add_roi(RoiElement(temp_image, x, y, w, h))
+
+
+        else:
+            print("Potential table was not found")
+
+        return list_of_roi
