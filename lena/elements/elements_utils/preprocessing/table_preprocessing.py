@@ -234,3 +234,52 @@ class TablePreprocessing:
         concatenated_features = np.concatenate((filtered_centers, image_features, colours))
 
         return concatenated_features
+
+    def table_element_classification(self, tables_model, image_source):
+        self.image_source = image_source
+
+        all_tables = []
+
+        list_of_roi = self.__find_best_contours_for_table()
+
+        #find tables
+        for i in range(len(list_of_roi)):
+            concatenated_features = self.prepare_features_for_table_image(list_of_roi[i].get_roi())
+
+            #files_helper.save_image(list_of_roi[i].get_roi())
+
+            predictions = tables_model.predict([concatenated_features])
+            predictions_proba = tables_model.predict_proba([concatenated_features])
+
+            unique_labels, counts = np.unique(predictions, return_counts=True)
+            most_common_label = unique_labels[np.argmax(counts)]
+
+            if (most_common_label == 0):
+                list_of_roi[i].update_element_roi_area_by_image(self.image_source.get_current_image_source())
+                all_tables.append((list_of_roi[i], predictions_proba[0][0]))
+
+        #group similar tables
+        threshold_distance_between_tables = ConfigManager().config.elements_parameters.table["threshold_distance_between_tables"]
+        tables_groups = []
+        for i in range(len(all_tables)):
+            x,y,w,h = all_tables[i][0].get_element_features()
+            rect = [x,y,w,h]
+            centroid = contours_helper.get_rect_centroid(rect)
+
+            # Find a group for the current rectangle
+            found_group = False
+            for table_group in tables_groups:
+                x_, y_, w_, h_ = table_group[0][0].get_element_features()
+                group_centroid = contours_helper.get_rect_centroid([x_, y_, w_, h_])  # Get centroid of the first rectangle in the group
+                distance = np.sqrt((centroid[0] - group_centroid[0]) ** 2 + (centroid[1] - group_centroid[1]) ** 2)
+                if distance <= threshold_distance_between_tables:
+                    table_group.append(all_tables[i])
+                    found_group = True
+                    break
+
+            # If no suitable group is found, create a new group
+            if not found_group:
+                tables_groups.append([all_tables[i]])
+
+        print("")
+        return tables_groups
