@@ -29,3 +29,15 @@ class LenaService:
         #@self.app.get("/elements/get_all")
         #def get_all_elements(file_path: str = None):
         #    return self.__lena.find_all_elements(file_path)
+
+    def get_all_elements(self, file_path: str = None):
+        return self.__lena.find_all_elements(file_path)
+
+    '''
+    def initialize_globals(self):
+        lena = Lena(self.config_path, self.source_mode, self.detection_mode, self.logging)
+        return lena
+    '''
+
+    def start(self):
+        uvicorn.run("lena.api.main:app", host=self.host, port=self.port, reload=True)
