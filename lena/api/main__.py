@@ -81,3 +81,12 @@ if __name__ == "__main__":
 def get_all_elements(file_path: str = None):
     return data[1].find_all_elements(file_path)
 '''
+
+app = FastAPI()
+
+if __name__ == "__main__":
+    #app = FastAPI()
+    l = LenaService(r"lena\lena\config.json", "file", "default", False)
+    app.include_router(l.router)
+    #uvicorn.run("lena.api.main:app", host="127.0.0.1", port=8000, reload=True)
+    l.start()
