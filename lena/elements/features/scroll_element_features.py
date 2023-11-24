@@ -96,8 +96,8 @@ class ScrollElementDetectionsFeatures():
         temp_v_scrolls = []
 
         '''
-        # вычисляем длину и ширину окна и берем 85%
-        # по логике скрол не может быть меньше этих размеров
+        # calculate the length and width of the window and take 85%
+        # according to logic, the scroll cannot be smaller than these dimensions
         '''
         w_border = int((source_element.get_w() / 100) * 70)
         h_border = int((source_element.get_h() / 100) * 50)
@@ -114,8 +114,8 @@ class ScrollElementDetectionsFeatures():
                 y_min = np.min([temp_attributes.current_y, temp_attributes.next_y])
                 x, y, w, h = self.__prepare_rectangle_for_vertical_scroll(temp_attributes, y_max, y_min)
 
-                # дополнительно проверяем что высота достаточно большая и что
-                # искомая точка примерно справа
+                # additionally, check that the height is sufficiently large and that
+                # the target point is approximately on the right
                 if (h > h_border and x > w_border):
                     x = x - self.__shift_threshold_for_scrolls
                     y = y - self.__shift_threshold_for_scrolls
@@ -129,8 +129,8 @@ class ScrollElementDetectionsFeatures():
                 x_max = np.max([temp_attributes.current_x, temp_attributes.next_x])
                 x, y, w, h = self.__prepare_rectangle_for_horizontal_scroll(temp_attributes, x_max, x_min)
 
-                # дополнительно проверяем что ширина достаточно большая и что
-                # искомая точка примерно внизу
+                # additionally, check that the width is sufficiently large and that
+                # the target point is approximately at the bottom
                 if (w > w_border and y > h_border):
                     x = x - self.__shift_threshold_for_scrolls
                     y = y - self.__shift_threshold_for_scrolls
