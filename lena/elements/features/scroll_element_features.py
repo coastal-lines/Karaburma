@@ -96,8 +96,8 @@ class ScrollElementDetectionsFeatures():
         temp_v_scrolls = []
 
         '''
-            # calculate the length and width of the window and take 85%
-            # according to logic, the scroll cannot be smaller than these dimensions
+        # вычисляем длину и ширину окна и берем 85%
+        # по логике скрол не может быть меньше этих размеров
         '''
         w_border = int((source_element.get_w() / 100) * 70)
         h_border = int((source_element.get_h() / 100) * 50)
@@ -114,8 +114,8 @@ class ScrollElementDetectionsFeatures():
                 y_min = np.min([temp_attributes.current_y, temp_attributes.next_y])
                 x, y, w, h = self.__prepare_rectangle_for_vertical_scroll(temp_attributes, y_max, y_min)
 
-                # additionally, check that the height is sufficiently large and that
-                # the target point is approximately on the right
+                # дополнительно проверяем что высота достаточно большая и что
+                # искомая точка примерно справа
                 if (h > h_border and x > w_border):
                     x = x - self.__shift_threshold_for_scrolls
                     y = y - self.__shift_threshold_for_scrolls
@@ -129,8 +129,8 @@ class ScrollElementDetectionsFeatures():
                 x_max = np.max([temp_attributes.current_x, temp_attributes.next_x])
                 x, y, w, h = self.__prepare_rectangle_for_horizontal_scroll(temp_attributes, x_max, x_min)
 
-                # additionally, check that the width is sufficiently large and that
-                # the target point is approximately at the bottom
+                # дополнительно проверяем что ширина достаточно большая и что
+                # искомая точка примерно внизу
                 if (w > w_border and y > h_border):
                     x = x - self.__shift_threshold_for_scrolls
                     y = y - self.__shift_threshold_for_scrolls
@@ -144,7 +144,8 @@ class ScrollElementDetectionsFeatures():
 
             if label == ElementTypesEnum.h_scroll.name:
                 potential_h_scrolls[i].update_prediction_value(prediction_value)
-                return potential_h_scrolls[i]
+
+        return max(potential_h_scrolls, key=lambda obj: obj.get_prediction_value())
 
     def __classify_vertical_scroll(self, potential_v_scrolls):
         for i in range(len(potential_v_scrolls)):
@@ -156,7 +157,8 @@ class ScrollElementDetectionsFeatures():
             if label == ElementTypesEnum.h_scroll.name:
                 potential_v_scrolls[i].get_roi_element().set_roi(original_v_scroll_roi)
                 potential_v_scrolls[i].update_prediction_value(prediction_value)
-                return potential_v_scrolls[i]
+
+        return max(potential_v_scrolls, key=lambda obj: obj.get_prediction_value())
 
     def __classify_potential_scrolls(self, potential_h_scrolls, potential_v_scrolls):
         h_scroll, v_scroll = None, None
