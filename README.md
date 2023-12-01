@@ -1,5 +1,6 @@
-#### L E N A | Machine Learning and Computer Vision based solution for searching typical GUI elements on the screen    
-##### Luminous Elements Navigation Assistant
+### Karaburma
+#### Machine Learning and Computer Vision based solution for searching typical GUI elements on the screen    
+
 
 ![image](https://github.com/coastal-lines/Lena/assets/70205794/44016028-823f-4b6e-b85f-0060d753a11e)
 
@@ -30,11 +31,11 @@ This project was started as a framework for Assessment Delivery functional visua
 #### How to import:
 - package: 
 ```
-from lena.main import Lena
+from karaburma.main import Karaburma
 ```
 - api service:
 ```
-from lena.api.main import LenaApiService
+from karaburma.api.main import KaraburmaApiService
 ```
 
 #### How to use:
@@ -83,9 +84,9 @@ from lena.api.main import LenaApiService
   <summary>example: </summary>
   
   ```
-  lena = Lena(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
+  karaburma = Karaburma(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
 
-  json_elements = lena.find_table_and_expand_and_read_text()
+  json_elements = karaburma.find_table_and_expand_and_read_text()
 
   full_expanded_table = [element for element in json.get('elements', []) if element.get('label') == 'table'][0]
 
