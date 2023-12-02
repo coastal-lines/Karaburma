@@ -28,7 +28,7 @@ class KaraburmaService:
 
         #@self.app.get("/elements/get_all")
         #def get_all_elements(file_path: str = None):
-        #    return self.__lena.find_all_elements(file_path)
+        #    return self._karaburma.find_all_elements(file_path)
 
     def get_all_elements(self, file_path: str = None):
         return self._karaburma.find_all_elements(file_path)

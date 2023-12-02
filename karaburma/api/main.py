@@ -25,7 +25,7 @@ class KaraburmaApiService:
         def get_all_elements(img_path):
             return {"message": self._karaburma_instance.find_all_elements(img_path)}
 
-    async def start_lena_service(self):
+    async def start_karaburma_service(self):
         #uvicorn.run(self.__app, host=self.__host, port=self.__port, reload=False, workers=1)
 
         self.__server = uvicorn.Server(self.__app, host=self.__host, port=self.__port, reload=False, workers=1)
@@ -54,6 +54,6 @@ class KaraburmaApiService:
         print("Server did not start within the expected time")
         return False
 
-    def stop_lena_service(self):
+    def stop_karaburma_service(self):
         self.__server.should_exit = True
         self.__server.close()
