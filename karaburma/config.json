@@ -1,8 +1,8 @@
 {
     "models": {
-        "basic_model": "data\\files\\models\\common_model.model",
-        "tables_model": "data\\files\\models\\table_model.model",
-        "listbox_model": "data\\files\\models\\listbox_model.model"
+        "basic_model": "data/files/models/",
+        "tables_model": "data/files/models/",
+        "listbox_model": "data/files/models/"
     },
     "samples_path": {
         "table_samples": "data/files/samples/",
