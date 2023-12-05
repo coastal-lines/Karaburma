@@ -30,7 +30,7 @@ class Karaburma:
 
         self.models_dict = dict()
         for model_name in ConfigManager().config.models:
-            model = files_helper.load_model(ConfigManager().config.models[model_name], True)
+            model = files_helper.load_model(ConfigManager().config.models[model_name], False)
             self.models_dict[model_name] = model
 
         self.common_element_features = BasicElementFeatures(self.models_dict[ModelsEnum.basic_model.name])
@@ -112,7 +112,7 @@ class Karaburma:
 karaburma = None
 
 if __name__ == "__main__":
-    config_path = r"Karaburma\karaburma\config.json"
+    config_path = r"config.json"
     source_mode = "file"
     detection_mode = "default"
     logging = False
