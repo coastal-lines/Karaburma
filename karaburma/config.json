@@ -1,8 +1,8 @@
 {
     "models": {
-        "basic_model": "data/files/models/",
-        "tables_model": "data/files/models/",
-        "listbox_model": "data/files/models/"
+        "basic_model": "data\\files\\models\\common_model.model",
+        "tables_model": "data\\files\\models\\table_model.model",
+        "listbox_model": "data\\files\\models\\listbox_model.model"
     },
     "samples_path": {
         "table_samples": "data/files/samples/",
@@ -10,7 +10,7 @@
         "basic_samples": "data/files/samples/"
     },
     "patterns_path": {
-        "scroll_buttons": "data/files/patterns/scroll_buttons/"
+        "scroll_buttons": "data\\files\\patterns\\scroll_buttons\\"
     },
     "elements_parameters": {
         "pattern_matching_threshold": 0,

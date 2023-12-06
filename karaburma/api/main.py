@@ -25,12 +25,19 @@ class KaraburmaApiService:
         def get_all_elements(img_path):
             return {"message": self._karaburma_instance.find_all_elements(img_path)}
 
-    async def start_karaburma_service(self):
+    #async def start_karaburma_service(self):
+    def start_karaburma_service(self):
         #uvicorn.run(self.__app, host=self.__host, port=self.__port, reload=False, workers=1)
 
-        self.__server = uvicorn.Server(self.__app, host=self.__host, port=self.__port, reload=False, workers=1)
 
-        await self.__server.serve()
+
+        uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port, reload=False, workers=1)
+        #self.__server = uvicorn.Server(self.__app, host=self.__host, port=self.__port, reload=False, workers=1)
+        self.__server = uvicorn.Server(uvicorn_config)
+
+        #await self.__server.serve()
+        print("I AM HERE")
+        self.__server.serve()
 
         #self.__server.should_exit = True
 

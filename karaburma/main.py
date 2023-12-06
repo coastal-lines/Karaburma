@@ -1,4 +1,5 @@
 import datetime
+import os
 import sys
 import cv2
 from loguru import logger
@@ -17,6 +18,7 @@ from karaburma.utils.config_manager import ConfigManager
 
 class Karaburma:
     def __init__(self, config_path, source_mode, detection_mode, logging):
+
         self.config = ConfigManager(config_path)
         self.source_mode = source_mode
         self.detection_mode = detection_mode
@@ -26,11 +28,14 @@ class Karaburma:
             logger.add("app_{time:YYYY-MM-DD}.log", rotation="5 MB")
             logger.info(f"New session was started at {datetime.datetime.now()}")
 
-        self.scroll_buttons_patterns = files_helper.load_grayscale_images_from_folder(ConfigManager().config.patterns_path.scroll_buttons)
+        #self.scroll_buttons_patterns = files_helper.load_grayscale_images_from_folder(ConfigManager().config.patterns_path.scroll_buttons)
+        scroll_buttons_path = os.path.join(files_helper.get_project_root_path(), ConfigManager().config.patterns_path.scroll_buttons)
+        self.scroll_buttons_patterns = files_helper.load_grayscale_images_from_folder(scroll_buttons_path)
 
         self.models_dict = dict()
         for model_name in ConfigManager().config.models:
-            model = files_helper.load_model(ConfigManager().config.models[model_name], True)
+            model_path = os.path.join(files_helper.get_project_root_path(), ConfigManager().config.models[model_name])
+            model = files_helper.load_model(model_path)
             self.models_dict[model_name] = model
 
         self.common_element_features = BasicElementFeatures(self.models_dict[ModelsEnum.basic_model.name])
