@@ -1,45 +1,50 @@
+import asyncio
+import os
 import time
 import uvicorn
 import requests
+from typing import List
 from fastapi import FastAPI, status
+from numpy import ndarray
+from pydantic import BaseModel
 
+from elements.objects.element import Element
+from elements.objects.table.table_element import TableElement
 from karaburma.main import Karaburma
+from utils import files_helper
 
+
+class RequestParams(BaseModel):
+    image_base64: str
+    image_file_path: str
+    type_element: str
 
 class KaraburmaApiService:
     def __init__(self, host, port, config_path, source_mode, detection_mode, logging):
 
-        self.__server = None
+        self._server = None
 
         self._karaburma_instance = Karaburma(config_path, source_mode, detection_mode, logging)
-        self.__app = FastAPI()
+        self._app = FastAPI()
 
-        self.__host = host
-        self.__port = port
+        self._host = host
+        self._port = port
 
-        @self.__app.get("/")
-        def get_condition():
-            return status.HTTP_200_OK
+        #endpoint
+        @self._app.get("/", status_code=status.HTTP_200_OK)
+        async def root():
+            return {"message": "Uvicorn server was started for Karaburma."}
 
-        @self.__app.get("/get_all_elements")
-        def get_all_elements(img_path):
-            return {"message": self._karaburma_instance.find_all_elements(img_path)}
+        @self._app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
+        def create_upload_file(request_params: RequestParams):
+            image_file_path = request_params.image_file_path
+            result_json = self._karaburma_instance.find_all_elements(image_file_path)
+            return result_json
 
-    #async def start_karaburma_service(self):
     def start_karaburma_service(self):
-        #uvicorn.run(self.__app, host=self.__host, port=self.__port, reload=False, workers=1)
-
-
-
-        uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port, reload=False, workers=1)
-        #self.__server = uvicorn.Server(self.__app, host=self.__host, port=self.__port, reload=False, workers=1)
-        self.__server = uvicorn.Server(uvicorn_config)
-
-        #await self.__server.serve()
-        print("I AM HERE")
-        self.__server.serve()
-
-        #self.__server.should_exit = True
+        uvicorn_config = uvicorn.Config(app=self._app, host=self._host, port=self._port)
+        self._server = uvicorn.Server(uvicorn_config)
+        asyncio.run(self._server.serve())
 
     def check_server_availability(self):
         url = "http://127.0.0.1:8000"
@@ -62,5 +67,10 @@ class KaraburmaApiService:
         return False
 
     def stop_karaburma_service(self):
-        self.__server.should_exit = True
-        self.__server.close()
+        self._server.should_exit = True
+        self._server.close()
+
+
+config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
+k = KaraburmaApiService("127.0.0.1", 8900, config_path, "file", "default", False)
+k.start_karaburma_service()

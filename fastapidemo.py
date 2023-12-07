@@ -14,8 +14,8 @@ from pydantic import BaseModel
 
 class ImageParams(BaseModel):
     image_base64: str
-    param1: str
-    param2: str
+
+    type_element: str
 
 class ApiDemoFastApi:
 
@@ -23,11 +23,28 @@ class ApiDemoFastApi:
         self.app = FastAPI()
 
         #router/endpoint
-        @self.app.get("/")
+        @self.app.get("/api/v1/")
         async def root():
             return {"message": "Uvicorn server was started for Karaburma."}
 
-        @self.app.post("/uploadfile/")
+        @self.app.post("/api/v1/file/")
+        def create_upload_file(image_params: ImageParams):
+            image_base64 = image_params.image_base64
+            param1 = image_params.param1
+            param2 = image_params.param2
+
+            print(image_base64)
+            image_base64 = image_base64.split(",")[1]
+            nparr = np.frombuffer(base64.b64decode(image_base64), np.uint8)
+            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            cv2.imwrite("test.png", img)
+            cv2.imshow("Image", img)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+
+            return {"image_filename": "image.png", "param1": param1, "param2": param2}
+
+        @self.app.post("/api/v1/screenshot/")
         def create_upload_file(image_params: ImageParams):
             image_base64 = image_params.image_base64
             param1 = image_params.param1
