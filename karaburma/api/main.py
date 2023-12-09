@@ -5,8 +5,10 @@ import uvicorn
 import requests
 from typing import List
 from fastapi import FastAPI, status
+from fastapi.exceptions import RequestValidationError, HTTPException
 from numpy import ndarray
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
+from starlette.responses import JSONResponse
 
 from elements.objects.element import Element
 from elements.objects.table.table_element import TableElement
@@ -30,15 +32,36 @@ class KaraburmaApiService:
         self._host = host
         self._port = port
 
-        #endpoint
+        # Endpoint
         @self._app.get("/", status_code=status.HTTP_200_OK)
         async def root():
-            return {"message": "Uvicorn server was started for Karaburma."}
+            return JSONResponse(
+                content={"message": "Uvicorn server was started for Karaburma."},
+            )
 
+        # Endpoint
         @self._app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
         def create_upload_file(request_params: RequestParams):
             image_file_path = request_params.image_file_path
+            if not image_file_path:
+                return JSONResponse(status_code=422, content={"message": "File path can't be empty."})
+
             result_json = self._karaburma_instance.find_all_elements(image_file_path)
+            return result_json
+
+        # Endpoint
+        @self._app.post("/api/v1/file/{type_element}", status_code=status.HTTP_200_OK)
+        def create_upload_file(request_params: RequestParams):
+            image_file_path = request_params.image_file_path
+            type_element = request_params.type_element
+
+            if not image_file_path:
+                return JSONResponse(status_code=422, content={"message": "File path can't be empty."})
+
+            if not type_element:
+                return JSONResponse(status_code=422, content={"message": "Please select type of element ('button', 'table', etc.)."})
+
+            result_json = self._karaburma_instance.find_element(type_element, image_file_path)
             return result_json
 
     def start_karaburma_service(self):

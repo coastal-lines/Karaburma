@@ -122,7 +122,7 @@ class TablePreprocessing:
         list_of_roi = []
 
         grey_ = filters_helper.convert_to_grayscale(self.image_source.get_current_image_source())
-        grey_ = filters_helper.LevelsCorrection(grey_, ConfigManager().config.elements_parameters.table.preprocessing["level_correction_1"])
+        grey_ = filters_helper.levels_correction(grey_, ConfigManager().config.elements_parameters.table.preprocessing["level_correction_1"])
         kernel1 = np.array(ConfigManager().config.elements_parameters.table.preprocessing["kernel1"])
         grey_ = cv2.filter2D(src=grey_, ddepth=-1, kernel=kernel1)
         grey_ = morphological_helpers.dilation(grey_)
