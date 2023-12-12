@@ -13,82 +13,82 @@
         "scroll_buttons": "data\\files\\patterns\\scroll_buttons\\"
     },
     "elements_parameters": {
-        "pattern_matching_threshold": 0,
+        "pattern_matching_threshold": 0.7,
         "common_element": {
             "preprocessing": {
-                "sample_dimension": [0, 0],
+                "sample_dimension": [79, 24],
                 "contours_parameters": {
-                    "min_w": 0,
-                    "max_w": 0,
-                    "min_h": 0,
-                    "max_h": 0,
+                    "min_w": 30,
+                    "max_w": 400,
+                    "min_h": 15,
+                    "max_h": 60,
                     "roi_shift": 0,
-                    "threshold_block_size": 0,
-                    "threshold_offset": 0
+                    "threshold_block_size": 9,
+                    "threshold_offset": 3
                 },
-                "harris_array_size": 0
+                "harris_array_size": 200
             },
             "weights": {
-                "radiobutton": [0, 0, 0, 0, 0, 0, 0, 0],
-                "checkbox": [0, 0, 0, 0, 0, 0, 0, 0],
-                "scroll": [0, 0, 0, 0, 0, 0, 0, 0],
-                "non": [0, 0, 0, 0, 0, 0, 0, 0]
+                "radiobutton": [0.5, 1.0, 0.5, 0.5, 0.5, 0.5, 2.0, 0.5],
+                "checkbox": [1.0, 2.0, 1.0, 0.1, 1.0, 1.0, 1.0, 1.0],
+                "scroll": [1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0],
+                "non": [1.0, 1.0, 1.0, 0.01, 1.0, 1.0, 1.0, 1.0]
             }
         },
         "listbox": {
             "scrollbar_shift_threshold" : 0,
             "preprocessing": {
-                "level_correction_1": [0, 0, 0, 0, 0],
-                "level_correction_2": [0, 0, 0, 0, 0],
-                "level_correction_3": [0, 0, 0, 0, 0],
-                "level_correction_4": [0, 0, 0, 0, 0],
-                "threshold_min": 0,
-                "threshold_max": 0,
-                "sample_dimension": [0, 0]
+                "level_correction_1": [54, 255, 0, 255, 1.31],
+                "level_correction_2": [115, 211, 0, 255, 1.1],
+                "level_correction_3": [130, 255, 0, 255, 1.88],
+                "level_correction_4": [69, 169, 0, 255, 1.1],
+                "threshold_min": 213,
+                "threshold_max": 255,
+                "sample_dimension": [32, 32]
             },
             "contours_parameters": {
-                "min_w": 0,
-                "max_w": 0,
-                "min_h": 0,
-                "max_h": 0
+                "min_w": 110,
+                "max_w": 380,
+                "min_h": 90,
+                "max_h": 210
             },
             "additional_borders": {
-                "left": 0,
+                "left": 50,
                 "right": 0,
-                "top": 0,
-                "bottom": 0,
-                "colour": 0
+                "top": 10,
+                "bottom": 10,
+                "colour": 255
             }
         },
         "table": {
-            "fixed_size_for_preprocessing": [0, 0],
-            "scrollbar_shift_threshold" : 0,
-            "threshold_distance_between_tables": 0,
+            "fixed_size_for_preprocessing": [1200, 1200],
+            "scrollbar_shift_threshold" : 1,
+            "threshold_distance_between_tables": 50,
             "preprocessing": {
-                "level_correction_1": [0, 0, 0, 0, 0],
-                "kernel1": [[0, 0, 0, 0, 0],
+                "level_correction_1": [143, 197, 0, 255, 0.57],
+                "kernel1": [[0, 0, -2, 0, 0],
+                            [0, 0, -2, 0, 0],
+                            [1, 2, 1, 1, 0],
                             [0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0]]
+                            [-1, 1, -2, 0, -1]]
             },
             "contours_parameters": {
-                "min_w": 0,
-                "max_w": 0,
-                "min_h": 0,
-                "max_h": 0,
-                "roi_shift": 0,
-                "contours_threshold_for_x": 0
+                "min_w": 250,
+                "max_w": 1500,
+                "min_h": 100,
+                "max_h": 800,
+                "roi_shift": 3,
+                "contours_threshold_for_x": 10
             },
             "stitching": {
                 "table_cells": {
-                    "horizontal_stitching_shift": 0,
+                    "horizontal_stitching_shift": 1,
                     "vertical_stitching_shift": 0,
                     "horizontal_roi_shift": 0
                 },
                 "displacement_borders": {
-                    "horizontal_border": 0,
-                    "vertical_border": 0
+                    "horizontal_border": 5,
+                    "vertical_border": 5
                 }
             }
         }

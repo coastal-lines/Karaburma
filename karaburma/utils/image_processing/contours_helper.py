@@ -220,3 +220,10 @@ def draw_rectangle_and_label(image, label, probability, x, y, w, h, colour=(255,
 
     #draw prediction
     #cv2.putText(image, probability, (x2_line1, y - 40), cv2.FONT_HERSHEY_PLAIN, 1, colour, 1, cv2.LINE_AA)
+
+def filter_very_similar_contours(rectangles, threshold=0.5):
+    rectangles = np.array([[x, y, x + w, y + h] for (x, y, w, h) in rectangles])
+    filtered_rectangles = imutils.object_detection.non_max_suppression(np.array(rectangles), probs=None, overlapThresh=threshold)
+    filtered_converted_rectangles = np.array([[x, y, x2 - x, y2 - y] for (x, y, x2, y2) in filtered_rectangles])
+
+    return filtered_converted_rectangles

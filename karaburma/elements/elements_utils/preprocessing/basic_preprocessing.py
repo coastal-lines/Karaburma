@@ -13,7 +13,7 @@ class BasicPreprocessing:
 
     def prepare_image(self, image_source):
         gr = filters_helper.convert_to_grayscale(image_source.get_current_image_source())
-        sh = filters_helper.Sharp(gr, "strong")
+        sh = filters_helper.sharp(gr, "strong")
         er = morphological_helpers.erosion(sh)
         th = er.copy() > sk.filters.threshold_local(er,
                                                     block_size=ConfigManager().config.

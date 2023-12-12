@@ -17,7 +17,7 @@ class CheckboxElementFeatures():
         max_h = 20
 
         gr = filters_helper.convert_to_grayscale(image)
-        er = filters_helper.Sharp(gr, "strong")
+        er = filters_helper.sharp(gr, "strong")
         th = er.copy() > threshold_local(er, block_size=5, offset=3)
         th = sk.img_as_ubyte(th)
         contours, hierarchy = contours_helper.get_contours(th)

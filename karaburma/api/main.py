@@ -39,8 +39,9 @@ class KaraburmaApiService:
                 content={"message": "Uvicorn server was started for Karaburma."},
             )
 
+        '''
         # Endpoint
-        @self._app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
+        @self._app.post("/api/v1/file/allelements", status_code=status.HTTP_200_OK)
         def create_upload_file(request_params: RequestParams):
             image_file_path = request_params.image_file_path
             if not image_file_path:
@@ -48,9 +49,10 @@ class KaraburmaApiService:
 
             result_json = self._karaburma_instance.find_all_elements(image_file_path)
             return result_json
+        '''
 
         # Endpoint
-        @self._app.post("/api/v1/file/{type_element}", status_code=status.HTTP_200_OK)
+        @self._app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
         def create_upload_file(request_params: RequestParams):
             image_file_path = request_params.image_file_path
             type_element = request_params.type_element

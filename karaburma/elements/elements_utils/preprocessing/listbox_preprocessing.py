@@ -22,11 +22,11 @@ class ListboxPreprocessing:
 
     def image_processing_for_listbox(self, image):
         grey_ = filters_helper.convert_to_grayscale(image)
-        grey_ = filters_helper.LevelsCorrection(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_1"])
-        grey_ = filters_helper.LevelsCorrection(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_2"])
+        grey_ = filters_helper.levels_correction(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_1"])
+        grey_ = filters_helper.levels_correction(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_2"])
         grey_ = morphological_helpers.erosion(grey_)
-        grey_ = filters_helper.LevelsCorrection(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_3"])
-        grey_ = filters_helper.LevelsCorrection(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_4"])
+        grey_ = filters_helper.levels_correction(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_3"])
+        grey_ = filters_helper.levels_correction(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_4"])
 
         ret, grey_ = filters_helper.threshold(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["threshold_min"],
                                               ConfigManager().config.elements_parameters.listbox.preprocessing["threshold_max"])
