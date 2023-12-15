@@ -18,6 +18,7 @@ class FindManager(TemplateMatchingElement):
 
     def find_all_elements(self, *args):
         image_source = self.__create_image_source(*args)
+        #general_helpers.show(image_source.get_current_image_source())
         self.__detection_mode.find_all_elements(image_source)
 
         return image_source

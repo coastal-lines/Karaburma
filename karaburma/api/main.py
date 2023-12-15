@@ -19,7 +19,9 @@ from utils import files_helper
 class RequestParams(BaseModel):
     image_base64: str
     image_file_path: str
+    image_pattern_file_path: str
     type_element: str
+
 
 class KaraburmaApiService:
     def __init__(self, host, port, config_path, source_mode, detection_mode, logging):
@@ -34,26 +36,24 @@ class KaraburmaApiService:
 
         # Endpoint
         @self._app.get("/", status_code=status.HTTP_200_OK)
-        async def root():
+        async def root_selfcheck():
             return JSONResponse(
                 content={"message": "Uvicorn server was started for Karaburma."},
             )
 
-        '''
         # Endpoint
-        @self._app.post("/api/v1/file/allelements", status_code=status.HTTP_200_OK)
-        def create_upload_file(request_params: RequestParams):
+        @self._app.post("/api/v1/file/all_elements", status_code=status.HTTP_200_OK)
+        def user_file_find_all_possible_elements(request_params: RequestParams):
             image_file_path = request_params.image_file_path
             if not image_file_path:
                 return JSONResponse(status_code=422, content={"message": "File path can't be empty."})
 
             result_json = self._karaburma_instance.find_all_elements(image_file_path)
             return result_json
-        '''
 
         # Endpoint
         @self._app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
-        def create_upload_file(request_params: RequestParams):
+        def user_file_find_selected_element(request_params: RequestParams):
             image_file_path = request_params.image_file_path
             type_element = request_params.type_element
 
@@ -65,6 +65,74 @@ class KaraburmaApiService:
 
             result_json = self._karaburma_instance.find_element(type_element, image_file_path)
             return result_json
+
+        # Endpoint
+        @self._app.post("/api/v1/file/pattern", status_code=status.HTTP_200_OK)
+        def user_file_find_by_pattern(request_params: RequestParams):
+            image_file_path = request_params.image_file_path
+            type_element = request_params.type_element
+            image_pattern_file_path = request_params.image_pattern_file_path
+
+            if not image_file_path:
+                return JSONResponse(status_code=422, content={"message": "File path can't be empty."})
+
+            if not image_pattern_file_path:
+                return JSONResponse(status_code=422, content={"message": "Pattern path can't be empty."})
+
+            if not type_element:
+                return JSONResponse(status_code=422, content={"message": "Please select type of element ('button', 'table', etc.)."})
+
+            result_json = self._karaburma_instance.find_element_by_patterns(
+                [image_pattern_file_path],
+                "normal",
+                0.8,
+                type_element,
+                image_file_path)
+
+            return result_json
+
+        # Endpoint
+        @self._app.post("/api/v1/file/pattern_all_elements", status_code=status.HTTP_200_OK)
+        def user_file_find_by_pattern(request_params: RequestParams):
+            image_file_path = request_params.image_file_path
+            type_element = request_params.type_element
+            image_pattern_file_path = request_params.image_pattern_file_path
+
+            if not image_file_path:
+                return JSONResponse(status_code=422, content={"message": "File path can't be empty."})
+
+            if not image_pattern_file_path:
+                return JSONResponse(status_code=422, content={"message": "Pattern path can't be empty."})
+
+            if not type_element:
+                return JSONResponse(status_code=422, content={"message": "Please select type of element ('button', 'table', etc.)."})
+
+            result_json = self._karaburma_instance.find_all_elements_include_patterns(
+                [image_pattern_file_path],
+                "normal",
+                0.8,
+                type_element,
+                image_file_path)
+
+            return result_json
+
+        # Endpoint
+        @self._app.post("/api/v1/screenshot/all_elements", status_code=status.HTTP_200_OK)
+        def user_screenshot_find_all_possible_elements():
+            result_json = self._karaburma_instance.find_all_elements()
+            return result_json
+
+        # Endpoint
+        @self._app.post("/api/v1/screenshot/", status_code=status.HTTP_200_OK)
+        def user_screenshot_find_selected_element(request_params: RequestParams):
+            type_element = request_params.type_element
+            if not type_element:
+                return JSONResponse(status_code=422, content={"message": "Please select type of element ('button', 'table', etc.)."})
+
+            result_json = self._karaburma_instance.find_all_elements()
+            return result_json
+
+
 
     def start_karaburma_service(self):
         uvicorn_config = uvicorn.Config(app=self._app, host=self._host, port=self._port)
