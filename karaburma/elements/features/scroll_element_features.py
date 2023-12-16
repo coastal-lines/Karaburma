@@ -45,7 +45,7 @@ class ScrollElementDetectionsFeatures():
 
     def __get_rectangles(self, temp_table_roi):
         ref_gray = filters_helper.convert_to_grayscale(temp_table_roi)
-        ref_gray_sharp = filters_helper.Sharp(ref_gray, "strong")
+        ref_gray_sharp = filters_helper.sharp(ref_gray, "strong")
         ret, thresh = cv2.threshold(ref_gray_sharp, 180, 255, 0)
         filtered_rectangles = contours_helper.get_contours_after_approximation(thresh, 3)
 

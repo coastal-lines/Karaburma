@@ -59,8 +59,6 @@ def levels_correction(img, *args):
     img = (img ** (1 / inGamma)) * (outWhite - outBlack) + outBlack
     img = np.clip(img, 0, 255).astype(np.uint8)
 
-
-
     return img
 
 def bw_gamma_correction2(img):

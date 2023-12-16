@@ -80,7 +80,7 @@ class TableCellsFeatures():
 
         #grey_ = cv2.filter2D(src=grey_, ddepth=-1, kernel=kernel2)
 
-        grey_ = filters_helper.LevelsCorrection(grey_, 80, 255, 0, 255, 0.25)
+        grey_ = filters_helper.levels_correction(grey_, 80, 255, 0, 255, 0.25)
 
         #grey_ = filters_helper.Blur(grey_, (3 ,3))
 
@@ -141,7 +141,7 @@ class TableCellsFeatures():
         grey_ = cv2.filter2D(src=grey_, ddepth=-1, kernel=kernel1)
         grey_ = morphological_helpers.erosion(grey_)
         grey_ = morphological_helpers.dilation(grey_)
-        grey_ = filters_helper.LevelsCorrection(grey_, 86, 159, 0, 255, 0.04)
+        grey_ = filters_helper.levels_correction(grey_, 86, 159, 0, 255, 0.04)
         grey_ = cv2.medianBlur(grey_, 7)
 
         #general_helpers.show(grey_)
@@ -171,8 +171,8 @@ class TableCellsFeatures():
 
         #general_helpers.show(cleaned_table_roi)
 
-        grey_ = filters_helper.LevelsCorrection(cleaned_table_roi, 190, 236, 0, 111, 0.38)
-        grey_ = filters_helper.LevelsCorrection(grey_, 121, 160, 98, 255, 0.4)
+        grey_ = filters_helper.levels_correction(cleaned_table_roi, 190, 236, 0, 111, 0.38)
+        grey_ = filters_helper.levels_correction(grey_, 121, 160, 98, 255, 0.4)
 
         grey_ = morphological_helpers.erosion(grey_)
 

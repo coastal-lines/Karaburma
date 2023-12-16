@@ -227,3 +227,46 @@ def filter_very_similar_contours(rectangles, threshold=0.5):
     filtered_converted_rectangles = np.array([[x, y, x2 - x, y2 - y] for (x, y, x2, y2) in filtered_rectangles])
 
     return filtered_converted_rectangles
+
+def calculate_similarity(contour1, contour2):
+    # Calculate the Hu Moments for the two contours
+    moments1 = cv2.moments(contour1)
+    moments2 = cv2.moments(contour2)
+    hu_moments1 = cv2.HuMoments(moments1)
+    hu_moments2 = cv2.HuMoments(moments2)
+
+    # Calculate the similarity between the Hu Moments
+    similarity = cv2.matchShapes(hu_moments1, hu_moments2, cv2.CONTOURS_MATCH_I2, 0)
+
+    return similarity
+
+def remove_similar_contours(contours, threshold):
+    filtered_contours = []
+
+    for contour in contours:
+        is_similar = False
+        for filtered_contour in filtered_contours:
+            similarity = calculate_similarity(contour, filtered_contour)
+            print("similarity", similarity)
+            if similarity < threshold:
+                is_similar = True
+                break
+        if not is_similar:
+            filtered_contours.append(contour)
+
+    return filtered_contours
+
+def get_x_center(x: int, w: int) -> int:
+    return x + (w // 2)
+
+def get_y_center(y: int, h: int) -> int:
+    return y + (h // 2)
+
+def get_rect_centroid(rect):
+    x, y, w, h = rect
+    cX = get_x_center(x, w)
+    cY = get_y_center(y, h)
+    return cX, cY
+
+def extract_xywh(contour, index):
+    return contour[index][0], contour[index][1], contour[index][2], contour[index][3]
