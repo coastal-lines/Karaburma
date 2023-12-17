@@ -86,7 +86,7 @@ class TableCellsFeatures():
 
         #otsu_binary = skimage.img_as_ubyte(grey_.copy() > threshold_otsu(grey_))
 
-        otsu_binary = filters_helper.Blur(grey_, (3, 3))
+        otsu_binary = filters_helper.blur(grey_, (3, 3))
 
         general_helpers.show(otsu_binary)
 

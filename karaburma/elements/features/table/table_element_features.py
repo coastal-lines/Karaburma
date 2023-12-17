@@ -47,7 +47,7 @@ class TableElementFeatures(TablePreprocessing):
         updated_screenshot_w = table_roi.get_x() + table_roi.get_w()
         updated_screenshot_h = table_roi.get_y() + table_roi.get_h()
 
-        updated_screenshot[table_roi.get_y(): updated_screenshot_h, table_roi.get_x(): updated_screenshot_w,:] = filters_helper.Blur(updated_screenshot[table_roi.get_y(): updated_screenshot_h, table_roi.get_x(): updated_screenshot_w, :], (99, 99))
+        updated_screenshot[table_roi.get_y(): updated_screenshot_h, table_roi.get_x(): updated_screenshot_w,:] = filters_helper.blur(updated_screenshot[table_roi.get_y(): updated_screenshot_h, table_roi.get_x(): updated_screenshot_w, :], (99, 99))
 
         self.image_source.update_current_image_source(updated_screenshot)
 

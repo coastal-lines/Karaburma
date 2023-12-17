@@ -49,7 +49,7 @@ class ListboxElementFeatures(ListboxPreprocessing):
     def __image_preprocessing_for_text_reading(self, roi):
         #roi = augmentation.bicubic_resize(roi, (roi.shape[0] * 3, roi.shape[1] * 1))
         roi = augmentation.bicubic_resize(roi, (roi.shape[0] * 3, roi.shape[1] * 3))
-        roi = filters_helper.Blur(roi, (3, 3))
+        roi = filters_helper.blur(roi, (3, 3))
 
         return roi
 
