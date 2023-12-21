@@ -1,9 +1,12 @@
+import os
+
 import cv2
 import numpy as np
 import pytesseract
 
 from karaburma.elements.objects.roi_element import RoiElement
 from karaburma.utils import general_helpers
+from utils import files_helper
 
 
 class RadioButtonElementFeatures():
@@ -27,7 +30,7 @@ class RadioButtonElementFeatures():
             roi = general_helpers.get_roi(screenshot_elements.get_current_image_source(), circle[0], circle[1], circle[2] + 100, circle[3])
             #general_helpers.show(roi)
             gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-            pytesseract.pytesseract.tesseract_cmd = 'tesseract.exe'
+            pytesseract.pytesseract.tesseract_cmd = os.path.join(os.path.expanduser('~\\AppData'), "Local\\Programs\\Tesseract-OCR\\tesseract.exe")
             text = pytesseract.image_to_string(gray, lang='eng', config="--psm 10 --oem 3")
             text_data = pytesseract.image_to_data(gray, output_type=pytesseract.Output.DICT, lang='eng', config="--psm 10 --oem 3")
 
