@@ -221,6 +221,17 @@ def draw_rectangle_and_label(image, label, probability, x, y, w, h, colour=(255,
     #draw prediction
     #cv2.putText(image, probability, (x2_line1, y - 40), cv2.FONT_HERSHEY_PLAIN, 1, colour, 1, cv2.LINE_AA)
 
+def draw_rectangle_and_label_for_element(image, element, color=(255, 0, 255), thicknes=1):
+    draw_rectangle_and_label(image,
+        element.get_label(),
+        element.get_prediction_value(),
+        element.get_roi_element().get_x(),
+        element.get_roi_element().get_y(),
+        element.get_roi_element().get_w(),
+        element.get_roi_element().get_h(),
+        color,
+        thicknes)
+
 def filter_very_similar_contours(rectangles, threshold=0.5):
     rectangles = np.array([[x, y, x + w, y + h] for (x, y, w, h) in rectangles])
     filtered_rectangles = imutils.object_detection.non_max_suppression(np.array(rectangles), probs=None, overlapThresh=threshold)
