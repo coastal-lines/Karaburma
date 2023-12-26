@@ -79,7 +79,7 @@ class Karaburma:
         self.__check_source_mode(args)
         image_source = self.find_manager.find_all_elements(*args)
 
-        #debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
 
         return json_output.convert_object_into_json(image_source)
 
@@ -109,9 +109,7 @@ class Karaburma:
 
     def find_all_elements_include_patterns(self, patterns, mode="normal", threshold=0.8, user_label="", *args):
         image_source = self.find_manager.find_all_elements_include_patterns(patterns, mode, threshold, user_label, *args)
-
-        debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
-
+        #debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
         return json_output.convert_object_into_json(image_source)
 
 karaburma = None

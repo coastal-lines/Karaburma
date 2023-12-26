@@ -129,10 +129,8 @@ class KaraburmaApiService:
             if not type_element:
                 return JSONResponse(status_code=422, content={"message": "Please select type of element ('button', 'table', etc.)."})
 
-            result_json = self._karaburma_instance.find_all_elements()
+            result_json = self._karaburma_instance.find_element(type_element)
             return result_json
-
-
 
     def start_karaburma_service(self):
         uvicorn_config = uvicorn.Config(app=self._app, host=self._host, port=self._port)
@@ -165,5 +163,5 @@ class KaraburmaApiService:
 
 
 config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
-k = KaraburmaApiService("127.0.0.1", 8900, config_path, "file", "default", False)
+k = KaraburmaApiService("127.0.0.1", 8900, config_path, "screenshot", "default", False)
 k.start_karaburma_service()
