@@ -39,12 +39,42 @@ from lena.api.main import LenaApiService
 
 #### How to use:
 - find all elements, get the first button and click on the centre element:
-```
-lena = Lena(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
+  <details>
+  
+  <summary>example: </summary>
+  
+  ```
+  lena = Lena(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
+  
+  json_elements = lena.find_all_elements()
+  
+  button1 = [element for element in json_elements.get('elements', []) if element.get('label') == 'button'][0]
+  
+  pyautogui.click(x=button1['centre'][0], y=button1['centre'][1])
+  ```
+  
+  </details>
 
-json_elements = lena.find_all_elements()
+- find listbox, scroll down and get full list text:
+  <details>
+  
+  <summary>example: </summary>
+  
+  ```
+  lena = Lena(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
+  
+  json_elements = lena.find_listbox_and_expand_and_get_text()
 
-button1 = [element for element in json_elements.get('elements', []) if element.get('label') == 'button'][0]
+  listbox = [element for element in json_elements.get('elements', []) if element.get('label') == 'listbox'][0]
 
-pyautogui.click(x=button1['centre'][0], y=button1['centre'][1])
-```
+  listbox_full_text = listbox['text']
+  ```
+
+  ![Screenshot_1_1](https://github.com/coastal-lines/Lena/assets/70205794/9a11e143-50cd-4054-be20-cd89c0acce97)
+
+  text output:
+  > Item 1, Item 2, Item 3, item 4, item 5, item 6, item 7, item 8, item 9, item 10, Item 11, item 12, item 13, Item 14, Item 15
+
+  </details>
+
+
