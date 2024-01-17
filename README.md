@@ -38,7 +38,7 @@ from lena.api.main import LenaApiService
 ```
 
 #### How to use:
-- find all elements, get the first button and click on the centre element:
+- find all elements, get the first button and click on the center element:
   <details>
   
   <summary>example: </summary>
@@ -50,7 +50,7 @@ from lena.api.main import LenaApiService
   
   button1 = [element for element in json_elements.get('elements', []) if element.get('label') == 'button'][0]
   
-  pyautogui.click(x=button1['centre'][0], y=button1['centre'][1])
+  pyautogui.click(x=button1['center'][0], y=button1['center'][1])
   ```
   
   </details>
