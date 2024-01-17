@@ -55,7 +55,7 @@ from lena.api.main import LenaApiService
   
   </details>
 
-- find listbox, scroll down and get full list text:
+- find listbox and read full text by scrolling:
   <details>
   
   <summary>example: </summary>
@@ -74,6 +74,20 @@ from lena.api.main import LenaApiService
 
   text output:
   > Item 1, Item 2, Item 3, item 4, item 5, item 6, item 7, item 8, item 9, item 10, Item 11, item 12, item 13, Item 14, Item 15
+
+  </details>
+
+- find text from the latest table cell by scrolling in the both directions:
+  <details>
+  
+  <summary>example: </summary>
+  
+  ```
+  lena = Lena(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
+  
+
+  text output:
+  > 
 
   </details>
 
