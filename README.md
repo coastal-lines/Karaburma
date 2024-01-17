@@ -9,14 +9,30 @@ I had only screenshots and couldn't use tools like Selenium.
 
 This project was started as a framework for Assessment Delivery functional visual testing.
 
+
 ###### Current features:
-- Detect the most popular WPF elements
-- Scrolling and reading the full text from a ListBox element
-- Scrolling through the Table element in both directions and reading all table cells
-- Flexible image search method (search using Affine and Pyramid operations)
-- Return coordinates of all elements in JSON format
-- Supports a variety of computer vision methods for extensions
+- detect the most popular WPF elements
+- scrolling and reading the full text from a ListBox element
+- scrolling through the Table element in both directions and reading all table cells
+- flexible image search method (search using Affine and Pyramid operations)
+- return coordinates of all elements in JSON format
+- supports a variety of computer vision methods for extensions
 
 ###### Can be used as:
 - package for python
 - api service for any language
+
+###### How to install:
+- download this project
+- navigate into folder with 'setup.py' file from the project
+- run command 'python setup.py install'
+
+###### How to import:
+- package: 
+```
+from lena.main import Lena
+```
+- api service:
+```
+from lena.api.main import LenaApiService
+```
