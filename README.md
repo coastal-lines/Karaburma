@@ -18,3 +18,7 @@ This project was started as a framework for Assessment Delivery functional visua
 - Can be used as a Python package
 - Can be utilized as an API service
 - Supports a variety of computer vision methods for extensions
+
+###### Can be used as:
+- package for python
+- api service for any language
