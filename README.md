@@ -15,8 +15,6 @@ This project was started as a framework for Assessment Delivery functional visua
 - Scrolling through the Table element in both directions and reading all table cells
 - Flexible image search method (search using Affine and Pyramid operations)
 - Return coordinates of all elements in JSON format
-- Can be used as a Python package
-- Can be utilized as an API service
 - Supports a variety of computer vision methods for extensions
 
 ###### Can be used as:
