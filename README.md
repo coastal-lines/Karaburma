@@ -84,10 +84,17 @@ from lena.api.main import LenaApiService
   
   ```
   lena = Lena(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
-  
+
+  json_elements = lena.find_table_and_expand_and_read_text()
+
+  full_expanded_table = [element for element in json.get('elements', []) if element.get('label') == 'table'][0]
+
+  text = table['cells'][-1]['text']
+  ```
 
   text output:
-  > 
+
+  ![Screenshot_6](https://github.com/coastal-lines/Lena/assets/70205794/8d7b7cb6-70a5-47b2-9a1e-29c174bf8faa)
 
   </details>
 
