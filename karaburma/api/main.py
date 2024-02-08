@@ -45,8 +45,6 @@ class KaraburmaApiService:
         @self._app.post("/api/v1/file/all_elements", status_code=status.HTTP_200_OK)
         def user_file_find_all_possible_elements(request_params: RequestParams):
             image_file_path = request_params.image_file_path
-            if not image_file_path:
-                return JSONResponse(status_code=422, content={"message": "File path can't be empty."})
 
             result_json = self._karaburma_instance.find_all_elements(image_file_path)
             return result_json
@@ -57,12 +55,6 @@ class KaraburmaApiService:
             image_file_path = request_params.image_file_path
             type_element = request_params.type_element
 
-            if not image_file_path:
-                return JSONResponse(status_code=422, content={"message": "File path can't be empty."})
-
-            if not type_element:
-                return JSONResponse(status_code=422, content={"message": "Please select type of element ('button', 'table', etc.)."})
-
             result_json = self._karaburma_instance.find_element(type_element, image_file_path)
             return result_json
 
@@ -72,15 +64,6 @@ class KaraburmaApiService:
             image_file_path = request_params.image_file_path
             type_element = request_params.type_element
             image_pattern_file_path = request_params.image_pattern_file_path
-
-            if not image_file_path:
-                return JSONResponse(status_code=422, content={"message": "File path can't be empty."})
-
-            if not image_pattern_file_path:
-                return JSONResponse(status_code=422, content={"message": "Pattern path can't be empty."})
-
-            if not type_element:
-                return JSONResponse(status_code=422, content={"message": "Please select type of element ('button', 'table', etc.)."})
 
             result_json = self._karaburma_instance.find_element_by_patterns(
                 [image_pattern_file_path],
@@ -97,15 +80,6 @@ class KaraburmaApiService:
             image_file_path = request_params.image_file_path
             type_element = request_params.type_element
             image_pattern_file_path = request_params.image_pattern_file_path
-
-            if not image_file_path:
-                return JSONResponse(status_code=422, content={"message": "File path can't be empty."})
-
-            if not image_pattern_file_path:
-                return JSONResponse(status_code=422, content={"message": "Pattern path can't be empty."})
-
-            if not type_element:
-                return JSONResponse(status_code=422, content={"message": "Please select type of element ('button', 'table', etc.)."})
 
             result_json = self._karaburma_instance.find_all_elements_include_patterns(
                 [image_pattern_file_path],
@@ -126,11 +100,25 @@ class KaraburmaApiService:
         @self._app.post("/api/v1/screenshot/", status_code=status.HTTP_200_OK)
         def user_screenshot_find_selected_element(request_params: RequestParams):
             type_element = request_params.type_element
-            if not type_element:
-                return JSONResponse(status_code=422, content={"message": "Please select type of element ('button', 'table', etc.)."})
-
             result_json = self._karaburma_instance.find_element(type_element)
+
             return result_json
+
+        # Handler for RequestValidationError
+        @self._app.exception_handler(RequestValidationError)
+        async def validation_exception_handler(request: RequestParams, exc: RequestValidationError):
+            return JSONResponse(
+                status_code=422,
+                content={"message": "Please check json values for your POST request.", "details": exc.errors()}
+            )
+
+        # Handler for exceptions
+        @self._app.exception_handler(Exception)
+        async def generic_exception_handler(request: RequestParams, exc: Exception):
+            return JSONResponse(
+                status_code=500,
+                content={"message": "Internal server error", "details": str(exc)}
+            )
 
     def start_karaburma_service(self):
         uvicorn_config = uvicorn.Config(app=self._app, host=self._host, port=self._port)
@@ -163,5 +151,5 @@ class KaraburmaApiService:
 
 
 config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
-k = KaraburmaApiService("127.0.0.1", 8900, config_path, "screenshot", "default", False)
+k = KaraburmaApiService("127.0.0.1", 8900, config_path, "file", "default", False)
 k.start_karaburma_service()
