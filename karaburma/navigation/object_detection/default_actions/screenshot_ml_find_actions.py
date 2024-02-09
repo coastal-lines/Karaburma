@@ -1,4 +1,6 @@
 from karaburma.navigation.object_detection.default_actions.common_ml_find_actions import CommonMlFindActions
+from utils import general_helpers
+from utils.debug import draw_elements
 
 
 class ScreenshotMlFindActions(CommonMlFindActions):

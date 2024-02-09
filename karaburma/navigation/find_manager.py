@@ -29,12 +29,13 @@ class FindManager(TemplateMatchingElement):
 
         return image_source
 
-    def find_table_and_expand(self, table_index: int = 0):
+    def find_table_and_expand(self, table_index: int=0):
         if hasattr(self.__detection_mode, 'find_table_and_expand'):
             image_source = self.__create_image_source()
             self.__detection_mode.find_table_and_expand(image_source, table_index)
+            return image_source
         else:
-            print("Write operation not supported for this mode.")
+            print("Method 'find Table and expand' not supported for this mode. \n Please use 'screenshot' mode.")
 
     def find_table_cell(self, column, row):
         if hasattr(self.__detection_mode, 'find_table_cell'):

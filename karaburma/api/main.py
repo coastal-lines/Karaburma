@@ -104,6 +104,12 @@ class KaraburmaApiService:
 
             return result_json
 
+        # Endpoint
+        @self._app.post("/api/v1/screenshot/expand_table", status_code=status.HTTP_200_OK)
+        def user_screenshot_find_selected_element(request_params: RequestParams):
+            result_json = self._karaburma_instance.find_table_and_expand(0)
+            return result_json
+
         # Handler for RequestValidationError
         @self._app.exception_handler(RequestValidationError)
         async def validation_exception_handler(request: RequestParams, exc: RequestValidationError):
@@ -112,7 +118,7 @@ class KaraburmaApiService:
                 content={"message": "Please check json values for your POST request.", "details": exc.errors()}
             )
 
-        # Handler for exceptions
+        # Handler for common exceptions
         @self._app.exception_handler(Exception)
         async def generic_exception_handler(request: RequestParams, exc: Exception):
             return JSONResponse(
@@ -151,5 +157,6 @@ class KaraburmaApiService:
 
 
 config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
-k = KaraburmaApiService("127.0.0.1", 8900, config_path, "file", "default", False)
+#k = KaraburmaApiService("127.0.0.1", 8900, config_path, "file", detection_mode="default", logging=False)
+k = KaraburmaApiService("127.0.0.1", 8900, config_path, "screenshot", detection_mode="default", logging=False)
 k.start_karaburma_service()

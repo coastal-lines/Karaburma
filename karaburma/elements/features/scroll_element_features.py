@@ -134,7 +134,9 @@ class ScrollElementDetectionsFeatures():
                 if (w > w_border and y > h_border):
                     x = x - self.__shift_threshold_for_scrolls
                     y = y - self.__shift_threshold_for_scrolls
-                    temp_h_scrolls.append(self.__init_h_scroll(source_element, x, y, w, h))
+
+                    if(w < source_element.get_w()):
+                        temp_h_scrolls.append(self.__init_h_scroll(source_element, x, y, w, h))
 
         return temp_h_scrolls, temp_v_scrolls
 

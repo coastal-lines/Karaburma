@@ -76,7 +76,7 @@ class TableElementFeatures(TablePreprocessing):
 
     def __find_table_on_extended_table(self, table_roi_element):
         table_cells_element = self.__table_cells_features.find_table_cells(table_roi_element)
-        current_table_element = TableElement(ElementTypesEnum.table.name, "1", table_roi_element, None, None, table_cells_element)
+        current_table_element = TableElement(ElementTypesEnum.table.name, 1.0, table_roi_element, None, None, table_cells_element)
 
         return current_table_element
 
@@ -135,7 +135,7 @@ class TableElementFeatures(TablePreprocessing):
                     # TODO
                     print("Table doesn't have any scrolls")
 
-                general_helpers.show(self.image_source.get_table_elements()[table_index].get_full_table_area().get_roi_element().get_roi())
+                #general_helpers.show(self.image_source.get_table_elements()[table_index].get_full_table_area().get_roi_element().get_roi())
 
             else:
                 #TODO

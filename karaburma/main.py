@@ -70,6 +70,8 @@ class Karaburma:
         if self.source_mode in self.source_modes and self.detection_mode in self.source_modes[self.source_mode]:
             self.selected_mode = self.source_modes[self.source_mode][self.detection_mode]
             self.find_manager = FindManager(self.selected_mode)
+        else:
+            print("")
 
     def __check_source_mode(self, args):
         if self.source_mode == "screenshot" and len(args) > 0:
@@ -92,8 +94,9 @@ class Karaburma:
         #debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
         return json_output.convert_object_into_json(image_source)
 
-    def find_table_and_expand(self, table_index = 0):
-        self.find_manager.find_table_and_expand(table_index)
+    def find_table_and_expand(self, table_index=0):
+        image_source = self.find_manager.find_table_and_expand(table_index)
+        return json_output.convert_object_into_json(image_source)
 
     def find_table_cell(self, column, row):
         self.find_manager.find_table_cell(column, row)

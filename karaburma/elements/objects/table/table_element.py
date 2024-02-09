@@ -1,5 +1,6 @@
 from typing import Optional
 
+from data.constants.enums.element_types_enum import ElementTypesEnum
 from karaburma.elements.objects.roi_element import RoiElement
 from karaburma.elements.objects.element import Element
 from karaburma.elements.objects.scroll_element import ScrollElement
@@ -14,7 +15,7 @@ class TableElement(Element):
         self.__cells_area_element = cells_area_element
         self.__full_table_area: Optional[TableElement] = None
 
-    def add_scroll(self, label: str, prediction_value: str, roi: RoiElement, first_button: Element,
+    def add_scroll(self, label: str, prediction_value: float, roi: RoiElement, first_button: Element,
                    second_button: Element):
         if(label == ElementTypesEnum.h_scroll.name):
             self.__h_scroll = ScrollElement(label, prediction_value, roi, first_button, second_button)
