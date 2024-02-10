@@ -87,11 +87,14 @@ class ListboxElementFeatures(ListboxPreprocessing):
 
     def find_listbox_and_expand(self, image_source, listbox_index):
         list_listboxes = self.find_listboxes(image_source)
-        stitched_listbox_roi = self.__get_stitched_list_box(list_listboxes[listbox_index], list_listboxes[listbox_index].textarea)
-        list_listboxes[listbox_index].full_text_area = Element("listbox_full_text_area", 1.0,
-                                                               RoiElement(stitched_listbox_roi, 0, 0,
-                                                                          stitched_listbox_roi.shape[1],
-                                                                          stitched_listbox_roi.shape[0]))
+        if (len(list_listboxes) > 0):
+            stitched_listbox_roi = self.__get_stitched_list_box(list_listboxes[listbox_index], list_listboxes[listbox_index].textarea)
+            list_listboxes[listbox_index].full_text_area = Element("listbox_full_text_area", 1.0,
+                                                                   RoiElement(stitched_listbox_roi, 0, 0,
+                                                                              stitched_listbox_roi.shape[1],
+                                                                              stitched_listbox_roi.shape[0]))
 
-        #TODO-debugg
-        general_helpers.show(list_listboxes[listbox_index].full_text_area.get_roi_element().get_roi())
+            #TODO-debugg
+            general_helpers.show(list_listboxes[listbox_index].full_text_area.get_roi_element().get_roi())
+        else:
+            print("")

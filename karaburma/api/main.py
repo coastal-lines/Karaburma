@@ -106,8 +106,14 @@ class KaraburmaApiService:
 
         # Endpoint
         @self._app.post("/api/v1/screenshot/expand_table", status_code=status.HTTP_200_OK)
-        def user_screenshot_find_selected_element(request_params: RequestParams):
+        def user_screenshot_find_table_and_expand(request_params: RequestParams):
             result_json = self._karaburma_instance.find_table_and_expand(0)
+            return result_json
+
+        # Endpoint
+        @self._app.post("/api/v1/screenshot/expand_listbox", status_code=status.HTTP_200_OK)
+        def user_screenshot_find_listbox_and_expand(request_params: RequestParams):
+            result_json = self._karaburma_instance.find_listbox_and_expand(0)
             return result_json
 
         # Handler for RequestValidationError

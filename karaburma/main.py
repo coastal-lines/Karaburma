@@ -102,7 +102,8 @@ class Karaburma:
         self.find_manager.find_table_cell(column, row)
 
     def find_listbox_and_expand(self, listbox_index=0):
-        self.find_manager.find_listbox_and_expand(listbox_index)
+        image_source = self.find_manager.find_listbox_and_expand(listbox_index)
+        return json_output.convert_object_into_json(image_source)
 
     def find_element_by_patterns(self, patterns, mode="normal", threshold=0.8, user_label="", *args):
         image_source = self.find_manager.find_element_by_patterns(patterns, mode, threshold, user_label, *args)

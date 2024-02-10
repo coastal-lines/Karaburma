@@ -45,11 +45,15 @@ class FindManager(TemplateMatchingElement):
             print("Error: expand operations are not supported for current mode. Impossible to find custom cell.")
 
     def find_listbox_and_expand(self, listbox_index):
+        image_source = None
+
         if hasattr(self.__detection_mode, 'find_listbox_and_expand'):
             image_source = self.__create_image_source()
             self.__detection_mode.find_listbox_and_expand(image_source, listbox_index)
         else:
-            print("Write operation not supported for this mode.")
+            print("Operation not supported for this mode.")
+
+        return image_source
 
     def find_element_by_patterns(self, patterns, mode, threshold, user_label, *args):
         image_source = self.__create_image_source(*args)
