@@ -80,13 +80,12 @@ class StitchingFeatures:
 
         self.displacement_features.scroll_features.nested_element.get_roi_element().update_element_roi_area_by_screenshot()
         start_roi = copy.copy(self.displacement_features.scroll_features.nested_element.get_roi_element().get_roi())
-        files_helper.save_image(start_roi)
+        #files_helper.save_image(start_roi)
 
         while(self.displacement_features.scroll_features.scroll_element()[0]):
             self.displacement_features.scroll_features.nested_element.get_roi_element().update_element_roi_area_by_screenshot()
             temp_current_element_roi = self.displacement_features.scroll_features.nested_element.get_roi_element().get_roi()
             temp_crop = self.__get_crop_after_scroll(temp_current_element_roi)
-            files_helper.save_image(temp_current_element_roi)
             list_additional_roi.append(temp_crop)
 
         updated_h = self.y_displacement * len(list_additional_roi)
@@ -104,8 +103,6 @@ class StitchingFeatures:
         mega_super_stiched_roi = np.ones((self.nested_element_h + updated_h, self.nested_element_w,  3), dtype=np.uint8) * 255
         mega_super_stiched_roi[0:self.nested_element_h, :, :] = start_roi[0:self.nested_element_h, :, :]
         mega_super_stiched_roi[self.nested_element_h:self.nested_element_h + updated_h, :, :] = full_roi
-
-        #files_helper.save_image(mega_super_stiched_roi, "mega_super_stiched_roi_vertical")
 
         return mega_super_stiched_roi
 

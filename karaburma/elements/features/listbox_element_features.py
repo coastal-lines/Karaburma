@@ -26,7 +26,7 @@ class ListboxElementFeatures(ListboxPreprocessing):
         self.model_for_common_elements = model_for_common_elements
         self.__model_for_listbox = model_for_listbox
 
-        self.__image_source = None
+        #self.__image_source = None
 
         #self.__scroll_element_features = ScrollElementDetectionsFeatures(common_element_features, scroll_buttons_patterns, shift_threshold_for_scrolls)
 
@@ -58,35 +58,36 @@ class ListboxElementFeatures(ListboxPreprocessing):
         displacement_features = DisplacementFeatures(OcrVerticalDisplacement(), scroll_features)
         stitching_features = StitchingFeatures(displacement_features)
         stitched_listbox = stitching_features.vertical_stitch()
-        #general_helpers.show(temp_stitched_listbox)
+        #general_helpers.show(stitched_listbox)
 
         return stitched_listbox
 
-
-    def __get_text_list_for_listbox(self, temp_listbox, list_area):
+    def __get_text_list_for_listbox(self, extended_temp_stiched_listbox, temp_listbox=None, list_area=None):
 
         #scroll = ScrollFeatures(temp_listbox, list_area, ScrollDirectionEnum.DOWN.name, OcrVerticalDisplacement(), None, None, None)
         #temp_stiched_listbox = scroll.vertical_scroll_and_accumulate_rois_difference()
 
-        temp_stitched_listbox = self.__get_stitched_list_box(temp_listbox, list_area)
+        #temp_stitched_listbox = self.__get_stitched_list_box(temp_listbox, list_area)
 
-        extended_temp_stiched_listbox = self.__extend_stiched_listbox_roi(temp_stitched_listbox)
+        #extended_temp_stiched_listbox = self.__extend_stiched_listbox_roi(temp_stitched_listbox)
         prepared_roi_for_reading_text = self.__image_preprocessing_for_text_reading(extended_temp_stiched_listbox)
-        general_helpers.show(prepared_roi_for_reading_text)
+        #general_helpers.show(prepared_roi_for_reading_text)
         text_list = ocr_helper.get_text(prepared_roi_for_reading_text, "--psm 6 --oem 3")
         #print(text_list)
 
         return text_list
 
-    def find_listboxes(self, image_source):
-        self.__image_source = image_source
-        list_listboxes = super().listbox_element_classification(self.__image_source.get_current_image_source())
-        image_source.add_elements(list_listboxes)
+    def find_listboxes(self, image):
+        #self.__image_source = image_source
+        list_listboxes = super().listbox_element_classification(image)
+        #image_source.add_elements(list_listboxes)
 
         return list_listboxes
 
     def find_listbox_and_expand(self, image_source, listbox_index):
-        list_listboxes = self.find_listboxes(image_source)
+        list_listboxes = self.find_listboxes(image_source.get_current_image_source())
+        image_source.add_elements(list_listboxes)
+
         if (len(list_listboxes) > 0):
             stitched_listbox_roi = self.__get_stitched_list_box(list_listboxes[listbox_index], list_listboxes[listbox_index].textarea)
             list_listboxes[listbox_index].full_text_area = Element("listbox_full_text_area", 1.0,
@@ -95,6 +96,9 @@ class ListboxElementFeatures(ListboxPreprocessing):
                                                                               stitched_listbox_roi.shape[0]))
 
             #TODO-debugg
-            general_helpers.show(list_listboxes[listbox_index].full_text_area.get_roi_element().get_roi())
+            #general_helpers.show(list_listboxes[listbox_index].full_text_area.get_roi_element().get_roi())
+
+            text = self.__get_text_list_for_listbox(list_listboxes[listbox_index].full_text_area.get_roi_element().get_roi())
+            list_listboxes[listbox_index].add_list_text(text)
         else:
             print("")
