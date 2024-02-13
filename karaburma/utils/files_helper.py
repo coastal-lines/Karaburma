@@ -1,6 +1,11 @@
+import base64
+import io
 import os
 import pickle
 import cv2
+import numpy as np
+from PIL import Image as PIL_Image
+
 from karaburma.utils import general_helpers
 from karaburma.utils.logging_manager import LoggingManager
 
@@ -65,3 +70,17 @@ def load_grayscale_images_from_folder(folder_path):
 
 def save_image(roi, most_common_label="_", path=r""):
     cv2.imwrite(path + "\\" + str(most_common_label) + "_" + str(general_helpers.generate_random_string(9)) + ".png", cv2.cvtColor(roi, cv2.COLOR_BGR2RGB))
+
+def image_to_base64(image_roi):
+    image_pil = PIL_Image.fromarray(image_roi.astype(np.uint8))
+
+    # Create an object for saving image in memory
+    buffer = io.BytesIO()
+    image_pil.save(buffer, format="PNG")
+
+    # Take memory buffer as a string
+    buffer.seek(0)
+    image_bytes = buffer.read()
+    base64_str = base64.b64encode(image_bytes).decode('utf-8')
+
+    return base64_str

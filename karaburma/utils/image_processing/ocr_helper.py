@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import pytesseract
 
@@ -13,7 +15,7 @@ from karaburma.utils.image_processing import filters_helper
 def get_text(roi, config="--psm 10 --oem 3"):
     grey_roi = filters_helper.convert_to_grayscale(roi)
 
-    pytesseract.pytesseract.tesseract_cmd = 'tesseract.exe'
+    pytesseract.pytesseract.tesseract_cmd = os.path.join(os.path.expanduser('~\\AppData'), "Local\\Programs\\Tesseract-OCR\\tesseract.exe")
     text = pytesseract.image_to_string(grey_roi, lang='eng', config=config)
 
     return text

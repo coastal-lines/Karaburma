@@ -1,5 +1,7 @@
 import json
 
+from utils import general_helpers, files_helper
+
 
 def convert_object_into_json(image_source):
 
@@ -24,6 +26,7 @@ def convert_object_into_json(image_source):
 
         if(current_label == "listbox"):
             current_element["text"] = image_source.get_elements()[i].get_list_text()
+            current_element["orig_img_base64"] = files_helper.image_to_base64(image_source.get_elements()[i].get_roi_element().get_roi())
 
         if(current_label == "table"):
             current_table_cells = []

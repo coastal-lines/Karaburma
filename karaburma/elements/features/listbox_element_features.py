@@ -75,7 +75,7 @@ class ListboxElementFeatures(ListboxPreprocessing):
         text_list = ocr_helper.get_text(prepared_roi_for_reading_text, "--psm 6 --oem 3")
         #print(text_list)
 
-        return text_list
+        return str(text_list)
 
     def find_listboxes(self, image):
         #self.__image_source = image_source

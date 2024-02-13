@@ -24,10 +24,10 @@ class ListBoxElement(Element):
         else:
             return None
 
-    def add_list_text(self, list_text):
+    def add_list_text(self, list_text: str):
         self.__list_text = list_text
 
-    def get_list_text(self):
+    def get_list_text(self) -> str:
         return self.__list_text
 
     @property
@@ -39,7 +39,7 @@ class ListBoxElement(Element):
         self.__textarea = textarea
 
     @property
-    def full_text_area(self):
+    def full_text_area(self) -> Element:
         return self.__full_text_area
 
     @full_text_area.setter
