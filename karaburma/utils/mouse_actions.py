@@ -15,7 +15,10 @@ def click_and_return_difference(element, *args):
     before = copy.deepcopy(element.get_roi_element().get_roi())
 
     pyautogui.click(x=args[0][0], y=args[0][1])
-    time.sleep(2)
+
+    # Two seconds good for estimating displacements.
+    #time.sleep(2)
+    time.sleep(0)
 
     element.get_roi_element().update_element_roi_area_by_screenshot()
     after = element.get_roi_element().get_roi()

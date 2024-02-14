@@ -17,7 +17,6 @@ from karaburma.elements.features.scroll_element_features import ScrollElementDet
 from karaburma.utils.objects_tracking.displacement import OrbBfHomographicalDisplacement
 
 
-#@dataclass
 class TableElementFeatures(TablePreprocessing):
     d = (1200, 1200)
 
@@ -84,6 +83,7 @@ class TableElementFeatures(TablePreprocessing):
         stitched_table_roi_element = RoiElement(stitched_table, 0, 0, stitched_table.shape[1], stitched_table.shape[0], "table")
         stitched_table_element = self.__find_table_on_extended_table(stitched_table_roi_element)
         desired_table.set_full_table_area(stitched_table_roi_element, stitched_table_element)
+        print("")
 
     def find_all_tables(self, image_source, blur_after_searching=True):
         self.image_source = image_source
