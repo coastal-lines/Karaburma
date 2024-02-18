@@ -53,7 +53,7 @@ class ListboxPreprocessing:
 
         return concatenated_features
 
-    def get_contours_for_listbox(self, image):
+    def get_contours_for_listbox(self, image: np.array):
         results = []
 
         grey_ = self.image_processing_for_listbox(image)

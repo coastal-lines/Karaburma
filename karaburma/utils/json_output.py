@@ -1,6 +1,5 @@
 import json
-
-from utils import general_helpers, files_helper
+from karaburma.utils import general_helpers, files_helper
 
 
 def convert_object_into_json(image_source):
@@ -26,7 +25,8 @@ def convert_object_into_json(image_source):
 
         if(current_label == "listbox"):
             current_element["text"] = image_source.get_elements()[i].get_list_text()
-            current_element["full_img_base64"] = files_helper.image_to_base64(image_source.get_elements()[i].full_text_area.get_roi_element().get_roi())
+            if (image_source.get_elements()[i].full_text_area is not None):
+                current_element["full_img_base64"] = files_helper.image_to_base64(image_source.get_elements()[i].full_text_area.get_roi_element().get_roi())
 
         if(current_label == "table"):
             current_table_cells = []

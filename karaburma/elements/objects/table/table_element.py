@@ -1,6 +1,6 @@
 from typing import Optional
 
-from data.constants.enums.element_types_enum import ElementTypesEnum
+from karaburma.data.constants.enums.element_types_enum import ElementTypesEnum
 from karaburma.elements.objects.roi_element import RoiElement
 from karaburma.elements.objects.element import Element
 from karaburma.elements.objects.scroll_element import ScrollElement

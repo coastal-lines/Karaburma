@@ -3,7 +3,7 @@ import threading
 import time
 import pytest
 
-from karaburma.api.main import KaraburmaApiService
+from karaburma.api.karaburma_api import KaraburmaApiService
 from utils import files_helper
 
 

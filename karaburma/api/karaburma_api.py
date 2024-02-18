@@ -1,19 +1,16 @@
+import argparse
 import asyncio
 import os
 import time
 import uvicorn
 import requests
-from typing import List
 from fastapi import FastAPI, status
-from fastapi.exceptions import RequestValidationError, HTTPException
-from numpy import ndarray
-from pydantic import BaseModel, ValidationError
+from fastapi.exceptions import RequestValidationError
+from pydantic import BaseModel
 from starlette.responses import JSONResponse
+from karaburma.utils import files_helper
 
-from elements.objects.element import Element
-from elements.objects.table.table_element import TableElement
 from karaburma.main import Karaburma
-from utils import files_helper
 
 
 class RequestParams(BaseModel):
@@ -101,7 +98,6 @@ class KaraburmaApiService:
         def user_screenshot_find_selected_element(request_params: RequestParams):
             type_element = request_params.type_element
             result_json = self._karaburma_instance.find_element(type_element)
-
             return result_json
 
         # Endpoint
@@ -161,8 +157,23 @@ class KaraburmaApiService:
         self._server.should_exit = True
         self._server.close()
 
+if __name__ == "__main__":
+    # Create command line parser
+    parser = argparse.ArgumentParser()
 
-config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
-#k = KaraburmaApiService("127.0.0.1", 8900, config_path, "file", detection_mode="default", logging=False)
-k = KaraburmaApiService("127.0.0.1", 8900, config_path, "screenshot", detection_mode="default", logging=False)
-k.start_karaburma_service()
+    # Add arguments
+    parser.add_argument('--host', help='host', required=True)
+    parser.add_argument('--port', help='port', required=True)
+    #parser.add_argument('--config_path', help='config_path', required=True)
+    parser.add_argument('--source_mode', help='source_mode: file or screenshot', required=True)
+    parser.add_argument('--detection_mode', help='detection_mode: default', required=True)
+    parser.add_argument('--logging', help='logging: False', required=True)
+
+    # Parsing arguments of command line
+    args = parser.parse_args()
+
+    config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
+    #k = KaraburmaApiService("127.0.0.1", 8900, config_path, "file", detection_mode="default", logging=False)
+    #k = KaraburmaApiService("127.0.0.1", 8900, config_path, "screenshot", detection_mode="default", logging=False)
+    karaburma = KaraburmaApiService(args.host, int(args.port), config_path, args.source_mode, args.detection_mode, args.logging)
+    karaburma.start_karaburma_service()

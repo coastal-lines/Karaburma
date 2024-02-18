@@ -6,7 +6,7 @@ import pytesseract
 
 from karaburma.elements.objects.roi_element import RoiElement
 from karaburma.utils import general_helpers
-from utils import files_helper
+from karaburma.utils import files_helper
 
 
 class RadioButtonElementFeatures():

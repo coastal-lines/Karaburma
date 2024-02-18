@@ -77,12 +77,11 @@ class ListboxElementFeatures(ListboxPreprocessing):
 
         return str(text_list)
 
-    def find_listboxes(self, image):
-        #self.__image_source = image_source
-        list_listboxes = super().listbox_element_classification(image)
-        #image_source.add_elements(list_listboxes)
-
-        return list_listboxes
+    def find_listboxes(self, image_source):
+        #list_listboxes = super().listbox_element_classification(image)
+        list_listboxes = super().listbox_element_classification(image_source.get_current_image_source())
+        image_source.add_elements(list_listboxes)
+        #return list_listboxes
 
     def find_listbox_and_expand(self, image_source, listbox_index):
         list_listboxes = self.find_listboxes(image_source.get_current_image_source())

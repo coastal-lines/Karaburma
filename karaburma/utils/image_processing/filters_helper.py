@@ -279,7 +279,8 @@ def try_threshold2(grayscale_image, block_size_min=3, block_size_max=11):
 
     return binary_local, mean_binary, minimum_binary, otsu_binary, li_binary, isodata_binary, triangle_binary, yen_binary
 
-def convert_to_grayscale(img):
+
+def convert_to_grayscale(img: np.ndarray):
     if img is None:
         raise ValueError("Current screenshot or roi is empty")
 
