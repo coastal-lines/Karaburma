@@ -106,6 +106,14 @@ class ScrollActionsFeatures:
 
     def scroll_until_its_possible(self, current_direction=None):
         direction = self.direction if current_direction == None else current_direction
+        '''
+        match direction:
+            case ScrollDirectionEnum.LEFT.name:
+                if self.scroll_element(ScrollDirectionEnum.LEFT.name)[0]:
+                    # TODO - add log
+                    print("click left")
+                    self.scroll_until_its_possible(direction)
+        '''
 
         match direction:
             case ScrollDirectionEnum.LEFT.name:
@@ -113,3 +121,7 @@ class ScrollActionsFeatures:
                     # TODO - add log
                     print("click left")
                     self.scroll_until_its_possible(direction)
+                else:
+                    #TODO - try to click once again
+                    #TODO - sometimes needs to do additional click
+                    self.scroll_element(ScrollDirectionEnum.LEFT.name)

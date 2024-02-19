@@ -58,6 +58,8 @@ def convert_object_into_json(image_source):
                 expanded_table_element["cells"] = current_expanded_table_cells
 
                 current_element["full_table"] = expanded_table_element
+            else:
+                current_element["full_table"] = None
 
         if(getattr(image_source.get_elements()[i], 'get_v_scroll', None)):
             if (image_source.get_elements()[i].get_v_scroll() is not None):
