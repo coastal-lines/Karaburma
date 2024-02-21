@@ -158,7 +158,7 @@ class ScrollElementDetectionsFeatures():
 
             if label == ElementTypesEnum.h_scroll.name:
                 potential_v_scrolls[i].get_roi_element().set_roi(original_v_scroll_roi)
-                potential_v_scrolls[i].update_prediction_value(prediction_value)
+                potential_v_scrolls[i].update_prediction_value(str(prediction_value))
 
         return max(potential_v_scrolls, key=lambda obj: obj.get_prediction_value())
 

@@ -2,12 +2,15 @@ import argparse
 import asyncio
 import os
 import time
+import traceback
+from http.client import HTTPException
+
 import uvicorn
 import requests
 from fastapi import FastAPI, status
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, RedirectResponse
 from karaburma.utils import files_helper
 
 from karaburma.main import Karaburma
@@ -112,6 +115,13 @@ class KaraburmaApiService:
             result_json = self._karaburma_instance.find_listbox_and_expand(0)
             return result_json
 
+        @self._app.exception_handler(404)
+        async def not_found_exception_handler(request: RequestParams, exc: HTTPException):
+            return JSONResponse(
+                status_code=404,
+                content={"message": f"Url '{str(request.url)}' not found."}
+            )
+
         # Handler for RequestValidationError
         @self._app.exception_handler(RequestValidationError)
         async def validation_exception_handler(request: RequestParams, exc: RequestValidationError):
@@ -120,12 +130,16 @@ class KaraburmaApiService:
                 content={"message": "Please check json values for your POST request.", "details": exc.errors()}
             )
 
-        # Handler for common exceptions
+        # Handler for server exceptions
         @self._app.exception_handler(Exception)
         async def generic_exception_handler(request: RequestParams, exc: Exception):
+            traceback_str = "".join(traceback.format_tb(exc.__traceback__))
             return JSONResponse(
                 status_code=500,
-                content={"message": "Internal server error", "details": str(exc)}
+                content={"message": "Internal server error",
+                         "error": str(exc),
+                         "traceback": f"{exc}\n\n{traceback_str}"
+                         }
             )
 
     def start_karaburma_service(self):
