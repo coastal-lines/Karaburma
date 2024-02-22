@@ -3,24 +3,18 @@ import asyncio
 import os
 import time
 import traceback
-from http.client import HTTPException
-
 import uvicorn
 import requests
+from http.client import HTTPException
 from fastapi import FastAPI, status
 from fastapi.exceptions import RequestValidationError
-from pydantic import BaseModel
-from starlette.responses import JSONResponse, RedirectResponse
+from requests import Request
+from starlette.responses import JSONResponse
+
+from karaburma.data.constants.enums.element_types_enum import ElementTypesEnum
+from karaburma.api.models.request_models import RequestParams, ScreenshotElementRequest
 from karaburma.utils import files_helper
-
 from karaburma.main import Karaburma
-
-
-class RequestParams(BaseModel):
-    image_base64: str
-    image_file_path: str
-    image_pattern_file_path: str
-    type_element: str
 
 
 class KaraburmaApiService:
@@ -91,28 +85,28 @@ class KaraburmaApiService:
             return result_json
 
         # Endpoint
-        @self._app.post("/api/v1/screenshot/all_elements", status_code=status.HTTP_200_OK)
-        def user_screenshot_find_all_possible_elements():
-            result_json = self._karaburma_instance.find_all_elements()
-            return result_json
-
-        # Endpoint
         @self._app.post("/api/v1/screenshot/", status_code=status.HTTP_200_OK)
-        def user_screenshot_find_selected_element(request_params: RequestParams):
+        def user_screenshot_find_element(request_params: ScreenshotElementRequest):
+            result_json = dict()
+
             type_element = request_params.type_element
-            result_json = self._karaburma_instance.find_element(type_element)
-            return result_json
+            is_fully_expanded = request_params.is_fully_expanded
 
-        # Endpoint
-        @self._app.post("/api/v1/screenshot/expand_table", status_code=status.HTTP_200_OK)
-        def user_screenshot_find_table_and_expand(request_params: RequestParams):
-            result_json = self._karaburma_instance.find_table_and_expand(0)
-            return result_json
+            match type_element:
+                case ElementTypesEnum.table.name:
+                    if is_fully_expanded:
+                        result_json = self._karaburma_instance.find_table_and_expand(0)
+                case ElementTypesEnum.listbox.name:
+                    if is_fully_expanded:
+                        result_json = self._karaburma_instance.find_listbox_and_expand(0)
+                case "all":
+                    result_json = self._karaburma_instance.find_all_elements()
+                case _:
+                    if type_element not in ElementTypesEnum.__members__:
+                        raise HTTPException(status_code=400, detail="Invalid value provided")
 
-        # Endpoint
-        @self._app.post("/api/v1/screenshot/expand_listbox", status_code=status.HTTP_200_OK)
-        def user_screenshot_find_listbox_and_expand(request_params: RequestParams):
-            result_json = self._karaburma_instance.find_listbox_and_expand(0)
+                    result_json = self._karaburma_instance.find_element(type_element)
+
             return result_json
 
         @self._app.exception_handler(404)
@@ -123,6 +117,8 @@ class KaraburmaApiService:
             )
 
         # Handler for RequestValidationError
+        # FastApi has built-in handle for validating Pydantic model.
+        # Pydantic is a data validation and settings management library in Python.
         @self._app.exception_handler(RequestValidationError)
         async def validation_exception_handler(request: RequestParams, exc: RequestValidationError):
             return JSONResponse(
