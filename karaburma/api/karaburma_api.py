@@ -8,18 +8,16 @@ import requests
 from http.client import HTTPException
 from fastapi import FastAPI, status
 from fastapi.exceptions import RequestValidationError
-from requests import Request
 from starlette.responses import JSONResponse
 
 from karaburma.data.constants.enums.element_types_enum import ElementTypesEnum
-from karaburma.api.models.request_models import RequestParams, ScreenshotElementRequest
+from karaburma.api.models.request_models import RequestParams, ScreenshotElementRequest, FileElementRequest
 from karaburma.utils import files_helper
 from karaburma.main import Karaburma
 
 
 class KaraburmaApiService:
     def __init__(self, host, port, config_path, source_mode, detection_mode, logging):
-
         self._server = None
 
         self._karaburma_instance = Karaburma(config_path, source_mode, detection_mode, logging)
@@ -36,21 +34,24 @@ class KaraburmaApiService:
             )
 
         # Endpoint
-        @self._app.post("/api/v1/file/all_elements", status_code=status.HTTP_200_OK)
-        def user_file_find_all_possible_elements(request_params: RequestParams):
+        @self._app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
+        def user_file_find_all_possible_elements(request_params: FileElementRequest):
             image_file_path = request_params.image_file_path
+            type_element = request_params.type_element
 
             result_json = self._karaburma_instance.find_all_elements(image_file_path)
             return result_json
 
+        '''
         # Endpoint
         @self._app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
-        def user_file_find_selected_element(request_params: RequestParams):
+        def user_file_find_selected_element(request_params: FileElementRequest):
             image_file_path = request_params.image_file_path
             type_element = request_params.type_element
 
             result_json = self._karaburma_instance.find_element(type_element, image_file_path)
             return result_json
+        '''
 
         # Endpoint
         @self._app.post("/api/v1/file/pattern", status_code=status.HTTP_200_OK)
@@ -103,26 +104,28 @@ class KaraburmaApiService:
                     result_json = self._karaburma_instance.find_all_elements()
                 case _:
                     if type_element not in ElementTypesEnum.__members__:
-                        raise HTTPException(status_code=400, detail="Invalid value provided")
+                        return JSONResponse( status_code=400,
+                            content={"message": f"'{type_element}' element type is not supported."}
+                        )
 
                     result_json = self._karaburma_instance.find_element(type_element)
 
             return result_json
 
+        @self._app.exception_handler(400)
+        async def not_found_exception_handler(request: RequestParams, exc: HTTPException):
+            return JSONResponse(status_code=400, content={"message": f"Please check ."})
+
         @self._app.exception_handler(404)
         async def not_found_exception_handler(request: RequestParams, exc: HTTPException):
-            return JSONResponse(
-                status_code=404,
-                content={"message": f"Url '{str(request.url)}' not found."}
-            )
+            return JSONResponse(status_code=404, content={"message": f"Url '{str(request.url)}' not found."})
 
         # Handler for RequestValidationError
         # FastApi has built-in handle for validating Pydantic model.
         # Pydantic is a data validation and settings management library in Python.
         @self._app.exception_handler(RequestValidationError)
         async def validation_exception_handler(request: RequestParams, exc: RequestValidationError):
-            return JSONResponse(
-                status_code=422,
+            return JSONResponse(status_code=422,
                 content={"message": "Please check json values for your POST request.", "details": exc.errors()}
             )
 
@@ -174,7 +177,6 @@ if __name__ == "__main__":
     # Add arguments
     parser.add_argument('--host', help='host', required=True)
     parser.add_argument('--port', help='port', required=True)
-    #parser.add_argument('--config_path', help='config_path', required=True)
     parser.add_argument('--source_mode', help='source_mode: file or screenshot', required=True)
     parser.add_argument('--detection_mode', help='detection_mode: default', required=True)
     parser.add_argument('--logging', help='logging: False', required=True)
@@ -182,8 +184,7 @@ if __name__ == "__main__":
     # Parsing arguments of command line
     args = parser.parse_args()
 
+    # Config file should be in the root project folder. Ex: "E:\\Karaburma\\config.json"
     config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
-    #k = KaraburmaApiService("127.0.0.1", 8900, config_path, "file", detection_mode="default", logging=False)
-    #k = KaraburmaApiService("127.0.0.1", 8900, config_path, "screenshot", detection_mode="default", logging=False)
     karaburma = KaraburmaApiService(args.host, int(args.port), config_path, args.source_mode, args.detection_mode, args.logging)
     karaburma.start_karaburma_service()
