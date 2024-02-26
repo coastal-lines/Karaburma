@@ -6,12 +6,13 @@ import traceback
 import uvicorn
 import requests
 from http.client import HTTPException
-from fastapi import FastAPI, status
+from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from starlette.responses import JSONResponse
 
 from karaburma.data.constants.enums.element_types_enum import ElementTypesEnum
-from karaburma.api.models.request_models import RequestParams, ScreenshotElementRequest, FileElementRequest
+from karaburma.api.models.request_models import ScreenshotElementRequest, FileElementRequest, \
+    FileImagePatternElementRequest
 from karaburma.utils import files_helper
 from karaburma.main import Karaburma
 
@@ -35,11 +36,49 @@ class KaraburmaApiService:
 
         # Endpoint
         @self._app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
-        def user_file_find_all_possible_elements(request_params: FileElementRequest):
+        def user_file_find_element(request_params: FileElementRequest):
+            result_json = dict()
+
             image_file_path = request_params.image_file_path
             type_element = request_params.type_element
 
-            result_json = self._karaburma_instance.find_all_elements(image_file_path)
+            match type_element:
+                case "all":
+                    result_json = self._karaburma_instance.find_all_elements(image_file_path)
+                case _:
+                    if (type_element not in ElementTypesEnum.__members__):
+                        return JSONResponse(status_code=400,
+                                            content={"message": f"'{type_element}' element type is not supported."})
+
+                    result_json = self._karaburma_instance.find_element(type_element, image_file_path)
+
+            return result_json
+
+        # Endpoint
+        @self._app.post("/api/v1/file/image_pattern", status_code=status.HTTP_200_OK)
+        def user_file_find_element(request_params: FileImagePatternElementRequest):
+            result_json = dict()
+
+            image_pattern_type_element = request_params.image_pattern_type_element
+            image_file_path = request_params.image_file_path
+            image_pattern_file_path = request_params.image_pattern_file_path
+            is_all_elements = request_params.is_all_elements
+
+            if (is_all_elements):
+                result_json = self._karaburma_instance.find_all_elements_include_patterns(
+                    [image_pattern_file_path],
+                    "normal",
+                    0.8,
+                    image_pattern_type_element,
+                    image_file_path)
+            else:
+                result_json = self._karaburma_instance.find_element_by_patterns(
+                    [image_pattern_file_path],
+                    "normal",
+                    0.8,
+                    image_pattern_type_element,
+                    image_file_path)
+
             return result_json
 
         '''
@@ -53,6 +92,7 @@ class KaraburmaApiService:
             return result_json
         '''
 
+        '''
         # Endpoint
         @self._app.post("/api/v1/file/pattern", status_code=status.HTTP_200_OK)
         def user_file_find_by_pattern(request_params: RequestParams):
@@ -84,6 +124,7 @@ class KaraburmaApiService:
                 image_file_path)
 
             return result_json
+        '''
 
         # Endpoint
         @self._app.post("/api/v1/screenshot/", status_code=status.HTTP_200_OK)
@@ -113,25 +154,25 @@ class KaraburmaApiService:
             return result_json
 
         @self._app.exception_handler(400)
-        async def not_found_exception_handler(request: RequestParams, exc: HTTPException):
+        async def not_found_exception_handler(request: Request, exc: HTTPException):
             return JSONResponse(status_code=400, content={"message": f"Please check ."})
 
         @self._app.exception_handler(404)
-        async def not_found_exception_handler(request: RequestParams, exc: HTTPException):
+        async def not_found_exception_handler(request: Request, exc: HTTPException):
             return JSONResponse(status_code=404, content={"message": f"Url '{str(request.url)}' not found."})
 
         # Handler for RequestValidationError
         # FastApi has built-in handle for validating Pydantic model.
         # Pydantic is a data validation and settings management library in Python.
         @self._app.exception_handler(RequestValidationError)
-        async def validation_exception_handler(request: RequestParams, exc: RequestValidationError):
+        async def validation_exception_handler(request: Request, exc: RequestValidationError):
             return JSONResponse(status_code=422,
                 content={"message": "Please check json values for your POST request.", "details": exc.errors()}
             )
 
         # Handler for server exceptions
         @self._app.exception_handler(Exception)
-        async def generic_exception_handler(request: RequestParams, exc: Exception):
+        async def generic_exception_handler(request: Request, exc: Exception):
             traceback_str = "".join(traceback.format_tb(exc.__traceback__))
             return JSONResponse(
                 status_code=500,

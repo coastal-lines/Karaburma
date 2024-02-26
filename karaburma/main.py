@@ -75,7 +75,7 @@ class Karaburma:
 
     def __check_source_mode(self, args):
         if self.source_mode == "screenshot" and len(args) > 0:
-            raise ValueError("Method has some parameters but shouldn't")
+            raise ValueError("Incorrect source mode. Please try to use '--source_mode file'.")
 
     def find_all_elements(self, *args):
         self.__check_source_mode(args)
@@ -107,13 +107,13 @@ class Karaburma:
 
     def find_element_by_patterns(self, patterns, mode="normal", threshold=0.8, user_label="", *args):
         image_source = self.find_manager.find_element_by_patterns(patterns, mode, threshold, user_label, *args)
-        #debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
 
         return json_output.convert_object_into_json(image_source)
 
     def find_all_elements_include_patterns(self, patterns, mode="normal", threshold=0.8, user_label="", *args):
         image_source = self.find_manager.find_all_elements_include_patterns(patterns, mode, threshold, user_label, *args)
-        #debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
         return json_output.convert_object_into_json(image_source)
 
 karaburma = None
