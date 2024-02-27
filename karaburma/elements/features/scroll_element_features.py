@@ -89,7 +89,7 @@ class ScrollElementDetectionsFeatures():
     def __init_scroll(self, source_element, first_button, second_button, x, y, w, h, scroll_type):
         temp_scroll_absolute_x, temp_scroll_absolute_y = general_helpers.calculate_absolute_coordinates(source_element, x, y)
         temp_scroll_roi = RoiElement(source_element.get_roi()[y:y + h, x:x + w, :], temp_scroll_absolute_x, temp_scroll_absolute_y, w, h, scroll_type)
-        return ScrollElement(scroll_type, 1.0, temp_scroll_roi, first_button, second_button)
+        return ScrollElement(scroll_type, 0.0, temp_scroll_roi, first_button, second_button)
 
     def __try_to_detect_scrolls(self, rectangles, source_element: RoiElement):
         temp_h_scrolls = []
@@ -157,8 +157,10 @@ class ScrollElementDetectionsFeatures():
             label, prediction_value = self.__common_element_features.calculate_scores_for_element(potential_v_scrolls[i].get_roi_element())
 
             if label == ElementTypesEnum.h_scroll.name:
-                potential_v_scrolls[i].get_roi_element().set_roi(original_v_scroll_roi)
-                potential_v_scrolls[i].update_prediction_value(prediction_value)
+                #TODO - for debuging only
+                if(prediction_value != 1.0):
+                    potential_v_scrolls[i].get_roi_element().set_roi(original_v_scroll_roi)
+                    potential_v_scrolls[i].update_prediction_value(prediction_value)
 
         return max(potential_v_scrolls, key=lambda obj: obj.get_prediction_value())
 

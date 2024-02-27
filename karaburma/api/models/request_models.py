@@ -5,9 +5,17 @@ class ScreenshotElementRequest(BaseModel):
     type_element: str
     is_fully_expanded: bool
 
+
+class ScreenshotTableElementRequest(BaseModel):
+    table_number: str
+    column: int
+    row: int
+
+
 class FileElementRequest(BaseModel):
     image_file_path: str
     type_element: str
+
 
 class FileImagePatternElementRequest(BaseModel):
     image_file_path: str

@@ -73,15 +73,19 @@ class TableElementFeatures(TablePreprocessing):
 
         return stitching_features
 
-    def __find_table_on_extended_table(self, table_roi_element):
+    def __find_table_on_extended_table(self, table_roi_element, read_text_from_cells=False):
         table_cells_element = self.__table_cells_features.find_table_cells(table_roi_element)
         current_table_element = TableElement(ElementTypesEnum.table.name, 1.0, table_roi_element, None, None, table_cells_element)
 
+        if read_text_from_cells:
+            for cell in current_table_element.get_cells_area_element().get_list_cells():
+                cell.read_text_from_cell()
+
         return current_table_element
 
-    def __set_full_table_to_element(self, desired_table, stitched_table):
+    def __set_full_table_to_element(self, desired_table, stitched_table, read_text_from_cells=False):
         stitched_table_roi_element = RoiElement(stitched_table, 0, 0, stitched_table.shape[1], stitched_table.shape[0], "table")
-        stitched_table_element = self.__find_table_on_extended_table(stitched_table_roi_element)
+        stitched_table_element = self.__find_table_on_extended_table(stitched_table_roi_element, read_text_from_cells)
         desired_table.set_full_table_area(stitched_table_roi_element, stitched_table_element)
         print("")
 
@@ -108,7 +112,7 @@ class TableElementFeatures(TablePreprocessing):
             for table in self.image_source.get_table_elements():
                 self.__blur_table_area(table.get_roi_element())
 
-    def find_table_and_expand(self, table_index: int = 0):
+    def find_table_and_expand(self, table_index: int = 0, read_text_from_cells=False):
         self.find_all_tables(self.image_source, False)
 
         if len(self.image_source.get_table_elements()) > 0:
@@ -119,17 +123,17 @@ class TableElementFeatures(TablePreprocessing):
                 if desired_table.get_v_scroll() is not None and desired_table.get_h_scroll() is not None:
                     stitching_features = self.__prepare_stitching_features(desired_table, desired_table_cells_area, ScrollDirectionEnum.RIGHT_DOWN.name)
                     stitched_table = stitching_features.right_down_stitch()
-                    self.__set_full_table_to_element(desired_table, stitched_table)
+                    self.__set_full_table_to_element(desired_table, stitched_table, read_text_from_cells)
 
                 elif desired_table.get_h_scroll() is not None and desired_table.get_v_scroll() is None:
                     stitching_features = self.__prepare_stitching_features(desired_table, desired_table_cells_area, ScrollDirectionEnum.RIGHT.name)
                     stitched_table = stitching_features.right_down_stitch()
-                    self.__set_full_table_to_element(desired_table, stitched_table)
+                    self.__set_full_table_to_element(desired_table, stitched_table, read_text_from_cells)
 
                 elif desired_table.get_v_scroll() is not None and desired_table.get_h_scroll() is None:
                     stitching_features = self.__prepare_stitching_features(desired_table, desired_table_cells_area, ScrollDirectionEnum.DOWN.name)
                     stitched_table = stitching_features.right_down_stitch()
-                    self.__set_full_table_to_element(desired_table, stitched_table)
+                    self.__set_full_table_to_element(desired_table, stitched_table, read_text_from_cells)
 
                 elif desired_table.get_v_scroll() is None and desired_table.get_h_scroll() is None:
                     # TODO

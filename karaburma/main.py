@@ -94,8 +94,8 @@ class Karaburma:
         #debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
         return json_output.convert_object_into_json(image_source)
 
-    def find_table_and_expand(self, table_index=0):
-        image_source = self.find_manager.find_table_and_expand(table_index)
+    def find_table_and_expand(self, table_index=0, read_text_from_cells=False):
+        image_source = self.find_manager.find_table_and_expand(table_index, read_text_from_cells)
         return json_output.convert_object_into_json(image_source)
 
     def find_table_cell(self, column, row):

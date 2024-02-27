@@ -12,7 +12,7 @@ from starlette.responses import JSONResponse
 
 from karaburma.data.constants.enums.element_types_enum import ElementTypesEnum
 from karaburma.api.models.request_models import ScreenshotElementRequest, FileElementRequest, \
-    FileImagePatternElementRequest
+    FileImagePatternElementRequest, ScreenshotTableElementRequest
 from karaburma.utils import files_helper
 from karaburma.main import Karaburma
 
@@ -81,51 +81,6 @@ class KaraburmaApiService:
 
             return result_json
 
-        '''
-        # Endpoint
-        @self._app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
-        def user_file_find_selected_element(request_params: FileElementRequest):
-            image_file_path = request_params.image_file_path
-            type_element = request_params.type_element
-
-            result_json = self._karaburma_instance.find_element(type_element, image_file_path)
-            return result_json
-        '''
-
-        '''
-        # Endpoint
-        @self._app.post("/api/v1/file/pattern", status_code=status.HTTP_200_OK)
-        def user_file_find_by_pattern(request_params: RequestParams):
-            image_file_path = request_params.image_file_path
-            type_element = request_params.type_element
-            image_pattern_file_path = request_params.image_pattern_file_path
-
-            result_json = self._karaburma_instance.find_element_by_patterns(
-                [image_pattern_file_path],
-                "normal",
-                0.8,
-                type_element,
-                image_file_path)
-
-            return result_json
-
-        # Endpoint
-        @self._app.post("/api/v1/file/pattern_all_elements", status_code=status.HTTP_200_OK)
-        def user_file_find_by_pattern(request_params: RequestParams):
-            image_file_path = request_params.image_file_path
-            type_element = request_params.type_element
-            image_pattern_file_path = request_params.image_pattern_file_path
-
-            result_json = self._karaburma_instance.find_all_elements_include_patterns(
-                [image_pattern_file_path],
-                "normal",
-                0.8,
-                type_element,
-                image_file_path)
-
-            return result_json
-        '''
-
         # Endpoint
         @self._app.post("/api/v1/screenshot/", status_code=status.HTTP_200_OK)
         def user_screenshot_find_element(request_params: ScreenshotElementRequest):
@@ -152,6 +107,20 @@ class KaraburmaApiService:
                     result_json = self._karaburma_instance.find_element(type_element)
 
             return result_json
+
+        # Endpoint
+        @self._app.post("/api/v1/screenshot/table", status_code=status.HTTP_200_OK)
+        def user_screenshot_get_text_from_table(request_params: ScreenshotTableElementRequest):
+            result_json = dict()
+
+            table_number = request_params.table_number
+            column = request_params.column
+            row = request_params.row
+
+            json = self._karaburma_instance.find_table_and_expand()
+            table = [element for element in json.get('elements', []) if element.get('label') == 'table'][0]
+
+
 
         @self._app.exception_handler(400)
         async def not_found_exception_handler(request: Request, exc: HTTPException):
