@@ -84,3 +84,17 @@ def image_to_base64(image_roi):
     base64_str = base64.b64encode(image_bytes).decode('utf-8')
 
     return base64_str
+
+def base64_to_image(base64_image_text: str) -> np.ndarray:
+    img = None
+
+    # Try to remove prefix like this one: "data:image/png;base64,"
+    # If string doesn't have prefix - just convert into cv2 image
+    try:
+        base64_image_text = base64_image_text.split(",")[1]
+    except IndexError:
+        nparr = np.frombuffer(base64.b64decode(base64_image_text), np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    return img
+

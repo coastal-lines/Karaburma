@@ -16,6 +16,13 @@ class FindManager(TemplateMatchingElement):
         else:
             return ImageSourceObject(files_helper.load_image(args[0]))
 
+    def find_all_elements_in_base64image(self, base64image):
+        image_source = ImageSourceObject(base64image)
+        general_helpers.show(image_source.get_current_image_source())
+        self.__detection_mode.find_all_elements(image_source)
+
+        return image_source
+
     def find_all_elements(self, *args):
         image_source = self.__create_image_source(*args)
         #general_helpers.show(image_source.get_current_image_source())

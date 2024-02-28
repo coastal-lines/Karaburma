@@ -52,7 +52,7 @@ def draw_contours_and_show(img, rectangles):
     show(contours_helper.DrawRectangleByListXYWH(img, rectangles))
 
 
-def extend_screenshot_by_rigth_border(screenshot, additional_width=50, additional_height=0):
+def extend_screenshot_by_rigth_border(screenshot, additional_width=50, additional_height=0) -> np.ndarray:
     w = screenshot.shape[1] + additional_width
     h = screenshot.shape[0] + additional_height
 

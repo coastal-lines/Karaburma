@@ -77,13 +77,16 @@ class Karaburma:
         if self.source_mode == "screenshot" and len(args) > 0:
             raise ValueError("Incorrect source mode. Please try to use '--source_mode file'.")
 
+    def find_all_elements_in_base64image(self, base64image):
+        image_source = self.find_manager.find_all_elements_in_base64image(base64image)
+        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
+
     def find_all_elements(self, *args):
         self.__check_source_mode(args)
         image_source = self.find_manager.find_all_elements(*args)
-
-        debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
-
-        return json_output.convert_object_into_json(image_source)
+        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
     def find_element(self, element_type, *args):
         self.__check_source_mode(args)
@@ -95,6 +98,9 @@ class Karaburma:
         return json_output.convert_object_into_json(image_source)
 
     def find_table_and_expand(self, table_index=0, read_text_from_cells=False):
+        if (self.source_mode == "file"):
+            raise ValueError("Incorrect source mode. Please try to use '--source_mode screenshot'")
+
         image_source = self.find_manager.find_table_and_expand(table_index, read_text_from_cells)
         return json_output.convert_object_into_json(image_source)
 
@@ -107,14 +113,13 @@ class Karaburma:
 
     def find_element_by_patterns(self, patterns, mode="normal", threshold=0.8, user_label="", *args):
         image_source = self.find_manager.find_element_by_patterns(patterns, mode, threshold, user_label, *args)
-        debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
-
-        return json_output.convert_object_into_json(image_source)
+        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
     def find_all_elements_include_patterns(self, patterns, mode="normal", threshold=0.8, user_label="", *args):
         image_source = self.find_manager.find_all_elements_include_patterns(patterns, mode, threshold, user_label, *args)
-        debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
-        return json_output.convert_object_into_json(image_source)
+        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
 karaburma = None
 

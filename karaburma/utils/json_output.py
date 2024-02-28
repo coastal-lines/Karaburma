@@ -2,7 +2,7 @@ import json
 from karaburma.utils import general_helpers, files_helper
 
 
-def convert_object_into_json(image_source):
+def convert_object_into_json(image_source, screenshot_copy_debug=None):
 
     dict_json = dict()
     dict_json["w"], dict_json["h"] = image_source.get_current_image_source_dimension()
@@ -109,6 +109,9 @@ def convert_object_into_json(image_source):
         current_element["orig_img_base64"] = files_helper.image_to_base64(image_source.get_elements()[i].get_roi_element().get_roi())
 
         dict_json["elements"].append(current_element)
+
+    if(screenshot_copy_debug is not None):
+        dict_json["debug_screenshot"] = files_helper.image_to_base64(screenshot_copy_debug)
 
     try:
         return json.loads(json.dumps(dict_json, indent=2))

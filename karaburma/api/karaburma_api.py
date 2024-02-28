@@ -12,7 +12,7 @@ from starlette.responses import JSONResponse
 
 from karaburma.data.constants.enums.element_types_enum import ElementTypesEnum
 from karaburma.api.models.request_models import ScreenshotElementRequest, FileElementRequest, \
-    FileImagePatternElementRequest, ScreenshotTableElementRequest
+    FileImagePatternElementRequest, ScreenshotTableElementRequest, Base64ElementRequest
 from karaburma.utils import files_helper
 from karaburma.main import Karaburma
 
@@ -29,10 +29,62 @@ class KaraburmaApiService:
 
         # Endpoint
         @self._app.get("/", status_code=status.HTTP_200_OK)
-        async def root_selfcheck():
+        def root_selfcheck():
             return JSONResponse(
                 content={"message": "Uvicorn server was started for Karaburma."},
             )
+
+        # Endpoint
+        @self._app.post("/api/v1/base64image/", status_code=status.HTTP_200_OK)
+        def user_base64image_find_element(request_params: Base64ElementRequest):
+            result_json = dict()
+
+            base64_image = request_params.base64_image
+            type_element = request_params.type_element
+
+            user_image = files_helper.base64_to_image(base64_image)
+
+            match type_element:
+                case "all":
+                    result_json = self._karaburma_instance.find_all_elements_in_base64image(user_image)
+                case _:
+                    if (type_element not in ElementTypesEnum.__members__):
+                        return JSONResponse(status_code=400,
+                                            content={"message": f"'{type_element}' element type is not supported."})
+
+                    result_json = self._karaburma_instance.find_element(type_element, user_image)
+
+            return result_json
+
+        '''
+        # Endpoint
+        @self._app.post("/api/v1/base64image/image_pattern", status_code=status.HTTP_200_OK)
+        def user_base64image_find_element(request_params: FileImagePatternElementRequest):
+            result_json = dict()
+
+            image_pattern_type_element = request_params.image_pattern_type_element
+            image_file_path = request_params.image_file_path
+            image_pattern_file_path = request_params.image_pattern_file_path
+            is_all_elements = request_params.is_all_elements
+
+            if (is_all_elements):
+                result_json = self._karaburma_instance.find_all_elements_include_patterns(
+                    [image_pattern_file_path],
+                    "normal",
+                    0.8,
+                    image_pattern_type_element,
+                    image_file_path)
+            else:
+                result_json = self._karaburma_instance.find_element_by_patterns(
+                    [image_pattern_file_path],
+                    "normal",
+                    0.8,
+                    image_pattern_type_element,
+                    image_file_path)
+
+            return result_json
+        '''
+
 
         # Endpoint
         @self._app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
@@ -109,18 +161,10 @@ class KaraburmaApiService:
             return result_json
 
         # Endpoint
-        @self._app.post("/api/v1/screenshot/table", status_code=status.HTTP_200_OK)
+        @self._app.post("/api/v1/screenshot/table_with_text", status_code=status.HTTP_200_OK)
         def user_screenshot_get_text_from_table(request_params: ScreenshotTableElementRequest):
-            result_json = dict()
-
             table_number = request_params.table_number
-            column = request_params.column
-            row = request_params.row
-
-            json = self._karaburma_instance.find_table_and_expand()
-            table = [element for element in json.get('elements', []) if element.get('label') == 'table'][0]
-
-
+            return self._karaburma_instance.find_table_and_expand(table_number, True)
 
         @self._app.exception_handler(400)
         async def not_found_exception_handler(request: Request, exc: HTTPException):

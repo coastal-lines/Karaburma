@@ -1,3 +1,5 @@
+import numpy as np
+
 from karaburma.utils import general_helpers
 from karaburma.utils.image_processing import contours_helper
 
@@ -85,7 +87,7 @@ def draw_tables(screenshot_copy_debug, screenshot_elements):
         #for cell in table.get_cells_area_element().get_list_cells():
         #    contours_helper.DrawRectangleByListXYWH(screenshot_copy_debug, [cell.get_roi_element().get_element_features()], TABLE_CELLS_COLOUR, TABLE_CELLS_THICKNES)
 
-def draw_elements(screenshot_copy_debug, screenshot_elements):
+def draw_elements(screenshot_copy_debug, screenshot_elements) -> np.ndarray:
     screenshot_copy_debug = general_helpers.extend_screenshot_by_rigth_border(screenshot_copy_debug, 120)
 
     draw_tables(screenshot_copy_debug, screenshot_elements)
@@ -99,4 +101,6 @@ def draw_elements(screenshot_copy_debug, screenshot_elements):
 
     draw_pattern_matching_elements(screenshot_copy_debug, screenshot_elements.get_elements(), (0, 255, 0), 2)
 
-    general_helpers.show(screenshot_copy_debug)
+    #general_helpers.show(screenshot_copy_debug)
+
+    return screenshot_copy_debug

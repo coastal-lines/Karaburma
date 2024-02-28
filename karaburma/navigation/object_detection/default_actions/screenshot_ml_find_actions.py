@@ -8,9 +8,9 @@ class ScreenshotMlFindActions(CommonMlFindActions):
         super().__init__(common_element_features, table_element_features, listbox_element_features)
         self.table_element_features = table_element_features
 
-    def find_table_and_expand(self, image_source, table_index):
+    def find_table_and_expand(self, image_source, table_index, read_text_from_cells=False):
         self.table_element_features.image_source = image_source
-        self.table_element_features.find_table_and_expand(table_index)
+        self.table_element_features.find_table_and_expand(table_index, read_text_from_cells)
 
         # DEBUG
         #draw_elements(image_source.get_current_image_source_copy(), image_source)

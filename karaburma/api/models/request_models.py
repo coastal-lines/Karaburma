@@ -7,9 +7,7 @@ class ScreenshotElementRequest(BaseModel):
 
 
 class ScreenshotTableElementRequest(BaseModel):
-    table_number: str
-    column: int
-    row: int
+    table_number: int
 
 
 class FileElementRequest(BaseModel):
@@ -22,3 +20,8 @@ class FileImagePatternElementRequest(BaseModel):
     image_pattern_file_path: str
     image_pattern_type_element: str
     is_all_elements: bool
+
+
+class Base64ElementRequest(BaseModel):
+    base64_image: str
+    type_element: str
