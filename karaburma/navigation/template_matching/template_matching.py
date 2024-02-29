@@ -23,3 +23,21 @@ class TemplateMatchingElement:
             x, y, w, h = rectangle[0], rectangle[1], rectangle[2], rectangle[3]
             roi = image_source.get_current_image_source()[y:y + h, x:x + w, :]
             image_source.add_element(Element(user_label, threshold, RoiElement(roi, x, y, w, h)))
+
+    def find_element_by_pattern_in_base64image(self, pattern, mode, threshold, user_label, image_source):
+        pattern_matching_result = None
+
+        if (threshold == None):
+            threshold = ConfigManager().config.elements_parameters.listbox.scrollbar_shift_threshold
+
+        if (mode == "normal"):
+            pattern_matching_result = pattern_matching.multi_match_for_list_patterns(
+                image_source.get_current_image_source(), [pattern], threshold)
+        elif (mode == "extended"):
+            pattern_matching_result = pattern_matching.multi_match_for_list_patterns_with_augmentation(
+                image_source.get_current_image_source(), [pattern], threshold)
+
+        for rectangle in pattern_matching_result:
+            x, y, w, h = rectangle[0], rectangle[1], rectangle[2], rectangle[3]
+            roi = image_source.get_current_image_source()[y:y + h, x:x + w, :]
+            image_source.add_element(Element(user_label, threshold, RoiElement(roi, x, y, w, h)))

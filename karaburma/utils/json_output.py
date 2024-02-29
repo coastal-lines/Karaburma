@@ -110,6 +110,7 @@ def convert_object_into_json(image_source, screenshot_copy_debug=None):
 
         dict_json["elements"].append(current_element)
 
+    # Put copy of the original image with debug information
     if(screenshot_copy_debug is not None):
         dict_json["debug_screenshot"] = files_helper.image_to_base64(screenshot_copy_debug)
 

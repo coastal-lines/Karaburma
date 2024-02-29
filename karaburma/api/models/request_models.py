@@ -25,3 +25,9 @@ class FileImagePatternElementRequest(BaseModel):
 class Base64ElementRequest(BaseModel):
     base64_image: str
     type_element: str
+
+
+class Base64PatternElementRequest(BaseModel):
+    base64_image: str
+    image_pattern_base64_image: str
+    image_pattern_type_element: str

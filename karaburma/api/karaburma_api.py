@@ -12,7 +12,7 @@ from starlette.responses import JSONResponse
 
 from karaburma.data.constants.enums.element_types_enum import ElementTypesEnum
 from karaburma.api.models.request_models import ScreenshotElementRequest, FileElementRequest, \
-    FileImagePatternElementRequest, ScreenshotTableElementRequest, Base64ElementRequest
+    FileImagePatternElementRequest, ScreenshotTableElementRequest, Base64ElementRequest, Base64PatternElementRequest
 from karaburma.utils import files_helper
 from karaburma.main import Karaburma
 
@@ -56,34 +56,27 @@ class KaraburmaApiService:
 
             return result_json
 
-        '''
         # Endpoint
         @self._app.post("/api/v1/base64image/image_pattern", status_code=status.HTTP_200_OK)
-        def user_base64image_find_element(request_params: FileImagePatternElementRequest):
+        def user_base64image_find_element(request_params: Base64PatternElementRequest):
             result_json = dict()
 
+            base64_image = request_params.base64_image
+            image_pattern_base64_image = request_params.image_pattern_base64_image
             image_pattern_type_element = request_params.image_pattern_type_element
-            image_file_path = request_params.image_file_path
-            image_pattern_file_path = request_params.image_pattern_file_path
-            is_all_elements = request_params.is_all_elements
 
-            if (is_all_elements):
-                result_json = self._karaburma_instance.find_all_elements_include_patterns(
-                    [image_pattern_file_path],
-                    "normal",
-                    0.8,
-                    image_pattern_type_element,
-                    image_file_path)
-            else:
-                result_json = self._karaburma_instance.find_element_by_patterns(
-                    [image_pattern_file_path],
-                    "normal",
-                    0.8,
-                    image_pattern_type_element,
-                    image_file_path)
+            user_image = files_helper.base64_to_image(base64_image)
+            image_pattern = files_helper.base64_to_image(image_pattern_base64_image)
+
+            result_json = self._karaburma_instance.find_all_elements_include_patterns_in_base64image(
+                image_pattern,
+                "normal",
+                0.8,
+                image_pattern_type_element,
+                user_image
+            )
 
             return result_json
-        '''
 
 
         # Endpoint

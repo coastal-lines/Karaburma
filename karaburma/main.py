@@ -14,6 +14,7 @@ from karaburma.elements.features.listbox_element_features import ListboxElementF
 from karaburma.elements.features.table.table_element_features import TableElementFeatures
 from karaburma.utils import files_helper, json_output, debug
 from karaburma.utils.config_manager import ConfigManager
+from utils import general_helpers
 
 
 class Karaburma:
@@ -80,6 +81,14 @@ class Karaburma:
     def find_all_elements_in_base64image(self, base64image):
         image_source = self.find_manager.find_all_elements_in_base64image(base64image)
         screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
+
+    def find_all_elements_include_patterns_in_base64image(self, pattern, mode, threshold, user_label, base64image):
+        image_source = self.find_manager.find_all_elements_include_patterns_in_base64image(pattern, mode, threshold, user_label, base64image)
+        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+
+        #general_helpers.show(screenshot_copy_debug)
+
         return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
     def find_all_elements(self, *args):

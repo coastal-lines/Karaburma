@@ -17,7 +17,12 @@ def multi_match_for_list_patterns(screen, patterns_list, threshold):
     temp_results = []
 
     for pattern in patterns_list:
-        w, h = pattern.shape[::-1]
+        # If RGB
+        if (len(pattern.shape) == 3):
+            _, w, h = pattern.shape[::-1]
+        # If grayscale
+        else:
+            w, h = pattern.shape[::-1]
         res = match_template(screen, pattern)
         locations = np.swapaxes(np.where(res >= threshold), 0, 1)
 

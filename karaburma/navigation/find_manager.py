@@ -18,7 +18,7 @@ class FindManager(TemplateMatchingElement):
 
     def find_all_elements_in_base64image(self, base64image):
         image_source = ImageSourceObject(base64image)
-        general_helpers.show(image_source.get_current_image_source())
+        #general_helpers.show(image_source.get_current_image_source())
         self.__detection_mode.find_all_elements(image_source)
 
         return image_source
@@ -71,5 +71,11 @@ class FindManager(TemplateMatchingElement):
     def find_all_elements_include_patterns(self, patterns, mode, threshold, user_label, *args):
         image_source_with_elements = self.find_all_elements(*args)
         super().find_element_by_patterns(patterns, mode, threshold, user_label, image_source_with_elements)
+
+        return image_source_with_elements
+
+    def find_all_elements_include_patterns_in_base64image(self, pattern, mode, threshold, user_label, base64image):
+        image_source_with_elements = self.find_all_elements_in_base64image(base64image)
+        super().find_element_by_pattern_in_base64image(pattern, mode, threshold, user_label, image_source_with_elements)
 
         return image_source_with_elements
