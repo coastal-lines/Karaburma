@@ -39,8 +39,7 @@ class TableElement(Element):
         if(self.__cells_area_element != None):
             return self.__cells_area_element
         else:
-            #TODO
-            print("EXCEPTION")
+            raise Exception(f"Current table doesn't have any cells.")
 
     def get_cell_by_adress(self, column_index: int, row_index: int):
         custom_cell = [cell for cell in self.get_cells_area_element().get_list_cells()

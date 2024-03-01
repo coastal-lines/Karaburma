@@ -149,7 +149,7 @@ class TableCellsFeatures():
         return grey_
 
     def __remove_noise_from_table(self, prepared_table_roi, original_table_roi):
-        all, _ = contours_helper.GetContoursByCanny(prepared_table_roi, 0, 255)
+        all, _ = contours_helper.get_contours_by_canny(prepared_table_roi, 0, 255)
 
         original_table_roi = filters_helper.convert_to_grayscale(original_table_roi)
 

@@ -1,7 +1,7 @@
 import math
 import cv2
-import imutils
 import numpy as np
+
 from karaburma.utils.image_processing import augmentation, filters_helper
 
 
@@ -29,9 +29,6 @@ def multi_match_for_list_patterns(screen, patterns_list, threshold):
         for location in locations:
             print(location[1], location[0], w, h)
             temp_results.append((location[1], location[0], w, h))
-
-    #pick = imutils.object_detection.non_max_suppression(np.array(temp_results), probs=None, overlapThresh=0.5)
-    #cleaned_rectangles = np.array([[x, y, x2 - x, y2 - y] for (x, y, x2, y2) in pick])
 
     return temp_results
 

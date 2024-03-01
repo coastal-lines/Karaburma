@@ -1,35 +1,12 @@
 import inspect
 
 import cv2
-from decimal import Decimal
-import numpy as np
-from pathlib import Path
-import matplotlib.pyplot as plt
-import numpy as np
 import skimage
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt
 from skimage.filters import threshold_local, threshold_mean, threshold_minimum, threshold_otsu, threshold_li, \
     threshold_isodata, threshold_triangle, threshold_yen
-from sklearn import svm, metrics, datasets
-from sklearn.utils import Bunch
-from sklearn.model_selection import GridSearchCV, train_test_split
-from skimage.io import imread
-from skimage.transform import resize
-from skimage.color import rgb2gray
-from skimage.draw import rectangle
-from skimage.draw import rectangle_perimeter
-import pickle
-import cv2 as cv
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC
-from sklearn.metrics import precision_recall_curve
-from sklearn.datasets import load_wine
-from sklearn.metrics import classification_report, confusion_matrix
-from imutils.object_detection import non_max_suppression
-from sklearn.metrics import accuracy_score
-from typing import overload
-from loguru import logger
-import traceback
 
 from karaburma.utils.logging_manager import LoggingManager
 
@@ -39,7 +16,7 @@ def gamma_correction(src, gamma):
     table = [((i / 255) ** invGamma) * 255 for i in range(256)]
     table = np.array(table, np.uint8)
 
-    return cv.LUT(src, table)
+    return cv2.LUT(src, table)
 
 def levels_correction(img, *args):
     if(len(args) == 5):
@@ -200,86 +177,6 @@ def try_threshold(grayscale_image, block_size_min=3, block_size_max=11):
 
     return binary_local, mean_binary, minimum_binary, otsu_binary, li_binary, isodata_binary, triangle_binary, yen_binary
 
-def try_threshold2(grayscale_image, block_size_min=3, block_size_max=11):
-    #local_thresh = threshold_local(grayscale_image, block_size=block_size, offset=3)
-
-    binary_local = []
-
-    for i in range(block_size_min, block_size_max, 2):
-        try:
-            binary_local.append(skimage.img_as_ubyte(grayscale_image > threshold_local(grayscale_image, block_size=i, offset=3)))
-        except:
-            binary_local.append(np.zeros((255,255), dtype=int))
-
-    try:
-        mean_binary = skimage.img_as_ubyte(grayscale_image.copy() > threshold_mean(grayscale_image))
-    except:
-        mean_binary = np.zeros((255,255), dtype=int)
-
-    try:
-        minimum_binary = skimage.img_as_ubyte(grayscale_image.copy() > threshold_minimum(grayscale_image))
-    except:
-        minimum_binary = np.zeros((255,255), dtype=int)
-
-    try:
-        otsu_binary = skimage.img_as_ubyte(grayscale_image.copy() > threshold_otsu(grayscale_image))
-    except:
-        otsu_binary= np.zeros((255, 255), dtype=int)
-
-    try:
-        li_binary = skimage.img_as_ubyte(grayscale_image.copy() > threshold_li(grayscale_image))
-    except:
-        li_binary = np.zeros((255, 255), dtype=int)
-
-    try:
-        isodata_binary = skimage.img_as_ubyte(grayscale_image.copy() > threshold_isodata(grayscale_image))
-    except:
-        isodata_binary = np.zeros((255, 255), dtype=int)
-
-    try:
-        triangle_binary = skimage.img_as_ubyte(grayscale_image.copy() > threshold_triangle(grayscale_image))
-    except:
-        triangle_binary = np.zeros((255, 255), dtype=int)
-
-    try:
-        yen_binary = skimage.img_as_ubyte(grayscale_image.copy() > threshold_yen(grayscale_image))
-    except:
-        yen_binary = np.zeros((255, 255), dtype=int)
-
-    f, axarr = plt.subplots(3, 3)
-
-    axarr[0, 0].imshow(isodata_binary, cmap='gray')
-    axarr[0, 0].set_title("Isodata")
-
-    axarr[0, 1].imshow(minimum_binary, cmap='gray')
-    axarr[0, 1].set_title("Minimum")
-
-    axarr[0, 2].imshow(binary_local[0], cmap='gray')
-    axarr[0, 2].set_title("Binary")
-
-    axarr[1, 0].imshow(mean_binary, cmap='gray')
-    axarr[1, 0].set_title("Mean")
-
-    axarr[1, 1].imshow(otsu_binary, cmap='gray')
-    axarr[1, 1].set_title("Otsu")
-
-    axarr[1, 2].imshow(grayscale_image, cmap='gray')
-    axarr[1, 2].set_title("Image")
-
-    axarr[2, 0].imshow(triangle_binary, cmap='gray')
-    axarr[2, 0].set_title("Triangle")
-
-    axarr[2, 1].imshow(yen_binary, cmap='gray')
-    axarr[2, 1].set_title("Yen")
-
-    axarr[2, 2].imshow(li_binary, cmap='gray')
-    axarr[2, 2].set_title("li_binary")
-
-    plt.show()
-
-    return binary_local, mean_binary, minimum_binary, otsu_binary, li_binary, isodata_binary, triangle_binary, yen_binary
-
-
 def convert_to_grayscale(img: np.ndarray):
     if img is None:
         raise ValueError("Current screenshot or roi is empty")
@@ -305,5 +202,3 @@ def calculate_white_colour(image):
     percentage_grey = grey_pixels / total_pixels
 
     return [percentage_white, percentage_grey, percentage_black]
-
-#def convolution(img):

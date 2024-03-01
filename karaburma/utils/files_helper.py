@@ -9,6 +9,7 @@ from PIL import Image as PIL_Image
 from karaburma.utils import general_helpers
 from karaburma.utils.logging_manager import LoggingManager
 
+
 def get_project_root_path():
     return os.path.realpath(__file__).split("Karaburma")[0] + "Karaburma\\karaburma"
 
@@ -69,7 +70,13 @@ def load_grayscale_images_from_folder(folder_path):
     return files
 
 def save_image(roi, most_common_label="_", path=r""):
-    cv2.imwrite(path + "\\" + str(most_common_label) + "_" + str(general_helpers.generate_random_string(9)) + ".png", cv2.cvtColor(roi, cv2.COLOR_BGR2RGB))
+    cv2.imwrite(
+        path +
+        "\\" +
+        str(most_common_label) +
+        "_" +
+        str(general_helpers.generate_random_string(9)) + ".png", cv2.cvtColor(roi, cv2.COLOR_BGR2RGB)
+    )
 
 def image_to_base64(image_roi):
     image_pil = PIL_Image.fromarray(image_roi.astype(np.uint8))

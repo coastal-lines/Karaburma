@@ -3,7 +3,9 @@ import cv2
 import numpy as np
 
 from karaburma.utils import general_helpers
-from karaburma.utils.image_processing import ocr_helper, filters_helper, orb_descriptor, key_feature_matchers, homography
+from karaburma.utils.image_processing import filters_helper, orb_descriptor, key_feature_matchers, homography
+from utils.ocr import ocr_helper
+
 
 #TODO -> tuple[int, int]
 

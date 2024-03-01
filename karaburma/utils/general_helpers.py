@@ -107,11 +107,11 @@ def find_best_contours_for_svm_results(screenshot, svm_contours, dimension, type
     #find contours
     img = screenshot.copy()
     img_bw = filters_helper.convert_to_grayscale(img)
-    img_bw = filters_helper.GammaCorrection(img_bw, 0.1)
-    img_bw = filters_helper.Erosion(img_bw)
+    img_bw = filters_helper.gamma_correction(img_bw, 0.1)
+    img_bw = morphological_helpers.erosion(img_bw)
     img_bw = filters_helper.blur(img_bw, (3, 3))
     ret, th = filters_helper.threshold(img_bw, 135, 255)
-    cnt = contours_helper.GetContoursByCannyAfterApproximation(th, 0, 255, 0.005, 18)
+    cnt = contours_helper.get_contours_by_canny_after_approximation(th, 0, 255, 0.005, 18)
     #draw all contours
     #contours.DrawRectangleByContours(screenshot, cnt, (56, 99, 255))
 

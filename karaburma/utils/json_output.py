@@ -1,5 +1,6 @@
 import json
-from karaburma.utils import general_helpers, files_helper
+
+from karaburma.utils import files_helper
 
 
 def convert_object_into_json(image_source, screenshot_copy_debug=None):

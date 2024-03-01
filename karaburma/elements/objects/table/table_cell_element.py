@@ -1,5 +1,5 @@
 from karaburma.elements.objects.element import Element
-from karaburma.utils.image_processing import ocr_helper
+from utils.ocr import ocr_helper
 
 
 class TableCell(Element):

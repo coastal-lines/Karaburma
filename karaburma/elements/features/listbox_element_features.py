@@ -2,20 +2,14 @@ from karaburma.elements.elements_utils.displacement_features import Displacement
 from karaburma.elements.elements_utils.preprocessing.listbox_preprocessing import ListboxPreprocessing
 from karaburma.elements.elements_utils.scroll_actions_features import ScrollActionsFeatures
 from karaburma.elements.elements_utils.stitching_features import StitchingFeatures
-from karaburma.elements.objects.listbox_element import ListBoxElement
 from karaburma.utils.config_manager import ConfigManager
-from karaburma.utils.image_processing import augmentation, morphological_helpers
-import time
-import cv2
+from karaburma.utils.image_processing import augmentation
 import numpy as np
-import pyautogui
-from skimage.metrics import structural_similarity as ssim
 from karaburma.data.constants.enums.scroll_direction_enum import ScrollDirectionEnum
 from karaburma.elements.objects.element import Element
 from karaburma.elements.objects.roi_element import RoiElement
-from karaburma.utils import general_helpers
-from karaburma.utils.image_processing import ocr_helper, filters_helper
-from karaburma.elements.features.scroll_element_features import ScrollElementDetectionsFeatures
+from karaburma.utils.image_processing import filters_helper
+from utils.ocr import ocr_helper
 from karaburma.utils.objects_tracking.displacement import OcrVerticalDisplacement
 
 

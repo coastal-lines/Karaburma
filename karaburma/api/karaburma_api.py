@@ -52,7 +52,7 @@ class KaraburmaApiService:
                         return JSONResponse(status_code=400,
                                             content={"message": f"'{type_element}' element type is not supported."})
 
-                    result_json = self._karaburma_instance.find_element(type_element, user_image)
+                    result_json = self._karaburma_instance.find_element_in_base64image(type_element, user_image)
 
             return result_json
 

@@ -53,7 +53,7 @@ def calculate_scrolling_shift_by_text_position(img):
             uppers.append(i)
 
     #DEMO
-    finish_image = cv2.cvtColor(list_subject1, cv2.COLOR_GRAY2BGR)
+    finish_image = filters_helper.convert_to_grayscale(list_subject1)
     #for y in uppers:
     #    cv2.line(finish_image, (0, y), (W, y), (255, 0, 0), 1)
     #general_helpers.show(finish_image)

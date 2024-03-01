@@ -18,14 +18,12 @@ class FindManager(TemplateMatchingElement):
 
     def find_all_elements_in_base64image(self, base64image):
         image_source = ImageSourceObject(base64image)
-        #general_helpers.show(image_source.get_current_image_source())
         self.__detection_mode.find_all_elements(image_source)
 
         return image_source
 
     def find_all_elements(self, *args):
         image_source = self.__create_image_source(*args)
-        #general_helpers.show(image_source.get_current_image_source())
         self.__detection_mode.find_all_elements(image_source)
 
         return image_source
@@ -40,6 +38,7 @@ class FindManager(TemplateMatchingElement):
         if hasattr(self.__detection_mode, 'find_table_and_expand'):
             image_source = self.__create_image_source()
             self.__detection_mode.find_table_and_expand(image_source, table_index, read_text_from_cells)
+
             return image_source
         else:
             print("Method 'find Table and expand' not supported for this mode. \n Please use 'screenshot' mode.")

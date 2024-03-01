@@ -1,6 +1,7 @@
 from karaburma.elements.objects.element import Element
-from karaburma.utils import files_helper
-from karaburma.utils.image_processing import ocr_helper, augmentation, filters_helper
+from karaburma.utils.image_processing import augmentation, filters_helper
+from utils.ocr import ocr_helper
+
 
 class InputElement(Element):
     def __init__(self, label, prediction_value, roi):

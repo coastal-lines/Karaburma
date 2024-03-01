@@ -130,7 +130,7 @@ class TablePreprocessing:
         #general_helpers.show(grey_)
 
         # get contours
-        contours, hierarchy = contours_helper.GetContoursByCanny(grey_, 0, 255, True)
+        contours, hierarchy = contours_helper.get_contours_by_canny(grey_, 0, 255, True)
         filtered_contours = contours
 
         #threshold_similarity = 0.5  # Adjust this threshold according to your specific use case

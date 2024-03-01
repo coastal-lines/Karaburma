@@ -8,8 +8,7 @@ def create_orb(image, patchSize = 8):
     return orb.detectAndCompute(image, None)
 
 def prepare_keypoints_and_descriptors_by_ORB(query_img):
-    #query_img_bw = rgb2gray(query_img)
-    query_img_bw = cv2.cvtColor(query_img, cv2.COLOR_BGR2GRAY)
+    query_img_bw = filters_helper.convert_to_grayscale(query_img)
 
     # Initialize the ORB detector algorithm
     orb = cv2.ORB_create(patchSize = 8)
