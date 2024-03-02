@@ -1,41 +1,23 @@
+import asyncio
 import os
 import threading
 import time
 import pytest
+from starlette.testclient import TestClient
 
 from karaburma.api.karaburma_api import KaraburmaApiService
 from utils import files_helper
 
 
 @pytest.fixture
-def karaburma_api_service():
+def karaburma_api_service_file_mode():
+    source_mode = "file"
+    detection_mode = "default"
+    logging = False
     config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
-    api_service = KaraburmaApiService("127.0.0.1", 8000, config_path, "file", "default", False)
+    karaburma = KaraburmaApiService("127.0.0.1", 8900, config_path, source_mode, detection_mode, logging)
 
-    api_service.start_karaburma_service()
+    yield karaburma.get_app()
 
-    time.sleep(2)
+    karaburma.stop_karaburma_service()
 
-    yield api_service
-
-    api_service.stop_karaburma_service()
-
-@pytest.fixture
-def karaburma_api_service_():
-    config_path = os.path.dirname(os.path.realpath("__file__")).replace("\\", "/").replace("tests", "karaburma//config.json")
-    print("\n -------------------------------")
-    print(config_path)
-    print("\n -------------------------------")
-
-    api_service = KaraburmaApiService("127.0.0.1", 8000, config_path, "file", "default", False)
-
-    api_thread = threading.Thread(target=api_service.start_karaburma_service())
-    api_thread.start()
-
-    time.sleep(2)
-
-    yield api_service
-
-    api_service.stop_karaburma_service()
-
-    api_thread.join()

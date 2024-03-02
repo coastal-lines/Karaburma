@@ -1,7 +1,4 @@
 import cv2
-import matplotlib.pyplot as plt
-
-from utils.image_processing import filters_helper
 
 
 def get_regions_and_bounding_Boxes_by_MSER(image):

@@ -49,7 +49,7 @@ def show(img, title=""):
     plt.show()
 
 def draw_contours_and_show(img, rectangles):
-    show(contours_helper.DrawRectangleByListXYWH(img, rectangles))
+    show(contours_helper.draw_rectangle_by_list_xywh(img, rectangles))
 
 
 def extend_screenshot_by_rigth_border(screenshot, additional_width=50, additional_height=0) -> np.ndarray:
@@ -92,7 +92,7 @@ def find_objects_by_contours_and_svm(screenshot, model, rect, categories, dimens
         #print(pred)
         if (pred == type):
             SaveDetectedRegions(img_temp, x1, y1, x2, y2, i)
-            contours_helper.DrawRectangleByPoint(screenshot, (x1, y1), (x2, y2), (246, 41, 144))
+            contours_helper.draw_rectangle_by_point(screenshot, (x1, y1), (x2, y2), (246, 41, 144))
             DrawLabel(screenshot, x1, y1, type)
             count += 1
 
@@ -167,7 +167,7 @@ def find_best_contours_for_svm_results(screenshot, svm_contours, dimension, type
 
     print("Detected number is: " + str(len(results)))
     #draw founded results
-    contours_helper.DrawRectangleByContours(screenshot, results, (0, 255, 0))
+    contours_helper.draw_rectangle_by_contours(screenshot, results, (0, 255, 0))
 
     return results
 

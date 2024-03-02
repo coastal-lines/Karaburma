@@ -80,6 +80,7 @@ def centeroid(point_list):
     length = point_list.shape[0]
     sum_x = np.sum(point_list[:, 0])
     sum_y = np.sum(point_list[:, 1])
+
     return [np.floor_divide(sum_x, length), np.floor_divide(sum_y, length)]
 
 def draw_crosshairs(haystack_img, points):

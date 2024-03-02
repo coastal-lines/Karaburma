@@ -98,7 +98,7 @@ def draw_tables(screenshot_copy_debug, screenshot_elements):
 
         # Draw all cells
         for cell in table.get_cells_area_element().get_list_cells():
-            contours_helper.DrawRectangleByListXYWH(screenshot_copy_debug, [cell.get_roi_element().get_element_features()], TABLE_CELLS_COLOUR, TABLE_CELLS_THICKNES)
+            contours_helper.draw_rectangle_by_list_xywh(screenshot_copy_debug, [cell.get_roi_element().get_element_features()], TABLE_CELLS_COLOUR, TABLE_CELLS_THICKNES)
 
 
 def draw_elements(screenshot_copy_debug, screenshot_elements) -> np.ndarray:

@@ -1,13 +1,11 @@
-import os
+import time
+from starlette.testclient import TestClient
+from tests.conftest import karaburma_api_service_file_mode
 
-from tests.conftest import karaburma_api_service
-from utils import files_helper
 
-
-def test_server_availability(karaburma_api_service):
-    server_is_available = karaburma_api_service.check_server_availability()
-    assert (server_is_available, "'Karaburma' as API service is not available")
-
-def test_test():
-    project_directory = files_helper.get_project_root_path()
-    assert True
+def test_200_OK_server_availability(karaburma_api_service_file_mode):
+    time.sleep(5)
+    client = TestClient(karaburma_api_service_file_mode)
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {'message': 'Uvicorn server was started for Karaburma.'}

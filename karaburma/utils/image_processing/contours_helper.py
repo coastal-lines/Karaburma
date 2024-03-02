@@ -83,6 +83,7 @@ def get_canny(image_bw, lower_threshold, upper_threshold):
 
 def get_contours_by_canny(image_bw, lower_threshold, upper_threshold, external_only=False):
     detected_edges = cv2.Canny(image_bw, lower_threshold, upper_threshold)
+
     #CV_RETR_LIST - without grouping
     #CV_CHAIN_APPROX_SIMPLE —
     if(external_only):
@@ -93,7 +94,6 @@ def get_contours_by_canny(image_bw, lower_threshold, upper_threshold, external_o
     return contours, hierarchy
 
 def get_contours_by_canny_after_approximation(image_bw, lower_threshold, upper_threshold, eps, approximation):
-
     contours, hierarchy = get_contours_by_canny(image_bw, lower_threshold, upper_threshold)
 
     new_contours = []
@@ -120,34 +120,33 @@ def get_contours_after_approximation(image_bw: np.array, approx: int, epsilon: f
 
     return filtered_rectangles
 
-def GetContourLength(contour):
+def get_contour_length(contour):
     return cv2.arcLength(contour, True)
 
-def GetMatchShapes(contour1, contour2):
+def get_match_shapes(contour1, contour2):
     value = cv2.matchShapes(contour1, contour2, 1, 0.0)
     return Decimal(value)
 
-def GetBoxFromContour(contour):
+def get_box_from_contour(contour):
     rect = cv2.minAreaRect(contour) #
     box = cv2.boxPoints(rect) #
     box = np.int0(box) #
+
     return box
 
-def ConvertContoursToRectangles(cnt):
+def convert_contours_to_rectangles(cnt):
     bounding_boxes = []
     for contour in cnt:
         x, y, w, h = cv2.boundingRect(contour)
         bounding_boxes.append((x, y, x + w, y + h))
-        #bounding_boxes.append(x, y, x + w, y + h)
 
     return bounding_boxes
 
-def DrawRectangleByContours(image, contours, color=(0, 255, 0)):
+def draw_rectangle_by_contours(image, contours, color=(0, 255, 0)):
     if(len(contours) > 0):
         for cnt in contours:
             rect = cv2.boundingRect(cnt)
             x, y, w, h = rect
-            #print(x, y, w, h)
             point1 = (x, y)
             point2 = (x + w, y + h)
             cv2.rectangle(image, point1, point2, color, 1)
@@ -156,23 +155,23 @@ def DrawRectangleByContours(image, contours, color=(0, 255, 0)):
 
     return image
 
-def DrawRectangleByRectangles(image, rectangles, color=(0, 255, 0)):
+def draw_rectangle_by_rectangles(image, rectangles, color=(0, 255, 0)):
     for rect in rectangles:
         x1, y1, x2, y2 = rect
         point1 = (x1, y1)
         point2 = (x2, y2)
         cv2.rectangle(image, point1, point2, color, 1)
 
-def DrawRectangleByPoint(image, p1, p2, color=(0, 255, 0), thicknes = 1):
+def draw_rectangle_by_point(image, p1, p2, color=(0, 255, 0), thicknes = 1):
     cv2.rectangle(image, p1, p2, color, thicknes)
 
-def DrawRectangle(image, startX, startY, endX, endY, color=(0, 255, 0)):
+def draw_rectangle(image, startX, startY, endX, endY, color=(0, 255, 0)):
     cv.rectangle(image, (startX, startY), (endX, endY), color, 5)
 
-def DrawRectangleByXYWH(image, x, y, w, h, color=(0, 255, 0), thicknes = 1):
+def draw_rectangle_by_xywh(image, x, y, w, h, color=(0, 255, 0), thicknes = 1):
     cv.rectangle(image, (x, y), (x + w, y + h), color, thicknes)
 
-def DrawRectangleByListXYWH(image, rectangles, color=(0, 255, 0), thicknes=1):
+def draw_rectangle_by_list_xywh(image, rectangles, color=(0, 255, 0), thicknes=1):
     for i in range(len(rectangles)):
         x, y, w, h = rectangles[i][0],rectangles[i][1],rectangles[i][2],rectangles[i][3]
         cv.rectangle(image, (x, y), (x + w, y + h), color, thicknes)
@@ -205,9 +204,6 @@ def draw_rectangle_and_label(image, label, probability, x, y, w, h, colour=(255,
     #draw label
     draw_filled_rectangle_with_frame(image, label, x + w + 20, y - 10)
     cv2.putText(image, label, (x + w + 20, y - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1, cv2.LINE_AA)
-
-    #draw prediction
-    #cv2.putText(image, probability, (x2_line1, y - 40), cv2.FONT_HERSHEY_PLAIN, 1, colour, 1, cv2.LINE_AA)
 
 def draw_rectangle_and_label_for_element(image, element, color=(255, 0, 255), thicknes=1):
     draw_rectangle_and_label(image,
