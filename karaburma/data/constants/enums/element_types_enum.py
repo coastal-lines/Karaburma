@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ElementTypesEnum(Enum):
     button = 1
     checkbox = 2

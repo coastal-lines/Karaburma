@@ -19,7 +19,6 @@ from karaburma.utils import files_helper
 from karaburma.utils.config_manager import ConfigManager
 from karaburma.utils.logging_manager import LoggingManager
 
-#config_reader = ConfigReader()
 
 def train_basic_model(samples_directory, dimension, method=""):
     samples = []

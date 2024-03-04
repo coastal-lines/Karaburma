@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import pyautogui
 
 from karaburma.data.constants.enums.element_types_enum import ElementTypesEnum
 from karaburma.data.constants.enums.scroll_direction_enum import ScrollDirectionEnum
@@ -9,6 +8,7 @@ from karaburma.elements.objects.element import Element
 from karaburma.elements.objects.scroll_element import ScrollElement
 from karaburma.utils.image_processing import filters_helper, geometric_transformations, contours_helper, pattern_matching
 from karaburma.elements.objects.roi_element import RoiElement
+
 
 class TempScrollAttributes:
     def __init__(self, sorted_rectangles, index):
@@ -56,6 +56,7 @@ class ScrollElementDetectionsFeatures():
         y = y_min - self.__shift_threshold_for_scrolls
         w = temp_attributes.current_w + self.__shift_threshold_for_scrolls
         h = temp_attributes.current_h + self.__shift_threshold_for_scrolls + (y_max - y_min)
+
         return x, y, w, h
 
     def __prepare_rectangle_for_horizontal_scroll(self, temp_attributes, x_max, x_min):
@@ -63,6 +64,7 @@ class ScrollElementDetectionsFeatures():
         y = np.min([temp_attributes.current_y, temp_attributes.next_y]) - self.__shift_threshold_for_scrolls
         w = temp_attributes.current_w + self.__shift_threshold_for_scrolls + (x_max - x_min)
         h = temp_attributes.current_h + self.__shift_threshold_for_scrolls
+
         return x, y, w, h
 
     def __init_scroll_button(self, source_element, x, y, w, h, button_type, button_side):
@@ -157,10 +159,8 @@ class ScrollElementDetectionsFeatures():
             label, prediction_value = self.__common_element_features.calculate_scores_for_element(potential_v_scrolls[i].get_roi_element())
 
             if label == ElementTypesEnum.h_scroll.name:
-                #TODO - for debuging only
-                if(prediction_value != 1.0):
-                    potential_v_scrolls[i].get_roi_element().set_roi(original_v_scroll_roi)
-                    potential_v_scrolls[i].update_prediction_value(prediction_value)
+                potential_v_scrolls[i].get_roi_element().set_roi(original_v_scroll_roi)
+                potential_v_scrolls[i].update_prediction_value(prediction_value)
 
         return max(potential_v_scrolls, key=lambda obj: obj.get_prediction_value())
 

@@ -1,6 +1,5 @@
-from typing import Optional
-
 from karaburma.elements.objects.element import Element
+
 
 class ListBoxElement(Element):
     def __init__(self, label, prediction_value, roi):

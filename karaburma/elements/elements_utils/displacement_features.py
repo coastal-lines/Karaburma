@@ -37,9 +37,6 @@ class DisplacementFeatures(DisplacementManager):
 
         match direction:
             case ScrollDirectionEnum.DOWN.name | ScrollDirectionEnum.UP.name:
-                #if type(super()) == OcrVerticalDisplacement:
-                #    y_displacement = super().calculate_displacement(before)
-                #else:
                 y_displacement = self.__calculate_vertical_displacement(before, after)
 
             case ScrollDirectionEnum.RIGHT.name | ScrollDirectionEnum.LEFT.name:
@@ -49,7 +46,6 @@ class DisplacementFeatures(DisplacementManager):
 
     def try_to_find_displacement(self):
         before = filters_helper.convert_to_grayscale(copy.copy(self.__scroll_features.element_with_scroll.get_roi_element().get_roi()))
-
 
         if self.__scroll_features.direction == ScrollDirectionEnum.RIGHT_DOWN.name:
             was_scrolled, roi_element_after_scroll = self.__scroll_features.scroll_element(ScrollDirectionEnum.RIGHT.name)

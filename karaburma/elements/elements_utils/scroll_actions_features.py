@@ -42,11 +42,7 @@ class ScrollActionsFeatures:
                 return True if similarity < 1.0 else False
 
             case ScrollDirectionEnum.DOWN.name:
-                #similarity = general_helpers.calculate_similarity(before[:, self.nested_element_w - (self.nested_element_w // 4):self.nested_element_w],
-                #                                                  after[:, self.nested_element_w - (self.nested_element_w // 4):self.nested_element_w])
-
                 similarity = general_helpers.calculate_similarity(before, after)
-
                 return True if similarity < 1.0 else False
 
             case ScrollDirectionEnum.LEFT.name:
@@ -64,7 +60,7 @@ class ScrollActionsFeatures:
                 return True if similarity_down < 1.0 and similarity_left < 1.0 else False
 
             case _:
-                raise Exception("Date provided can't be in the past")
+                raise Exception(f"Scrollimg direction {direction} was not found.")
 
     def scroll_element(self, current_direction=None):
         before, after = None, None
@@ -73,32 +69,18 @@ class ScrollActionsFeatures:
         match direction:
             case ScrollDirectionEnum.RIGHT.name:
                 before, after = mouse_actions.click_and_return_difference(self.element_with_scroll, self.element_with_scroll.get_h_scroll().get_second_button().get_centroid())
-                #general_helpers.click(self.element_with_scroll.get_h_scroll().get_second_button().get_centroid())
 
             case ScrollDirectionEnum.LEFT.name:
-                #time.sleep(1)
                 before, after = mouse_actions.click_and_return_difference(self.element_with_scroll, self.element_with_scroll.get_h_scroll().get_first_button().get_centroid())
-                #general_helpers.click(self.element_with_scroll.get_h_scroll().get_first_button().get_centroid())
-                #was_scrolled_result = self.was_scrolled(before, self.get_roi_element_after_update(element), element, direction)
 
             case ScrollDirectionEnum.DOWN.name:
                 before, after = mouse_actions.click_and_return_difference(self.element_with_scroll, self.element_with_scroll.get_v_scroll().get_second_button().get_centroid())
-                #general_helpers.click(self.element_with_scroll.get_v_scroll().get_second_button().get_centroid())
 
             case ScrollDirectionEnum.UP.name:
                 before, after = mouse_actions.click_and_return_difference(self.element_with_scroll, self.element_with_scroll.get_v_scroll().get_first_button().get_centroid())
-                #general_helpers.click(self.element_with_scroll.get_v_scroll().get_first_button().get_centroid())
-
-            #case ScrollDirectionEnum.RIGHT_DOWN.name:
-            #    general_helpers.click(self.element_with_scroll.get_v_scroll().get_second_button().get_centroid())
-            #    general_helpers.click(self.element_with_scroll.get_h_scroll().get_second_button().get_centroid())
-
-            #case ScrollDirectionEnum.LEFT_UP.name:
-            #    general_helpers.click(self.element_with_scroll.get_v_scroll().get_first_button().get_centroid())
-            #    general_helpers.click(self.element_with_scroll.get_h_scroll().get_first_button().get_centroid())
 
             case _:
-                print("Something's wrong with the param")
+                print(f"Scrollimg direction {direction} was not found.")
 
         was_scrolled_result = self.__was_scrolled(before, after)
 
@@ -106,19 +88,10 @@ class ScrollActionsFeatures:
 
     def scroll_until_its_possible(self, current_direction=None):
         direction = self.direction if current_direction == None else current_direction
-        '''
-        match direction:
-            case ScrollDirectionEnum.LEFT.name:
-                if self.scroll_element(ScrollDirectionEnum.LEFT.name)[0]:
-                    # TODO - add log
-                    print("click left")
-                    self.scroll_until_its_possible(direction)
-        '''
 
         match direction:
             case ScrollDirectionEnum.LEFT.name:
                 if self.scroll_element(ScrollDirectionEnum.LEFT.name)[0]:
-                    # TODO - add log
                     print("click left")
                     self.scroll_until_its_possible(direction)
                 else:

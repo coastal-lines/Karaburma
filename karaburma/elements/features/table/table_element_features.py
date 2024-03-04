@@ -8,10 +8,9 @@ from karaburma.elements.elements_utils.stitching_features import StitchingFeatur
 from karaburma.elements.objects.screenshot_element import ImageSourceObject
 from karaburma.elements.elements_utils.scroll_actions_features import ScrollActionsFeatures
 from karaburma.elements.objects.roi_element import RoiElement
-from karaburma.utils import general_helpers
 from karaburma.elements.objects.table.table_element import TableElement
 from karaburma.utils.config_manager import ConfigManager
-from karaburma.utils.image_processing import filters_helper, contours_helper, morphological_helpers
+from karaburma.utils.image_processing import filters_helper
 from karaburma.elements.features.table.table_cells_features import TableCellsFeatures
 from karaburma.elements.features.scroll_element_features import ScrollElementDetectionsFeatures
 from karaburma.utils.objects_tracking.displacement import OrbBfHomographicalDisplacement
@@ -35,11 +34,9 @@ class TableElementFeatures(TablePreprocessing):
 
     @image_source.setter
     def image_source(self, screenshot: ImageSourceObject):
-        print("Setting value")
         self.__image_source = screenshot
 
     def __blur_table_area(self, table_roi):
-
         # Do blur for current roi
         updated_screenshot = self.image_source.get_current_image_source().copy()
 
@@ -87,7 +84,6 @@ class TableElementFeatures(TablePreprocessing):
         stitched_table_roi_element = RoiElement(stitched_table, 0, 0, stitched_table.shape[1], stitched_table.shape[0], "table")
         stitched_table_element = self.__find_table_on_extended_table(stitched_table_roi_element, read_text_from_cells)
         desired_table.set_full_table_area(stitched_table_roi_element, stitched_table_element)
-        print("")
 
     def find_all_tables(self, image_source, blur_after_searching=True):
         self.image_source = image_source
@@ -95,8 +91,6 @@ class TableElementFeatures(TablePreprocessing):
 
         for tables_group in tables_groups:
             best_roi = sorted(tables_group, key=itemgetter(1), reverse=True)[0][0]
-            #general_helpers.show(best_roi.get_roi())
-            #files_helper.save_image(best_roi.get_roi())
 
             # Find scrolls here
             h_scroll, v_scroll = self.__scroll_element_features.find_scrolls(best_roi)
@@ -136,14 +130,9 @@ class TableElementFeatures(TablePreprocessing):
                     self.__set_full_table_to_element(desired_table, stitched_table, read_text_from_cells)
 
                 elif desired_table.get_v_scroll() is None and desired_table.get_h_scroll() is None:
-                    # TODO
                     print("Table doesn't have any scrolls")
 
-                #general_helpers.show(self.image_source.get_table_elements()[table_index].get_full_table_area().get_roi_element().get_roi())
-
             else:
-                #TODO
                 print("Wrong table index")
         else:
-            # TODO
             print("Tables were no found")

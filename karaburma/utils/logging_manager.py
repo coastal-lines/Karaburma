@@ -2,7 +2,6 @@ import inspect
 from loguru import logger
 
 class LoggingManager():
-
     def __prepare_callstack(self):
         current_callstack_list = []
 

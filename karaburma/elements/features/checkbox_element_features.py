@@ -8,6 +8,7 @@ from karaburma.utils import general_helpers
 from karaburma.utils.image_processing import filters_helper, contours_helper
 from karaburma.elements.objects.roi_element import RoiElement
 
+
 class CheckboxElementFeatures():
 
     def try_to_find_squares(self, image):
@@ -42,65 +43,46 @@ class CheckboxElementFeatures():
         rects = np.array([[x, y, x + w, y + h] for (x, y, w, h) in valid_squares])
         pick = imutils.object_detection.non_max_suppression(rects, probs=None, overlapThresh=0.5)
 
-        # contours_helper.DrawRectangleByRectangles(image, pick)
-        # general_helpers.show(image)
         return pick
 
     def try_to_find_text(self, image, squares):
-        #pytesseract.pytesseract.tesseract_cmd = 'c:\\Users\\User\\AppData\\Local\\Programs\\Tesseract-OCR\\tesseract.exe'
-        #text = pytesseract.image_to_string(gray, lang='eng', config="--psm 10 --oem 3")
-        #text_data = pytesseract.image_to_data(gray, output_type=pytesseract.Output.DICT)
-
         final_rects = []
         for square in squares:
             roi = general_helpers.get_roi(image, square[0], square[1], square[2] + 100, square[3])
-
-            # image = cv2.imread(r"F:\Data\Work\OwnProjects\Python\Demo_Screens\2_4.bmp")
             gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+
             pytesseract.pytesseract.tesseract_cmd = 'c:\\Users\\User\\AppData\\Local\\Programs\\Tesseract-OCR\\tesseract.exe'
             text = pytesseract.image_to_string(gray, lang='eng', config="--psm 6 --oem 3")
-            # text_data = pytesseract.image_to_data(gray, output_type=pytesseract.Output.DICT)
             text_data = pytesseract.image_to_data(gray, output_type=pytesseract.Output.DICT, lang='eng', config="--psm 10 --oem 3")
 
             # Step 3: Text Contour Extraction
             the_extreme_right_point = 0
-            #contours = []
             for i, conf in enumerate(text_data['conf']):
                 if conf > 0:  # Filter out non-text regions
                     x = text_data['left'][i]
                     y = text_data['top'][i]
                     w = text_data['width'][i]
                     h = text_data['height'][i]
-                    #if (w < 250 and w > 10 and h < 40 and h > 5):
-                    #contours.append((x, y, w, h))
 
                     if (the_extreme_right_point < x + w):
                         the_extreme_right_point = x + w
 
-                    #если текст не был найден
+                    # If text was not found
                     if (the_extreme_right_point == 0):
                         the_extreme_right_point = 100
 
-            #rects = np.array([[x, y, x + w, y + h] for (x, y, w, h) in contours])
-            # without strong text borders checking - just plus W and H to curent checkbox
-            #if (len(rects) > 0):
-                # final_rects.append((square[0], square[1], rects[-1][0] + rects[-1][2], rects[-1][1] + rects[-1][3]))
-
-            #ПРОБА! - добавлен небольшой дополнителньый сдвиг
+            # Add additional little shift
             final_rects.append((square[0] - 2, square[1] - 2, square[0] + the_extreme_right_point - 2, square[3] + 2))
-
-        #contours_helper.DrawRectangleByRectangles(image, final_rects[:1])
-        #general_helpers.show(image)
 
         return final_rects
 
-    #not used for simple checkbox solution
+    # Not used for simple checkbox solution
     def get_rectangle_centre(self, rect):
         x_centre = (rect[0] + rect[2]) / 2
         y_centre = (rect[1] + rect[3]) / 2
         return x_centre, y_centre
 
-    #not used for simple checkbox solution
+    # Not used for simple checkbox solution
     def combine_text_rectangles(self, squares, text_rects):
 
         final_checkbox_rect = []
@@ -134,16 +116,13 @@ class CheckboxElementFeatures():
         return final_checkbox_rect
 
     def find_contours_for_checkbox_elements(self, screenshot_elements):
-
         list_of_roi = []
 
         squares = self.try_to_find_squares(screenshot_elements.get_current_image_source())
         text_rects = self.try_to_find_text(screenshot_elements.get_current_image_source(), squares)
-        #final_checkbox_rect = self.combine_text_rectangles(squares, text_rects)
 
-        #for rect in final_checkbox_rect:
+        # For rect in final_checkbox_rect:
         for rect in text_rects:
-            #shift = 2
             shift = 0 #it discard white borders
 
             x = rect[0]
@@ -154,9 +133,7 @@ class CheckboxElementFeatures():
             temp_image = screenshot_elements.get_current_image_source()[y - 2:y + h + 2, x - 2:x + w + 2, :]
             temp_image_with_board = np.ones((h + (shift * 2) + 4, w + (shift * 2) + 4, 3), dtype=np.uint8) * 255
             temp_image_with_board[shift:temp_image_with_board.shape[0] - shift, shift:temp_image_with_board.shape[1] - shift, :] = temp_image
-            #general_helpers.show(temp_image_with_board)
 
-            #screenshot_elements.add_roi(RoiElement(temp_image_with_board, x, y, w, h, "checkbox"))
             list_of_roi.append(RoiElement(temp_image_with_board, x, y, w, h, "checkbox"))
 
         return list_of_roi

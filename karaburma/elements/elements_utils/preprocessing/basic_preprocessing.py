@@ -10,7 +10,6 @@ from karaburma.utils.image_processing import filters_helper, morphological_helpe
 
 
 class BasicPreprocessing:
-
     def prepare_image(self, image_source):
         gr = filters_helper.convert_to_grayscale(image_source.get_current_image_source())
         sh = filters_helper.sharp(gr, "strong")
@@ -30,6 +29,7 @@ class BasicPreprocessing:
         min_h = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["min_h"]
         max_w = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["max_w"]
         max_h = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["max_h"]
+
         return min_w, min_h, max_w, max_h
 
     def prepare_contours(self, contours):
@@ -76,6 +76,7 @@ class BasicPreprocessing:
         mean_binary = skimage.img_as_ubyte(mean_binary)
         coordinates = harris.applay_harris_and_get_coordinates(mean_binary)
         coords = np.zeros((harris_array, 2))
+
         #fill coordinates according "harris_array_size" parameter
         coords[:coordinates.shape[0], :] = coordinates[0:harris_array, :]
 

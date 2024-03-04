@@ -1,6 +1,6 @@
 from karaburma.elements.objects.element import Element
 from karaburma.utils.image_processing import augmentation, filters_helper
-from utils.ocr import ocr_helper
+from karaburma.utils.ocr import ocr_helper
 
 
 class ButtonElement(Element):

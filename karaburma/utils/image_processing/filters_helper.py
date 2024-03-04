@@ -1,10 +1,6 @@
-import inspect
-
 import cv2
 import skimage
-import cv2 as cv
 import numpy as np
-import matplotlib.pyplot as plt
 from skimage.filters import threshold_local, threshold_mean, threshold_minimum, threshold_otsu, threshold_li, \
     threshold_isodata, threshold_triangle, threshold_yen
 
@@ -82,8 +78,8 @@ def sharp(img, type):
 
     return img
 
-def threshold(img, min, max):
-    ret, th = cv2.threshold(img, min, max, cv2.THRESH_BINARY)
+def threshold(img, min, max, threshold_type=cv2.THRESH_BINARY):
+    ret, th = cv2.threshold(img, min, max, threshold_type)
     return ret, th
 
 def adaptive_threshold(img, max_value, block_size, constant):
@@ -94,11 +90,10 @@ def BlendedThreshold(img):
     ret, th1 = cv2.threshold(img, 150, 255, cv2.THRESH_BINARY)
     th2 = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 8)
     blended = cv2.addWeighted(src1=th1, alpha=0.6, src2=th2, beta=0.4, gamma=0)
+
     return blended
 
 def try_threshold(grayscale_image, block_size_min=3, block_size_max=11):
-    #local_thresh = threshold_local(grayscale_image, block_size=block_size, offset=3)
-
     binary_local = []
 
     for i in range(block_size_min, block_size_max, 2):
@@ -141,39 +136,6 @@ def try_threshold(grayscale_image, block_size_min=3, block_size_max=11):
         yen_binary = skimage.img_as_ubyte(grayscale_image.copy() > threshold_yen(grayscale_image))
     except:
         yen_binary = np.zeros((255, 255), dtype=int)
-
-    '''
-    f, axarr = plt.subplots(3, 3)
-
-    axarr[0, 0].imshow(isodata_binary, cmap='gray')
-    axarr[0, 0].set_title("Isodata")
-
-    axarr[0, 1].imshow(minimum_binary, cmap='gray')
-    axarr[0, 1].set_title("Minimum")
-
-    axarr[0, 2].imshow(binary_local[0], cmap='gray')
-    axarr[0, 2].set_title("Binary")
-
-    axarr[1, 0].imshow(mean_binary, cmap='gray')
-    axarr[1, 0].set_title("Mean")
-
-    axarr[1, 1].imshow(otsu_binary, cmap='gray')
-    axarr[1, 1].set_title("Otsu")
-
-    axarr[1, 2].imshow(grayscale_image, cmap='gray')
-    axarr[1, 2].set_title("Image")
-
-    axarr[2, 0].imshow(triangle_binary, cmap='gray')
-    axarr[2, 0].set_title("Triangle")
-
-    axarr[2, 1].imshow(yen_binary, cmap='gray')
-    axarr[2, 1].set_title("Yen")
-
-    axarr[2, 2].imshow(li_binary, cmap='gray')
-    axarr[2, 2].set_title("li_binary")
-
-    plt.show()
-    '''
 
     return binary_local, mean_binary, minimum_binary, otsu_binary, li_binary, isodata_binary, triangle_binary, yen_binary
 

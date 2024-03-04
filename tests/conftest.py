@@ -1,9 +1,5 @@
-import asyncio
 import os
-import threading
-import time
 import pytest
-from starlette.testclient import TestClient
 
 from karaburma.api.karaburma_api import KaraburmaApiService
 from utils import files_helper

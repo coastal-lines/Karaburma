@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 
 
 class BaseFindActions(ABC):
-
     def get_source_image(self):
         pass
 

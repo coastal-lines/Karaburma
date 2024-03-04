@@ -38,8 +38,6 @@ class ListboxPreprocessing:
         colours = filters_helper.calculate_white_colour(grey_)
         prepared_img = self.image_processing_for_listbox(grey_)
 
-        #general_helpers.show(prepared_img)
-
         train_image_dimension = ConfigManager().config.elements_parameters.listbox.preprocessing["sample_dimension"]
         resized_prepared_img = np.array(PIL_Image.fromarray(prepared_img).resize(tuple(train_image_dimension), PIL_Image.BICUBIC))
 
@@ -54,7 +52,7 @@ class ListboxPreprocessing:
         return concatenated_features
 
     def get_contours_for_listbox(self, image: np.array):
-        results = []
+        filtered_contours = []
 
         grey_ = self.image_processing_for_listbox(image)
 
@@ -67,21 +65,13 @@ class ListboxPreprocessing:
             x, y, w, h = cv2.boundingRect(contours[i])
             if (min_w < w < max_w and min_h < h < max_h):
                 parent_index = hierarchy[0][i][3]
-                #print(parent_index)
 
-                # the parent contour may turn out to be the global contour, i.e., it can be excluded
-                # check the parent even if its parent index is not equal to "-1"
+                # The parent contour may turn out to be the global contour, i.e., it can be excluded
+                # Check the parent even if its parent index is not equal to "-1"
                 if(parent_index != -1):
                     temp_parent_x, temp_parent_y, temp_parent_w, temp_parent_h = cv2.boundingRect(contours[parent_index])
                     if(temp_parent_w > w * 1.5 or temp_parent_h > h * 1.5):
-                        results.append((x, y, w, h))
-                        #cv2.drawContours(screenshot, [contours[i]], -1, (0, 255, 0), 1)
-
-        #general_helpers.show(screenshot)
-
-        #DEBUG - most likely no need to filter. Cleared through contours.
-        #filtered_contours = contours_helper.remove_similar_contours(results, 0.1)
-        filtered_contours = results
+                        filtered_contours.append((x, y, w, h))
 
         return filtered_contours
 

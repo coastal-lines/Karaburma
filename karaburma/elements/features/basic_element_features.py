@@ -1,15 +1,5 @@
-import os
-from skimage.io import imread as sk_image_reader
 import numpy as np
-import skimage
-import skimage as sk
-import imutils.object_detection
-import cv2
-import imutils.object_detection
-from skimage.filters import threshold_mean
-from sklearn import svm
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
+
 from karaburma.data.constants.enums.element_types_enum import ElementTypesEnum
 from karaburma.elements.elements_utils.preprocessing.basic_preprocessing import BasicPreprocessing
 from karaburma.elements.features.checkbox_element_features import CheckboxElementFeatures
@@ -25,7 +15,6 @@ from karaburma.utils.logging_manager import LoggingManager
 
 
 class BasicElementFeatures(BasicPreprocessing):
-
     def __init__(self, basic_model):
         self.__image_source = None
         self.__basic_model = basic_model
@@ -57,6 +46,7 @@ class BasicElementFeatures(BasicPreprocessing):
         elif roi.get_class_feature() == ElementTypesEnum.checkbox.name:
             roi_predictions_proba = ConfigManager().config.elements_parameters.common_element.weights["checkbox"]
             temp_predictions = predictions_proba[0] * np.array(roi_predictions_proba)
+
             # Do normalize - each value divide by sum
             new_predictions = temp_predictions / np.sum(temp_predictions)
             index_of_max_scrore = np.where(new_predictions == new_predictions.max())[0][0]
@@ -66,6 +56,7 @@ class BasicElementFeatures(BasicPreprocessing):
         elif (roi.get_class_feature() == ElementTypesEnum.h_scroll.name or roi.get_class_feature() == ElementTypesEnum.v_scroll.name):
             roi_predictions_proba = ConfigManager().config.elements_parameters.common_element.weights["scroll"]
             temp_predictions = predictions_proba[0] * np.array(roi_predictions_proba)
+
             # Do normalize - each value divide by sum
             new_predictions = temp_predictions / np.sum(temp_predictions)
             index_of_max_scrore = np.where(new_predictions == new_predictions.max())[0][0]
@@ -75,6 +66,7 @@ class BasicElementFeatures(BasicPreprocessing):
         elif roi.get_class_feature() == None:
             roi_predictions_proba = ConfigManager().config.elements_parameters.common_element.weights["non"]
             temp_predictions = predictions_proba[0] * np.array(roi_predictions_proba)
+
             # Do normalize - each value divide by sum
             new_predictions = temp_predictions / np.sum(temp_predictions)
             index_of_max_scrore = np.where(new_predictions == new_predictions.max())[0][0]
@@ -143,7 +135,6 @@ class BasicElementFeatures(BasicPreprocessing):
         self.__image_source.add_elements(temp_list_elements)
 
     def find_all_elements(self, screenshot_elements):
-
         for type in [ElementTypesEnum.button,
                      ElementTypesEnum.combobox,
                      ElementTypesEnum.input,

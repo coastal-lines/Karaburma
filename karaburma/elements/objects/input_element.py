@@ -1,6 +1,6 @@
 from karaburma.elements.objects.element import Element
 from karaburma.utils.image_processing import augmentation, filters_helper
-from utils.ocr import ocr_helper
+from karaburma.utils.ocr import ocr_helper
 
 
 class InputElement(Element):
@@ -13,12 +13,7 @@ class InputElement(Element):
         _, img = filters_helper.threshold(img, 127, 255)
         img = augmentation.bicubic_resize(img, (img.shape[1] * 1, img.shape[0] * 1))
 
-        #DEBUG
-        #files_helper.save_image(img)
         self.__text = ocr_helper.get_text(img, "--psm 3 --oem 3").replace(" ", "").replace("\n", "")
-
-        #DEBUG
-        print("input text: ", self.__text)
 
     def get_text(self):
         return self.__text

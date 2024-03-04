@@ -14,7 +14,4 @@ def draw_rectangles_for_MSER(boundingBoxes, image):
         x, y, w, h = box
         cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 1)
 
-        # this is for checking each region
-        # image = vis[y:y + h, x:x + w]
-
     return image

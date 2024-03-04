@@ -1,6 +1,4 @@
 from karaburma.navigation.object_detection.default_actions.common_ml_find_actions import CommonMlFindActions
-from karaburma.utils import general_helpers
-from karaburma.utils.debug import draw_elements
 
 
 class ScreenshotMlFindActions(CommonMlFindActions):
@@ -12,15 +10,9 @@ class ScreenshotMlFindActions(CommonMlFindActions):
         self.table_element_features.image_source = image_source
         self.table_element_features.find_table_and_expand(table_index, read_text_from_cells)
 
-        # DEBUG
-        #draw_elements(image_source.get_current_image_source_copy(), image_source)
-
+    # TODO
     def find_table_cell(self, image_source, column, row):
-        #TODO
-        table = self.find_table_and_expand(image_source)
-        #TODO
-        #get cell by index
-        #APP_DATA.table_features.test_horizontal_sroll_and_stich(screenshot_elements)
+        pass
 
     def find_listbox_and_expand(self, image_source, listbox_index):
         self.listbox_element_features.find_listbox_and_expand(image_source, listbox_index)

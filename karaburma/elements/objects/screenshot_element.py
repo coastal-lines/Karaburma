@@ -1,4 +1,5 @@
 import copy
+
 from karaburma.data.constants.enums.element_types_enum import ElementTypesEnum
 from karaburma.elements.objects.element import Element
 

@@ -1,5 +1,3 @@
-from typing import Optional
-
 from karaburma.elements.objects.roi_element import RoiElement
 
 

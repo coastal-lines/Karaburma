@@ -1,10 +1,8 @@
 import argparse
 import asyncio
 import os
-import time
 import traceback
 import uvicorn
-import requests
 from http.client import HTTPException
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -196,12 +194,12 @@ class KaraburmaApiService:
         return self.__app
 
     async def start_karaburma_service(self):
-        uvicorn_config = uvicorn.Config(app=self.__app, host=self._host, port=self._port)
+        uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port)
         self.__server = uvicorn.Server(uvicorn_config)
         await self.__server.serve()
 
     async def start_karaburma_service_(self):
-        uvicorn_config = uvicorn.Config(app=self.__app, host=self._host, port=self._port)
+        uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port)
         self.__server = uvicorn.Server(uvicorn_config)
         asyncio.run(self.__server.serve())
 

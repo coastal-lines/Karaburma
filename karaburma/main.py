@@ -3,7 +3,6 @@ import datetime
 import os
 from loguru import logger
 
-
 from karaburma.navigation.find_manager import FindManager
 from karaburma.navigation.object_detection.default_actions.common_ml_find_actions import CommonMlFindActions
 from karaburma.navigation.object_detection.default_actions.screenshot_ml_find_actions import ScreenshotMlFindActions
@@ -18,7 +17,6 @@ from karaburma.utils import general_helpers
 
 class Karaburma:
     def __init__(self, config_path, source_mode, detection_mode, logging):
-
         self.config = ConfigManager(config_path)
         self.source_mode = source_mode
         self.detection_mode = detection_mode
@@ -141,17 +139,6 @@ class Karaburma:
 karaburma = None
 
 if __name__ == "__main__":
-    '''
-    config_path = r"Karaburma\karaburma\config.json"
-    source_mode = "file"
-    detection_mode = "default"
-    logging = False
-
-    global_config = ConfigManager(config_path)
-
-    karaburma = Karaburma(config_path, source_mode, detection_mode, logging)
-    '''
-
     # Create command line parser
     parser = argparse.ArgumentParser()
 

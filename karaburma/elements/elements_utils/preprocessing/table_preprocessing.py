@@ -8,11 +8,12 @@ from skimage.filters import threshold_otsu
 from skimage.util import img_as_ubyte
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
+
 from karaburma.elements.objects.roi_element import RoiElement
 from karaburma.elements.objects.screenshot_element import ImageSourceObject
 from karaburma.utils.config_manager import ConfigManager
 from karaburma.utils.image_processing import filters_helper, contours_helper, morphological_helpers
-from karaburma.utils import data_normalization, general_helpers
+from karaburma.utils import data_normalization
 
 
 class TablePreprocessing:
@@ -25,7 +26,6 @@ class TablePreprocessing:
 
     @image_source.setter
     def image_source(self, screenshot: ImageSourceObject):
-        print("Setting value")
         self.__image_source = screenshot
 
     def __resize_source_image_and_apply_filter(self, roi):
@@ -67,16 +67,10 @@ class TablePreprocessing:
         resized_image = self.__resize_source_image_and_apply_filter(roi)
         preprocessed_image = self.__find_structure(resized_image, (800, 800))
 
-        #cv2.imwrite("Projects\\test6" + "\\" + f, otsu_binary)
-        #general_helpers.show(otsu_binary)
-
         harris_corners = cv2.cornerHarris(preprocessed_image, 2, 3, 0.04)
         threshold = 0.01 * harris_corners.max()
         corner_response_thresholded = harris_corners > threshold
         current_points = np.argwhere(corner_response_thresholded)
-
-        #points.append(len(current_points))
-        #print("Points: " + str(len(current_points)))
 
         num_clusters = 16
         # random_state=102 - It is important because, for tasks like Harris corner detection and table recognition,
@@ -88,7 +82,6 @@ class TablePreprocessing:
         try:
             kmeans.fit(current_points)
             cluster_centers = kmeans.cluster_centers_.astype(int)
-            #print("Centres: " + str(len(cluster_centers)))
 
             X = np.sort(cluster_centers[:, 0])
             Y = np.sort(cluster_centers[:, 1])
@@ -110,7 +103,6 @@ class TablePreprocessing:
 
         except:
             print("Error. No cluster centres for: ")
-            #cv2.imwrite("Projects\\test6" + "\\" + image_path.split("\\")[-1], otsu_binary)
             combined_array = [np.array([0, 0]) for _ in range(num_clusters)]
 
         scaler = MinMaxScaler()
@@ -127,21 +119,15 @@ class TablePreprocessing:
         grey_ = cv2.filter2D(src=grey_, ddepth=-1, kernel=kernel1)
         grey_ = morphological_helpers.dilation(grey_)
 
-        #general_helpers.show(grey_)
-
-        # get contours
+        # Get contours
         contours, hierarchy = contours_helper.get_contours_by_canny(grey_, 0, 255, True)
         filtered_contours = contours
 
-        #threshold_similarity = 0.5  # Adjust this threshold according to your specific use case
-        #filtered_contours = contours_helper.remove_similar_contours(contours, threshold_similarity)
+        # Adjust this threshold according to your specific use case
         rectangles = []
         for i in range(len(filtered_contours)):
             x, y, w, h = cv2.boundingRect(filtered_contours[i])
             rectangles.append((x, y, w, h))
-            #DrawRectangleByXYWH(screenshot_elements.get_current_screenshot(), x, y, w, h)
-
-        #general_helpers.show(screenshot_elements.get_current_screenshot())
 
         min_w = ConfigManager().config.elements_parameters.table.contours_parameters["min_w"]
         max_w = ConfigManager().config.elements_parameters.table.contours_parameters["max_w"]
@@ -152,19 +138,11 @@ class TablePreprocessing:
         for i in range(len(contours)):
             x, y, w, h = cv2.boundingRect(contours[i])
 
-            #if ((w > min_w) and (h < max_h) and (h > min_h) and (w < max_w)):
             if min_w < w < max_w and min_h < h < max_h:
                 result_rectangles.append((x, y, w, h))
 
-                #DEBUG
-                #DrawRectangleByXYWH(screenshot_elements.get_current_screenshot(), x, y, w, h)
-                #print(i)
-
         if(len(result_rectangles) > 0):
-            #result_rectangles = keep_one_rectangle_per_cluster(result_rectangles)
-
             contours_threshold_for_x = ConfigManager().config.elements_parameters.table.contours_parameters["contours_threshold_for_x"]
-            #final_contours_threshold = 2
             groups_x = []
             df = pd.DataFrame(result_rectangles)
             sorted_df = df.sort_values(by=0)
@@ -182,22 +160,13 @@ class TablePreprocessing:
 
             if(len(super_result_rectangles) > 0):
                 # cut images
-                #for i in range(len(result_contours)):
                 for i in range(len(super_result_rectangles)):
                     shift = ConfigManager().config.elements_parameters.table.contours_parameters["roi_shift"]
-                    #DEBUG
-                    #shift = 9
-                    #shift = 4
 
                     x = super_result_rectangles[i][0]
                     y = super_result_rectangles[i][1]
                     w = super_result_rectangles[i][2]
                     h = super_result_rectangles[i][3]
-                    #w = result_rectangles[i][2] - result_rectangles[i][0]
-
-                    #h = result_rectangles[i][3] - result_rectangles[i][1]
-
-                    #DrawRectangleByXYWH(screenshot_elements.get_current_screenshot(), x, y, w, h)
 
                     if(y - shift > 0 and x - shift > 0):
                         temp_image = self.image_source.get_current_image_source()[y - shift:y + h + shift, x - shift:x + w + shift, :]
@@ -205,13 +174,6 @@ class TablePreprocessing:
                     else:
                         temp_image = self.image_source.get_current_image_source()[y:y + h + shift, x:x + w + shift, :]
                         list_of_roi.append(RoiElement(temp_image, x, y, w, h))
-                    #general_helpers.show(temp_image)
-
-                    #cv2.imwrite(r"Projects\temp_for_contours" + "\\" + screen.path + str(generate_random_string(9)) + ".png", cv2.cvtColor(temp_image, cv2.COLOR_BGR2RGB))
-
-                    #screenshot_elements.add_roi(RoiElement(temp_image, x, y, w, h))
-
-
         else:
             print("Potential table was not found")
 
@@ -222,7 +184,6 @@ class TablePreprocessing:
         colours = filters_helper.calculate_white_colour(roi)
         filtered_centers = self.__table_image_processing(roi)
         filtered_centers = np.squeeze(filtered_centers.reshape((filtered_centers.shape[0], -1))).flatten()
-        concatenated_features = None
 
         for j in range(len(filtered_centers)):
             if (math.isnan(filtered_centers[j])):
@@ -246,8 +207,6 @@ class TablePreprocessing:
         for i in range(len(list_of_roi)):
             concatenated_features = self.prepare_features_for_table_image(list_of_roi[i].get_roi())
 
-            #files_helper.save_image(list_of_roi[i].get_roi())
-
             predictions = tables_model.predict([concatenated_features])
             predictions_proba = tables_model.predict_proba([concatenated_features])
 
@@ -270,7 +229,10 @@ class TablePreprocessing:
             found_group = False
             for table_group in tables_groups:
                 x_, y_, w_, h_ = table_group[0][0].get_element_features()
-                group_centroid = contours_helper.get_rect_centroid([x_, y_, w_, h_])  # Get centroid of the first rectangle in the group
+
+                # Get centroid of the first rectangle in the group
+                group_centroid = contours_helper.get_rect_centroid([x_, y_, w_, h_])
+
                 distance = np.sqrt((centroid[0] - group_centroid[0]) ** 2 + (centroid[1] - group_centroid[1]) ** 2)
                 if distance <= threshold_distance_between_tables:
                     table_group.append(all_tables[i])
@@ -281,5 +243,4 @@ class TablePreprocessing:
             if not found_group:
                 tables_groups.append([all_tables[i]])
 
-        print("")
         return tables_groups
