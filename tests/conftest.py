@@ -1,19 +1,19 @@
+import asyncio
 import os
-import pytest
+import pytest_asyncio
 
 from karaburma.api.karaburma_api import KaraburmaApiService
-from utils import files_helper
+from karaburma.utils import files_helper
 
 
-@pytest.fixture
-def karaburma_api_service_file_mode():
-    source_mode = "file"
-    detection_mode = "default"
-    logging = False
+@pytest_asyncio.fixture
+async def setup_karaburma_api_file_mode():
     config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
-    karaburma = KaraburmaApiService("127.0.0.1", 8900, config_path, source_mode, detection_mode, logging)
+    karaburma = KaraburmaApiService("127.0.0.1", 8900, config_path, "file", "default", False)
+
+    karaburma.start_karaburma_service_for_test_fixtures()
+    await asyncio.sleep(5)
 
     yield karaburma.get_app()
 
-    karaburma.stop_karaburma_service()
-
+    await karaburma.stop_karaburma_service()

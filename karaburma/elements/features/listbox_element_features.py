@@ -57,13 +57,14 @@ class ListboxElementFeatures(ListboxPreprocessing):
 
         return str(text_list)
 
-    def find_listboxes(self, image_source):
-        list_listboxes = super().listbox_element_classification(image_source.get_current_image_source())
-        image_source.add_elements(list_listboxes)
+    def find_listboxes(self, image_source_object):
+        list_listboxes = super().listbox_element_classification(image_source_object.get_current_image_source())
+        return list_listboxes
+        #image_source_object.add_elements(list_listboxes)
 
-    def find_listbox_and_expand(self, image_source, listbox_index):
-        list_listboxes = self.find_listboxes(image_source.get_current_image_source())
-        image_source.add_elements(list_listboxes)
+    def find_listbox_and_expand(self, image_source_object, listbox_index):
+        list_listboxes = self.find_listboxes(image_source_object)
+        image_source_object.add_elements(list_listboxes)
 
         if (len(list_listboxes) > 0):
             stitched_listbox_roi = self.__get_stitched_list_box(list_listboxes[listbox_index], list_listboxes[listbox_index].textarea)

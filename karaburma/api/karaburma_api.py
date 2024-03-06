@@ -28,13 +28,13 @@ class KaraburmaApiService:
         # Router
         # Endpoint http://127.0.0.1:8900/
         @self.__app.get("/", status_code=status.HTTP_200_OK)
-        def root_selfcheck():
+        async def root_selfcheck():
             return JSONResponse(content={"message": "Uvicorn server was started for Karaburma."})
 
         # Router
         # Endpoint http://127.0.0.1:8900/api/v1/base64image
         @self.__app.post("/api/v1/base64image/", status_code=status.HTTP_200_OK)
-        def user_base64image_find_element(request_params: Base64ElementRequest):
+        async def user_base64image_find_element(request_params: Base64ElementRequest):
             result_json = dict()
 
             base64_image = request_params.base64_image
@@ -57,7 +57,7 @@ class KaraburmaApiService:
         # Router
         # Endpoint http://127.0.0.1:8900/api/v1/base64image/image_pattern
         @self.__app.post("/api/v1/base64image/image_pattern", status_code=status.HTTP_200_OK)
-        def user_base64image_find_element(request_params: Base64PatternElementRequest):
+        async def user_base64image_find_element(request_params: Base64PatternElementRequest):
             result_json = dict()
 
             base64_image = request_params.base64_image
@@ -80,7 +80,7 @@ class KaraburmaApiService:
         # Router
         # Endpoint http://127.0.0.1:8900/api/v1/file/
         @self.__app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
-        def user_file_find_element(request_params: FileElementRequest):
+        async def user_file_find_element(request_params: FileElementRequest):
             result_json = dict()
 
             image_file_path = request_params.image_file_path
@@ -101,7 +101,7 @@ class KaraburmaApiService:
         # Router
         # Endpoint http://127.0.0.1:8900/api/v1/file/image_pattern
         @self.__app.post("/api/v1/file/image_pattern", status_code=status.HTTP_200_OK)
-        def user_file_find_element(request_params: FileImagePatternElementRequest):
+        async def user_file_find_element(request_params: FileImagePatternElementRequest):
             result_json = dict()
 
             image_pattern_type_element = request_params.image_pattern_type_element
@@ -129,7 +129,7 @@ class KaraburmaApiService:
         # Router
         # Endpoint http://127.0.0.1:8900/api/v1/screenshot
         @self.__app.post("/api/v1/screenshot/", status_code=status.HTTP_200_OK)
-        def user_screenshot_find_element(request_params: ScreenshotElementRequest):
+        async def user_screenshot_find_element(request_params: ScreenshotElementRequest):
             result_json = dict()
 
             type_element = request_params.type_element
@@ -142,6 +142,8 @@ class KaraburmaApiService:
                 case ElementTypesEnum.listbox.name:
                     if is_fully_expanded:
                         result_json = self.__karaburma_instance.find_listbox_and_expand(0)
+                    else:
+                        result_json = self.__karaburma_instance.find_all_elements(type_element)
                 case "all":
                     result_json = self.__karaburma_instance.find_all_elements()
                 case _:
@@ -157,7 +159,7 @@ class KaraburmaApiService:
         # Router
         # Endpoint http://127.0.0.1:8900/api/v1/screenshot/table_with_text
         @self.__app.post("/api/v1/screenshot/table_with_text", status_code=status.HTTP_200_OK)
-        def user_screenshot_get_text_from_table(request_params: ScreenshotTableElementRequest):
+        async def user_screenshot_get_text_from_table(request_params: ScreenshotTableElementRequest):
             table_number = request_params.table_number
             return self.__karaburma_instance.find_table_and_expand(table_number, True)
 
@@ -168,6 +170,10 @@ class KaraburmaApiService:
         @self.__app.exception_handler(404)
         async def not_found_exception_handler(request: Request, exc: HTTPException):
             return JSONResponse(status_code=404, content={"message": f"Url '{str(request.url)}' not found."})
+
+        @self.__app.exception_handler(405)
+        async def not_found_exception_handler(request: Request, exc: HTTPException):
+            return JSONResponse(status_code=405, content={"message": f"Url '{str(request.url)}' not found!!!!!!!!!!!!."})
 
         # Handler for RequestValidationError
         # FastApi has built-in handle for validating Pydantic model.
@@ -193,20 +199,27 @@ class KaraburmaApiService:
     def get_app(self):
         return self.__app
 
+    # For starting Karaburma by command line
     async def start_karaburma_service(self):
         uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port)
         self.__server = uvicorn.Server(uvicorn_config)
         await self.__server.serve()
 
-    async def start_karaburma_service_(self):
-        uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port)
+    # For starting Karaburma by test fixtures
+    def start_karaburma_service_for_test_fixtures(self):
+        uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port, log_level="trace")
         self.__server = uvicorn.Server(uvicorn_config)
-        asyncio.run(self.__server.serve())
+        task = asyncio.create_task(self.__server.serve())
 
-    def stop_karaburma_service(self):
-        if (self.__server is not None):
+        return task
+
+    async def stop_karaburma_service(self):
+        if self.__server is not None:
             self.__server.should_exit = True
-            self.__server.close()
+
+            # Wait few seconds for stop
+            await asyncio.sleep(2)
+            self.__server = None
 
 if __name__ == "__main__":
     # Create command line parser
@@ -225,7 +238,6 @@ if __name__ == "__main__":
     # Config file should be in the root project folder. Ex: "E:\\Karaburma\\config.json"
     config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
     karaburma = KaraburmaApiService(args.host, int(args.port), config_path, args.source_mode, args.detection_mode, args.logging)
-    #karaburma.start_karaburma_service()
 
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(karaburma.start_karaburma_service())
+    # 'asyncio.run' - is a recommended root start point for application
+    asyncio.run(karaburma.start_karaburma_service())

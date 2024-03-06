@@ -23,19 +23,19 @@ class TableElement(Element):
         elif(label == ElementTypesEnum.v_scroll.name):
             self.__v_scroll = ScrollElement(label, prediction_value, roi, first_button, second_button)
 
-    def set_full_table_area(self, roi: RoiElement, cells_area_element):
-        self.__full_table_area = TableElement("table", 1.0, roi, None, None, cells_area_element)
-
-    def get_full_table_area(self):
-        return self.__full_table_area
-
     def get_v_scroll(self):
         return self.__v_scroll
 
     def get_h_scroll(self):
         return self.__h_scroll
 
-    def get_cells_area_element(self):
+    def set_full_table_area(self, table_element):
+        self.__full_table_area = table_element
+
+    def get_full_table_area(self):
+        return self.__full_table_area
+
+    def get_cells_area_element(self) -> TableCellsElement:
         if(self.__cells_area_element != None):
             return self.__cells_area_element
         else:

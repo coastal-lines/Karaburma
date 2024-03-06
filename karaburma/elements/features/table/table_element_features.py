@@ -83,7 +83,7 @@ class TableElementFeatures(TablePreprocessing):
     def __set_full_table_to_element(self, desired_table, stitched_table, read_text_from_cells=False):
         stitched_table_roi_element = RoiElement(stitched_table, 0, 0, stitched_table.shape[1], stitched_table.shape[0], "table")
         stitched_table_element = self.__find_table_on_extended_table(stitched_table_roi_element, read_text_from_cells)
-        desired_table.set_full_table_area(stitched_table_roi_element, stitched_table_element)
+        desired_table.set_full_table_area(stitched_table_element)
 
     def find_all_tables(self, image_source, blur_after_searching=True):
         self.image_source = image_source

@@ -164,7 +164,7 @@ class TableCellsFeatures():
             most_frequent_width, most_frequent_height = self.__calculate_most_frequent_cell_dimension(prepared_cells_contours)
             cells_area_x1, cells_area_y1, cells_area_x2, cells_area_y2 = self.__calculate_cells_coordinates(prepared_cells_contours, most_frequent_width, most_frequent_height)
 
-            list_cells = self.__prepare_list_cells(cells_area_y1, most_frequent_width, most_frequent_height, prepared_cells_contours)
+            list_cells = self.__prepare_list_cells(temp_table_roi, most_frequent_width, most_frequent_height, prepared_cells_contours)
 
             absolute_cells_area_x1, absolute_cells_area_y1 = general_helpers.calculate_absolute_coordinates(temp_table_roi, cells_area_x1, cells_area_y1)
             table_cells_element = TableCellsElement("table_cells", 1.0, RoiElement(temp_table_roi.get_roi()[cells_area_y1:cells_area_y2, cells_area_x1:cells_area_x2], absolute_cells_area_x1, absolute_cells_area_y1, cells_area_x2 - cells_area_x1, cells_area_y2 - cells_area_y1), list_cells)

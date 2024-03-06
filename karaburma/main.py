@@ -104,8 +104,9 @@ class Karaburma:
     def find_element(self, element_type, *args):
         self.__check_source_mode(args)
         image_source = self.find_manager.find_all_elements(*args)
-        image_source.update_current_elements([element for element in image_source.get_elements() if element.get_label() == element_type])
+        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
 
+        image_source.update_current_elements([element for element in image_source.get_elements() if element.get_label() == element_type])
         return json_output.convert_object_into_json(image_source)
 
     def find_table_and_expand(self, table_index=0, read_text_from_cells=False):
