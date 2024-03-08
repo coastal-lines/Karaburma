@@ -1,3 +1,5 @@
+import numpy as np
+
 from karaburma.elements.objects.element import Element
 
 
@@ -7,6 +9,8 @@ class ListBoxElement(Element):
         self.__h_scroll = None
         self.__v_scroll = None
         self.__list_text = ""
+
+        self.__roi_without_scrolls = None
 
         self.__textarea = None
         self.__full_text_area = None
@@ -23,12 +27,6 @@ class ListBoxElement(Element):
         else:
             return None
 
-    def add_list_text(self, list_text: str):
-        self.__list_text = list_text
-
-    def get_list_text(self) -> str:
-        return self.__list_text
-
     @property
     def textarea(self):
         return self.__textarea
@@ -36,6 +34,12 @@ class ListBoxElement(Element):
     @textarea.setter
     def textarea(self, textarea: Element):
         self.__textarea = textarea
+
+    def add_list_text(self, list_text: str):
+        self.__list_text = list_text
+
+    def get_list_text(self) -> str:
+        return self.__list_text
 
     @property
     def full_text_area(self) -> Element:

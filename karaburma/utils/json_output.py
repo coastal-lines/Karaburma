@@ -33,12 +33,6 @@ def get_v_scroll_element(element):
 
     current_v_scroll = dict()
     set_general_attributes_to_element(current_v_scroll, element, 0)
-    '''
-    current_v_scroll["x"] = element.get_roi_element().get_x()
-    current_v_scroll["y"] = element.get_roi_element().get_y()
-    current_v_scroll["w"] = element.get_roi_element().get_w()
-    current_v_scroll["h"] = element.get_roi_element().get_h()
-    '''
 
     current_v_scroll["first_button"] = current_up_button
     current_v_scroll["second_button"] = current_down_button
@@ -55,13 +49,6 @@ def get_h_scroll_element(element):
     current_h_scroll = dict()
     set_general_attributes_to_element(current_h_scroll, element, 0)
 
-    '''
-    current_h_scroll["x"] = element.get_roi_element().get_x()
-    current_h_scroll["y"] = element.get_roi_element().get_y()
-    current_h_scroll["w"] = element.get_roi_element().get_w()
-    current_h_scroll["h"] = element.get_roi_element().get_h()
-    '''
-
     current_h_scroll["first_button"] = current_left_button
     current_h_scroll["second_button"] = current_rigth_button
 
@@ -69,18 +56,7 @@ def get_h_scroll_element(element):
 
 def add_listbox_element(element, current_element_number):
     current_element = dict()
-
     set_general_attributes_to_element(current_element, element, current_element_number)
-
-    '''
-    current_element["id"] = str(current_element_number)
-    current_element["w"] = int(element.get_roi_element().get_w())
-    current_element["h"] = int(element.get_roi_element().get_h())
-    current_element["x"] = int(element.get_roi_element().get_x())
-    current_element["y"] = int(element.get_roi_element().get_y())
-    current_element["label"] = element.get_label()
-    current_element["prediction"] = element.get_prediction_value()
-    '''
 
     current_element["text"] = element.get_list_text()
 
@@ -92,33 +68,23 @@ def add_listbox_element(element, current_element_number):
         if (element.get_h_scroll() is not None):
             current_element["h_scroll"] = get_h_scroll_element(element)
 
-
-    #current_element["orig_img_base64"] = files_helper.image_to_base64(
-    #    element.get_roi_element().get_roi()
-    #)
+    current_element["full_img_base64"] = files_helper.image_to_base64(element.get_roi_element().get_roi())
 
     if (element.full_text_area is not None):
-        current_element["full_img_base64"] = files_helper.image_to_base64(
-            element.full_text_area.get_roi_element().get_roi()
-        )
+        listbox_full_text_area_element = dict()
+
+        set_general_attributes_to_element(listbox_full_text_area_element, element.full_text_area, 0)
+        listbox_full_text_area_element["text"] = element.full_text_area.get_list_text()
+
+        listbox_full_text_area_element["full_img_base64"] = files_helper.image_to_base64(element.full_text_area.get_roi_element().get_roi())
+
+        current_element["full_listbox"] = listbox_full_text_area_element
 
     return current_element
 
 def add_table_element(element, current_element_number):
     current_element = dict()
-
     set_general_attributes_to_element(current_element, element, current_element_number)
-
-    '''
-    current_element["id"] = str(current_element_number)
-    current_element["x"] = int(element.get_roi_element().get_x())
-    current_element["y"] = int(element.get_roi_element().get_y())
-    current_element["w"] = int(element.get_roi_element().get_w())
-    current_element["h"] = int(element.get_roi_element().get_h())
-    current_element["label"] = element.get_label()
-    current_element["prediction"] = element.get_prediction_value()
-    '''
-
 
     if (getattr(element, 'get_v_scroll', None)):
         if (element.get_v_scroll() is not None):
@@ -171,8 +137,6 @@ def convert_object_into_json(image_source, screenshot_copy_debug=None):
             else:
                 dict_json["table_elements"][-1]["full_table"] = None
 
-        #dict_json["elements"].append(current_element)
-
     # Put copy of the original image with debug information
     if(screenshot_copy_debug is not None):
         dict_json["debug_screenshot"] = files_helper.image_to_base64(screenshot_copy_debug)
@@ -181,4 +145,4 @@ def convert_object_into_json(image_source, screenshot_copy_debug=None):
         return json.loads(json.dumps(dict_json, indent=2))
     except TypeError as ex:
         print(ex)
-        print("Some of objects have non-serializable value")
+        print("Error during converting ImageSource object into json format.\n Some of objects have non-serializable value.")

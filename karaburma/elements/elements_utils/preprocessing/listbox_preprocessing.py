@@ -117,11 +117,13 @@ class ListboxPreprocessing:
                     temp_listbox.add_scroll("v_scroll", v_scroll)
 
                     text_area = temp_listbox.get_roi_element().get_roi()[:, 0:temp_listbox.get_roi_element().get_w() - v_scroll.get_roi_element().get_w(), :]
+                    #temp_listbox.roi_without_scrolls = temp_listbox.get_roi_element().get_roi()[:,0:temp_listbox.get_roi_element().get_w() - v_scroll.get_roi_element().get_w(), :]
+
                     temp_listbox.textarea = Element("listbox",
-                                                    1.0,
-                                                    RoiElement(text_area, cnt[0] + shift, cnt[1] + shift,
-                                                               temp_listbox.get_roi_element().get_w() - v_scroll.get_roi_element().get_w(),
-                                                               temp_listbox.get_roi_element().get_h()))
+                                1.0,
+                                RoiElement(text_area, cnt[0] + shift, cnt[1] + shift,
+                                           temp_listbox.get_roi_element().get_w() - v_scroll.get_roi_element().get_w(),
+                                           temp_listbox.get_roi_element().get_h()))
 
                 list_listboxes.append(temp_listbox)
 

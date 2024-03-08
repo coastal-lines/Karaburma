@@ -27,7 +27,7 @@ def get_text_and_text_data(grey_roi):
 
 def calculate_scrolling_shift_by_text_position(roi):
     roi = filters_helper.convert_to_grayscale(roi)
-    roi_thresholded = filters_helper.threshold(roi, 127, 255, cv2.THRESH_BINARY_INV)
+    _, roi_thresholded = filters_helper.threshold(roi, 127, 255, cv2.THRESH_BINARY_INV)
 
     # cv2.REDUCE_AVG - the output is the mean vector of all rows/columns of the matrix
     # "1" - dimension index along which the matrix is reduced. 0 means that the matrix is reduced to a single row. 1 means that the matrix is reduced to a single column

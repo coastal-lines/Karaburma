@@ -121,6 +121,6 @@ def draw_elements(screenshot_copy_debug, screenshot_elements) -> np.ndarray:
 
     draw_pattern_matching_elements(screenshot_copy_debug, screenshot_elements.get_elements(), (0, 255, 0), 2)
 
-    general_helpers.show(screenshot_copy_debug)
+    #general_helpers.show(screenshot_copy_debug)
 
     return screenshot_copy_debug

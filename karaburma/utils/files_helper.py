@@ -13,6 +13,9 @@ from karaburma.utils.logging_manager import LoggingManager
 def get_project_root_path():
     return os.path.realpath(__file__).split("Karaburma")[0] + "Karaburma\\karaburma"
 
+def get_tests_root_path():
+    return os.path.realpath(__file__).split("Karaburma")[0] + "Karaburma\\tests"
+
 def get_absolute_path(relative_path):
     return os.path.join(os.path.dirname(os.path.realpath("__file__")), relative_path).replace("\\", "/").replace("api/", "")
 

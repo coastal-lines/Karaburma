@@ -1,5 +1,6 @@
 import numpy as np
 
+from elements.objects.listbox_element import ListBoxElement
 from karaburma.elements.elements_utils.displacement_features import DisplacementFeatures
 from karaburma.elements.elements_utils.preprocessing.listbox_preprocessing import ListboxPreprocessing
 from karaburma.elements.elements_utils.scroll_actions_features import ScrollActionsFeatures
@@ -17,6 +18,8 @@ from karaburma.utils.objects_tracking.displacement import OcrVerticalDisplacemen
 class ListboxElementFeatures(ListboxPreprocessing):
     def __init__(self, model_for_common_elements, model_for_listbox, common_element_features, scroll_buttons_patterns, shift_threshold_for_scrolls):
         super().__init__(model_for_common_elements, model_for_listbox, common_element_features, scroll_buttons_patterns, shift_threshold_for_scrolls)
+
+        self.__image_source_object = None
 
         self.model_for_common_elements = model_for_common_elements
         self.__model_for_listbox = model_for_listbox
@@ -58,9 +61,11 @@ class ListboxElementFeatures(ListboxPreprocessing):
         return str(text_list)
 
     def find_listboxes(self, image_source_object):
+        self.__image_source_object = image_source_object
         list_listboxes = super().listbox_element_classification(image_source_object.get_current_image_source())
+        image_source_object.add_elements(list_listboxes)
+
         return list_listboxes
-        #image_source_object.add_elements(list_listboxes)
 
     def find_listbox_and_expand(self, image_source_object, listbox_index):
         list_listboxes = self.find_listboxes(image_source_object)
@@ -68,10 +73,20 @@ class ListboxElementFeatures(ListboxPreprocessing):
 
         if (len(list_listboxes) > 0):
             stitched_listbox_roi = self.__get_stitched_list_box(list_listboxes[listbox_index], list_listboxes[listbox_index].textarea)
+
+            '''
             list_listboxes[listbox_index].full_text_area = Element("listbox_full_text_area", 1.0,
+                                                       RoiElement(stitched_listbox_roi, 0, 0,
+                                                                  stitched_listbox_roi.shape[1],
+                                                                  stitched_listbox_roi.shape[0]))
+            '''
+
+            list_listboxes[listbox_index].full_text_area = ListBoxElement("listbox", 1.0,
                                                                    RoiElement(stitched_listbox_roi, 0, 0,
                                                                               stitched_listbox_roi.shape[1],
                                                                               stitched_listbox_roi.shape[0]))
 
+            #list_listboxes[listbox_index].full_text_area.textarea = stitched_listbox_roi
+
             text = self.__get_text_list_for_listbox(list_listboxes[listbox_index].full_text_area.get_roi_element().get_roi())
-            list_listboxes[listbox_index].add_list_text(text)
+            list_listboxes[listbox_index].full_text_area.add_list_text(text)

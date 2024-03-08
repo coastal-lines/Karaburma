@@ -143,7 +143,7 @@ class KaraburmaApiService:
                     if is_fully_expanded:
                         result_json = self.__karaburma_instance.find_listbox_and_expand(0)
                     else:
-                        result_json = self.__karaburma_instance.find_all_elements(type_element)
+                        result_json = self.__karaburma_instance.find_element(type_element)
                 case "all":
                     result_json = self.__karaburma_instance.find_all_elements()
                 case _:
