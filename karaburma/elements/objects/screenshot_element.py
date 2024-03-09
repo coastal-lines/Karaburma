@@ -40,4 +40,18 @@ class ImageSourceObject:
         self.add_elements(new_elements)
 
     def update_text_for_all_elements(self):
-        
+        for element in self.get_elements():
+            match element.get_label():
+                case "listbox":
+                    element.prepare_roi_and_set_text()
+
+                    if (element.full_text_area is not None):
+                        element.full_text_area.prepare_roi_and_set_text()
+                case "table":
+                    element.update_text_for_all_cells()
+
+                    if (element.get_full_table_area() is not None):
+                        element.get_full_table_area().update_text_for_all_cells()
+                case _:
+                    if (hasattr(element, 'get_text')):
+                        element.prepare_roi_and_set_text()

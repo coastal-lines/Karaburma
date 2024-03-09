@@ -66,18 +66,4 @@ def update_text_for_element(roi: np.ndarray) -> str:
 
     return get_text(img, "--psm 3 --oem 3").replace(" ", "").replace("\n", "")
 
-def read_text_for_all_imagesource_elements(image_source):
-    for element in image_source.get_elements():
-        match element.get_label():
-            case "listbox":
-                pass
-            case "table":
-                pass
-            case _:
-                if (hasattr(element, 'get_text')):
-                    element.
-                    
-                pass
-
-
 

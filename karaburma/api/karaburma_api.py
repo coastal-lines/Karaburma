@@ -39,12 +39,16 @@ class KaraburmaApiService:
 
             base64_image = request_params.base64_image
             type_element = request_params.type_element
+            is_read_text = request_params.is_read_text
 
             user_image = files_helper.base64_to_image(base64_image)
 
             match type_element:
                 case "all":
-                    result_json = self.__karaburma_instance.find_all_elements_in_base64image(user_image)
+                    if is_read_text:
+                        result_json = self.__karaburma_instance.find_all_elements_in_base64image(user_image, True)
+                    else:
+                        result_json = self.__karaburma_instance.find_all_elements_in_base64image(user_image)
                 case _:
                     if (type_element not in ElementTypesEnum.__members__):
                         return JSONResponse(status_code=400,
@@ -85,10 +89,14 @@ class KaraburmaApiService:
 
             image_file_path = request_params.image_file_path
             type_element = request_params.type_element
+            is_read_text = request_params.is_read_text
 
             match type_element:
                 case "all":
-                    result_json = self.__karaburma_instance.find_all_elements(image_file_path)
+                    if is_read_text:
+                        result_json = self.__karaburma_instance.find_all_elements_and_read_text(image_file_path)
+                    else:
+                        result_json = self.__karaburma_instance.find_all_elements(image_file_path)
                 case _:
                     if (type_element not in ElementTypesEnum.__members__):
                         return JSONResponse(status_code=400,
@@ -134,6 +142,7 @@ class KaraburmaApiService:
 
             type_element = request_params.type_element
             is_fully_expanded = request_params.is_fully_expanded
+            is_read_text = request_params.is_read_text
 
             match type_element:
                 case ElementTypesEnum.table.name:
@@ -145,7 +154,10 @@ class KaraburmaApiService:
                     else:
                         result_json = self.__karaburma_instance.find_element(type_element)
                 case "all":
-                    result_json = self.__karaburma_instance.find_all_elements()
+                    if is_read_text:
+                        result_json = self.__karaburma_instance.find_all_elements_and_read_text()
+                    else:
+                        result_json = self.__karaburma_instance.find_all_elements()
                 case _:
                     if type_element not in ElementTypesEnum.__members__:
                         return JSONResponse( status_code=400,

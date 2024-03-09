@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class ScreenshotElementRequest(BaseModel):
     type_element: str
     is_fully_expanded: bool
+    is_read_text: bool
 
 
 class ScreenshotTableElementRequest(BaseModel):
@@ -13,6 +14,7 @@ class ScreenshotTableElementRequest(BaseModel):
 class FileElementRequest(BaseModel):
     image_file_path: str
     type_element: str
+    is_read_text: bool
 
 
 class FileImagePatternElementRequest(BaseModel):
@@ -25,6 +27,7 @@ class FileImagePatternElementRequest(BaseModel):
 class Base64ElementRequest(BaseModel):
     base64_image: str
     type_element: str
+    is_read_text: bool
 
 
 class Base64PatternElementRequest(BaseModel):
