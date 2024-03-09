@@ -1,4 +1,6 @@
 from karaburma.elements.objects.element import Element
+from karaburma.utils.ocr import ocr_helper
+
 
 class RadioButtonElement(Element):
     def __init__(self, label, prediction_value, roi):
@@ -9,6 +11,10 @@ class RadioButtonElement(Element):
 
     def add_text(self, radiobutton_text):
         self.__radiobutton_text = radiobutton_text
+
+    def prepare_roi_and_set_text(self):
+        self.__text = ocr_helper.update_text_for_element(super().get_roi_element().get_roi())
+        print(f"{super().get_label()} text: ", self.__text)
 
     def get_text(self):
         return self.__radiobutton_text

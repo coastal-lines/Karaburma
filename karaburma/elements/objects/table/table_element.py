@@ -46,3 +46,7 @@ class TableElement(Element):
                        if cell.get_adress() == [column_index, row_index]][0]
 
         return custom_cell
+
+    def update_text_for_all_cells(self):
+        for cell in self.get_cells_area_element().get_list_cells():
+            cell.read_text_from_cell()

@@ -38,3 +38,6 @@ class ImageSourceObject:
     def update_current_elements(self, new_elements: list):
         self.get_elements().clear()
         self.add_elements(new_elements)
+
+    def update_text_for_all_elements(self):
+        

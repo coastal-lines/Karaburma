@@ -1,6 +1,5 @@
-import numpy as np
-
 from karaburma.elements.objects.element import Element
+from karaburma.utils.ocr import ocr_helper
 
 
 class ListBoxElement(Element):
@@ -40,6 +39,10 @@ class ListBoxElement(Element):
 
     def get_list_text(self) -> str:
         return self.__list_text
+
+    def prepare_roi_and_set_text(self):
+        self.add_list_text(ocr_helper.update_text_for_element(self.textarea.get_roi_element().get_roi()))
+        print(f"{super().get_label()} text: ", self.get_list_text())
 
     @property
     def full_text_area(self) -> Element:

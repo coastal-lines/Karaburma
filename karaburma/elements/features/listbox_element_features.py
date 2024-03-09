@@ -1,6 +1,6 @@
 import numpy as np
 
-from elements.objects.listbox_element import ListBoxElement
+from karaburma.elements.objects.listbox_element import ListBoxElement
 from karaburma.elements.elements_utils.displacement_features import DisplacementFeatures
 from karaburma.elements.elements_utils.preprocessing.listbox_preprocessing import ListboxPreprocessing
 from karaburma.elements.elements_utils.scroll_actions_features import ScrollActionsFeatures
@@ -8,7 +8,6 @@ from karaburma.elements.elements_utils.stitching_features import StitchingFeatur
 from karaburma.utils.config_manager import ConfigManager
 from karaburma.utils.image_processing import augmentation
 from karaburma.data.constants.enums.scroll_direction_enum import ScrollDirectionEnum
-from karaburma.elements.objects.element import Element
 from karaburma.elements.objects.roi_element import RoiElement
 from karaburma.utils.image_processing import filters_helper
 from karaburma.utils.ocr import ocr_helper
