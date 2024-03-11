@@ -18,6 +18,7 @@ from karaburma.main import Karaburma
 class KaraburmaApiService:
     def __init__(self, host, port, config_path, source_mode, detection_mode, logging):
         self.__server = None
+        self.__server_task = None
 
         self.__karaburma_instance = Karaburma(config_path, source_mode, detection_mode, logging)
         self.__app = FastAPI()
@@ -225,13 +226,28 @@ class KaraburmaApiService:
 
         return task
 
+    def start_karaburma_service_for_test_fixtures_2(self):
+        uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port, log_level="trace")
+        self.__server = uvicorn.Server(uvicorn_config)
+        self.__server.serve()
+
+    async def start_karaburma_service_for_test_fixtures_3(self):
+        uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port, log_level="trace")
+        self.__server = uvicorn.Server(uvicorn_config)
+        self.__server_task = asyncio.create_task(self.__server.serve())
+        await self.__server_task
+
     async def stop_karaburma_service(self):
         if self.__server is not None:
             self.__server.should_exit = True
-
             # Wait few seconds for stop
             await asyncio.sleep(2)
             self.__server = None
+
+    async def stop_karaburma_service2(self):
+        if self.__server is not None:
+            await self.__server.shutdown()
+            await self.__server.wait_closed()
 
 if __name__ == "__main__":
     # Create command line parser
