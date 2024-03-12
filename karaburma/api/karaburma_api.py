@@ -117,11 +117,12 @@ class KaraburmaApiService:
             image_file_path = request_params.image_file_path
             image_pattern_file_path = request_params.image_pattern_file_path
             is_all_elements = request_params.is_all_elements
+            search_mode = request_params.search_mode
 
             if (is_all_elements):
                 result_json = self.__karaburma_instance.find_all_elements_include_patterns(
                     [image_pattern_file_path],
-                    "normal",
+                    search_mode,
                     0.8,
                     image_pattern_type_element,
                     image_file_path)
@@ -226,28 +227,12 @@ class KaraburmaApiService:
 
         return task
 
-    def start_karaburma_service_for_test_fixtures_2(self):
-        uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port, log_level="trace")
-        self.__server = uvicorn.Server(uvicorn_config)
-        self.__server.serve()
-
-    async def start_karaburma_service_for_test_fixtures_3(self):
-        uvicorn_config = uvicorn.Config(app=self.__app, host=self.__host, port=self.__port, log_level="trace")
-        self.__server = uvicorn.Server(uvicorn_config)
-        self.__server_task = asyncio.create_task(self.__server.serve())
-        await self.__server_task
-
     async def stop_karaburma_service(self):
         if self.__server is not None:
             self.__server.should_exit = True
             # Wait few seconds for stop
             await asyncio.sleep(2)
             self.__server = None
-
-    async def stop_karaburma_service2(self):
-        if self.__server is not None:
-            await self.__server.shutdown()
-            await self.__server.wait_closed()
 
 if __name__ == "__main__":
     # Create command line parser

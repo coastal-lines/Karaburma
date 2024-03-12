@@ -22,6 +22,7 @@ class FileImagePatternElementRequest(BaseModel):
     image_pattern_file_path: str
     image_pattern_type_element: str
     is_all_elements: bool
+    search_mode: str
 
 
 class Base64ElementRequest(BaseModel):
