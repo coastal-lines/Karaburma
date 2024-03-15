@@ -16,7 +16,7 @@ from karaburma.main import Karaburma
 
 
 class KaraburmaApiService:
-    def __init__(self, host, port, config_path, source_mode, detection_mode, logging):
+    def __init__(self, host, port: int, config_path: str, source_mode: str, detection_mode: str, logging: bool):
         self.__server = None
         self.__server_task = None
 
@@ -26,13 +26,11 @@ class KaraburmaApiService:
         self.__host = host
         self.__port = port
 
-        # Router
         # Endpoint http://127.0.0.1:8900/
         @self.__app.get("/", status_code=status.HTTP_200_OK)
         async def root_selfcheck():
             return JSONResponse(content={"message": "Uvicorn server was started for Karaburma."})
 
-        # Router
         # Endpoint http://127.0.0.1:8900/api/v1/base64image
         @self.__app.post("/api/v1/base64image/", status_code=status.HTTP_200_OK)
         async def user_base64image_find_element(request_params: Base64ElementRequest):
@@ -59,7 +57,6 @@ class KaraburmaApiService:
 
             return result_json
 
-        # Router
         # Endpoint http://127.0.0.1:8900/api/v1/base64image/image_pattern
         @self.__app.post("/api/v1/base64image/image_pattern", status_code=status.HTTP_200_OK)
         async def user_base64image_find_element(request_params: Base64PatternElementRequest):
@@ -82,7 +79,6 @@ class KaraburmaApiService:
 
             return result_json
 
-        # Router
         # Endpoint http://127.0.0.1:8900/api/v1/file/
         @self.__app.post("/api/v1/file/", status_code=status.HTTP_200_OK)
         async def user_file_find_element(request_params: FileElementRequest):
@@ -107,7 +103,6 @@ class KaraburmaApiService:
 
             return result_json
 
-        # Router
         # Endpoint http://127.0.0.1:8900/api/v1/file/image_pattern
         @self.__app.post("/api/v1/file/image_pattern", status_code=status.HTTP_200_OK)
         async def user_file_find_element(request_params: FileImagePatternElementRequest):
@@ -136,7 +131,6 @@ class KaraburmaApiService:
 
             return result_json
 
-        # Router
         # Endpoint http://127.0.0.1:8900/api/v1/screenshot
         @self.__app.post("/api/v1/screenshot/", status_code=status.HTTP_200_OK)
         async def user_screenshot_find_element(request_params: ScreenshotElementRequest):
@@ -170,7 +164,6 @@ class KaraburmaApiService:
 
             return result_json
 
-        # Router
         # Endpoint http://127.0.0.1:8900/api/v1/screenshot/table_with_text
         @self.__app.post("/api/v1/screenshot/table_with_text", status_code=status.HTTP_200_OK)
         async def user_screenshot_get_text_from_table(request_params: ScreenshotTableElementRequest):
@@ -210,6 +203,22 @@ class KaraburmaApiService:
                          }
             )
 
+    @property
+    def host(self) -> str:
+        return self.__host
+
+    @host.setter
+    def host(self, host: str):
+        self.__host = host
+
+    @property
+    def port(self) -> int:
+        return self.__port
+
+    @port.setter
+    def port(self, port: int):
+        self.__port = port
+
     def get_app(self):
         return self.__app
 
@@ -230,27 +239,33 @@ class KaraburmaApiService:
     async def stop_karaburma_service(self):
         if self.__server is not None:
             self.__server.should_exit = True
+
             # Wait few seconds for stop
             await asyncio.sleep(2)
+
             self.__server = None
 
 if __name__ == "__main__":
     # Create command line parser
     parser = argparse.ArgumentParser()
-
-    # Add arguments
-    parser.add_argument('--host', help='host', required=True)
-    parser.add_argument('--port', help='port', required=True)
-    parser.add_argument('--source_mode', help='source_mode: file or screenshot', required=True)
-    parser.add_argument('--detection_mode', help='detection_mode: default', required=True)
-    parser.add_argument('--logging', help='logging: False', required=True)
-
-    # Parsing arguments of command line
+    parser.add_argument('--host', help='host')
+    parser.add_argument('--port', help='port')
+    parser.add_argument('--source_mode', help='source_mode: file or screenshot')
+    parser.add_argument('--detection_mode', help='detection_mode: default')
+    parser.add_argument('--logging', help='logging: False')
     args = parser.parse_args()
+
+    host = args.host if args.host else os.environ.get('HOST', 'localhost')
+    port = int(args.port) if args.port else int(os.environ.get('PORT', '8000'))
+    source_mode = args.source_mode if args.source_mode else os.environ.get('SOURCE_MODE', 'file')
+    detection_mode = args.detection_mode if args.detection_mode else os.environ.get('DETECTION_MODE', 'default')
+    logging = args.logging if args.logging else os.environ.get('LOGGING', 'False')
 
     # Config file should be in the root project folder. Ex: "E:\\Karaburma\\config.json"
     config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
-    karaburma = KaraburmaApiService(args.host, int(args.port), config_path, args.source_mode, args.detection_mode, args.logging)
+    karaburma = KaraburmaApiService(host, int(port), config_path, source_mode, detection_mode, logging)
 
-    # 'asyncio.run' - is a recommended root start point for application
+    # 'asyncio.run' - is a recommended root point for start application
     asyncio.run(karaburma.start_karaburma_service())
+
+

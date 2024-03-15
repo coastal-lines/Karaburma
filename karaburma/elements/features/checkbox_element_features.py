@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
-import pytesseract
 import skimage as sk
 import imutils.object_detection
 from skimage.filters import threshold_local
 from karaburma.utils import general_helpers
+from karaburma.utils.ocr import ocr_helper
 from karaburma.utils.image_processing import filters_helper, contours_helper
 from karaburma.elements.objects.roi_element import RoiElement
 
@@ -51,9 +51,7 @@ class CheckboxElementFeatures():
             roi = general_helpers.get_roi(image, square[0], square[1], square[2] + 100, square[3])
             gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
 
-            pytesseract.pytesseract.tesseract_cmd = 'c:\\Users\\User\\AppData\\Local\\Programs\\Tesseract-OCR\\tesseract.exe'
-            text = pytesseract.image_to_string(gray, lang='eng', config="--psm 6 --oem 3")
-            text_data = pytesseract.image_to_data(gray, output_type=pytesseract.Output.DICT, lang='eng', config="--psm 10 --oem 3")
+            _, text_data = ocr_helper.get_text_and_text_data(gray, "--psm 6 --oem 3")
 
             # Step 3: Text Contour Extraction
             the_extreme_right_point = 0

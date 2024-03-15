@@ -1,10 +1,11 @@
 import os
+import platform
+
 import cv2
 import numpy as np
 import pytesseract
 
 from karaburma.utils.image_processing import filters_helper
-from karaburma.utils.config_manager import ConfigManager
 from karaburma.utils.image_processing import augmentation
 
 
@@ -14,7 +15,8 @@ from karaburma.utils.image_processing import augmentation
 #
 
 def check_platform_before_processing():
-    if (ConfigManager().config["platform"] == "windows"):
+    os_name = platform.system()
+    if os_name == 'Windows':
         pytesseract.pytesseract.tesseract_cmd = os.path.join(
             os.path.expanduser('~\\AppData'), "Local\\Programs\\Tesseract-OCR\\tesseract.exe"
         )
@@ -22,16 +24,14 @@ def check_platform_before_processing():
 def get_text(roi, config="--psm 10 --oem 3"):
     check_platform_before_processing()
     grey_roi = filters_helper.convert_to_grayscale(roi)
-    #pytesseract.pytesseract.tesseract_cmd = os.path.join(os.path.expanduser('~\\AppData'), "Local\\Programs\\Tesseract-OCR\\tesseract.exe")
     text = pytesseract.image_to_string(grey_roi, lang='eng', config=config)
 
     return text
 
-def get_text_and_text_data(grey_roi):
-    #pytesseract.pytesseract.tesseract_cmd = 'tesseract.exe'
+def get_text_and_text_data(grey_roi, config="--psm 10 --oem 3"):
     check_platform_before_processing()
-    text = pytesseract.image_to_string(grey_roi, lang='eng', config="--psm 10 --oem 3")
-    text_data = pytesseract.image_to_data(grey_roi, output_type=pytesseract.Output.DICT, lang='eng', config="--psm 10 --oem 3")
+    text = pytesseract.image_to_string(grey_roi, lang='eng', config=config)
+    text_data = pytesseract.image_to_data(grey_roi, output_type=pytesseract.Output.DICT, lang='eng', config=config)
 
     return text, text_data
 

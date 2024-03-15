@@ -1,10 +1,9 @@
-import os
 import cv2
 import numpy as np
-import pytesseract
 
 from karaburma.elements.objects.roi_element import RoiElement
 from karaburma.utils import general_helpers
+from karaburma.utils.ocr import ocr_helper
 
 
 class RadioButtonElementFeatures():
@@ -25,9 +24,7 @@ class RadioButtonElementFeatures():
         for circle in circle_rectangles:
             roi = general_helpers.get_roi(screenshot_elements.get_current_image_source(), circle[0], circle[1], circle[2] + 100, circle[3])
             gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-            pytesseract.pytesseract.tesseract_cmd = os.path.join(os.path.expanduser('~\\AppData'), "Local\\Programs\\Tesseract-OCR\\tesseract.exe")
-            text = pytesseract.image_to_string(gray, lang='eng', config="--psm 10 --oem 3")
-            text_data = pytesseract.image_to_data(gray, output_type=pytesseract.Output.DICT, lang='eng', config="--psm 10 --oem 3")
+            _, text_data = ocr_helper.get_text_and_text_data(gray, "--psm 10 --oem 3")
 
             # Step 3: Text Contour Extraction
             the_largest_W = 0

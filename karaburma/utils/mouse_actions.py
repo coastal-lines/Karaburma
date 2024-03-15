@@ -1,6 +1,9 @@
 import copy
+import platform
 import time
 import pyautogui
+import Xlib.display
+from pyvirtualdisplay.display import Display
 
 
 def click(*args):

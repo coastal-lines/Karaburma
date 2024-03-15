@@ -95,7 +95,7 @@ class Karaburma:
         image_source = self.find_manager.find_all_elements_include_patterns_in_base64image(pattern, mode, threshold, user_label, base64image)
         screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
 
-        general_helpers.show(screenshot_copy_debug)
+        #general_helpers.show(screenshot_copy_debug)
 
         return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 

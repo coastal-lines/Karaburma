@@ -17,6 +17,12 @@ setup(
         'pandas==2.1.0',
         'uvicorn==0.23.2',
         'matplotlib==3.8.0'
+        'requests==2.31.0',
+        'mlxtend==0.23.0',
+        'pytest==8.0.0',
+        'pytest-asyncio==0.23.5',
+        'starlette==0.27.0',
+        'python-multipart==0.0.9'
     ],
     entry_points={
         'console_scripts': [
