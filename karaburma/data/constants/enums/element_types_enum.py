@@ -13,3 +13,4 @@ class ElementTypesEnum(Enum):
     slider = 9
     table = 10
     listbox = 11
+    all = 12

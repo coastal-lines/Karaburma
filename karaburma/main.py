@@ -12,7 +12,6 @@ from karaburma.elements.features.listbox_element_features import ListboxElementF
 from karaburma.elements.features.table.table_element_features import TableElementFeatures
 from karaburma.utils import files_helper, json_output, debug
 from karaburma.utils.config_manager import ConfigManager
-from karaburma.utils import general_helpers
 
 
 class Karaburma:
