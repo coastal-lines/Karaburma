@@ -115,8 +115,8 @@ if __name__ == "__main__":
     parser.add_argument('--logging', help='logging: False')
     args = parser.parse_args()
 
-    host = args.host if args.host else os.environ.get('HOST', 'localhost')
-    port = int(args.port) if args.port else int(os.environ.get('PORT', '8000'))
+    host = args.host if args.host else os.environ.get('HOST', '127.0.0.1')
+    port = int(args.port) if args.port else int(os.environ.get('PORT', '8900'))
     source_mode = args.source_mode if args.source_mode else os.environ.get('SOURCE_MODE', 'file')
     detection_mode = args.detection_mode if args.detection_mode else os.environ.get('DETECTION_MODE', 'default')
     logging = args.logging if args.logging else os.environ.get('LOGGING', 'False')
@@ -144,5 +144,3 @@ if __name__ == "__main__":
 
     # 'asyncio.run' - is a recommended root point for start application
     asyncio.run(karaburma_api_service.start_karaburma_service())
-
-

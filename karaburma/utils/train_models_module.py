@@ -149,12 +149,14 @@ def train_and_save_model_for_table_element(model_path):
     files_helper.save_model(model, model_path)
 
 def debug_visualization():
-    global_config = ConfigManager()
+    #global_config = ConfigManager()
+
+    self.config = ConfigManager(config_path)
 
     samples = []
     labels = []
-    samples_directory = files_helper.get_absolute_path(global_config.config.samples_path["basic_samples"])
-    dimension = global_config.config.elements_parameters.common_element.preprocessing["sample_dimension"]
+    samples_directory = files_helper.get_absolute_path(ConfigManager().config.samples_path["basic_samples"])
+    dimension = ConfigManager().config.elements_parameters.common_element.preprocessing["sample_dimension"]
     for folder_name in os.listdir(samples_directory):
         folder_path = os.path.join(samples_directory, folder_name)
         if os.path.isdir(folder_path):
@@ -175,5 +177,5 @@ def debug_visualization():
     cm = confusion_matrix(y_test, y_pred)
     print(cm)
 
-#debug_visualization()
+debug_visualization()
 

@@ -1,10 +1,10 @@
 class RootKaraburmaResponse:
-    def __init__(self, w, h, elements, debug_screenshot):
+    def __init__(self, w, h, elements, listbox_elements, table_elements,debug_screenshot):
         self.w = w
         self.h = h
         self.basic_elements = [Element(**element) for element in elements]
-        self.listbox_elements = [ListboxElement(**element) for element in elements]
-        self.table_elements = [TableElement(**element) for element in elements]
+        self.listbox_elements = [ListBoxElement(**element) for element in listbox_elements]
+        self.table_elements = [TableElement(**element) for element in table_elements]
         self.debug_screenshot = debug_screenshot
 
 

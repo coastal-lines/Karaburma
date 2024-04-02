@@ -118,9 +118,10 @@ def convert_object_into_json(image_source, screenshot_copy_debug=None):
 
         if(current_label == "button"
             or current_label == "checkbox"
-            or current_label == "checkbox"
+            or current_label == "combobox"
             or current_label == "input"
-            or current_element == "radiobutton"):
+            or current_label == "radiobutton"
+            or current_label == "slider"):
             dict_json["elements"].append(add_simple_element(image_source.get_elements()[i], i))
 
         if(current_label == "listbox"):
