@@ -13,8 +13,8 @@ class CheckboxElement(Element):
         self.__checkbox_text = checkbox_text
 
     def prepare_roi_and_set_text(self):
-        self.__text = ocr_helper.update_text_for_element(super().get_roi_element().get_roi())
-        print(f"{super().get_label()} text: ", self.__text)
+        self.__checkbox_text = ocr_helper.update_text_for_element(super().get_roi_element().get_roi())
+        print(f"{super().get_label()} text: ", self.__checkbox_text)
 
     def get_text(self):
         return self.__checkbox_text

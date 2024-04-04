@@ -126,8 +126,9 @@ class Karaburma:
             raise ValueError("Incorrect source mode. Please try to use '--source_mode screenshot'")
 
         image_source = self.find_manager.find_table_and_expand(table_index, read_text_from_cells)
+        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
 
-        return json_output.convert_object_into_json(image_source)
+        return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
     def find_table_cell(self, column, row):
         self.find_manager.find_table_cell(column, row)
