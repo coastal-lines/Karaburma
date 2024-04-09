@@ -1,7 +1,7 @@
 from karaburma.navigation.template_matching.template_matching import TemplateMatchingElement
 from karaburma.elements.objects.screenshot_element import ImageSourceObject
 from karaburma.navigation.object_detection.base_find_actions import BaseFindActions
-from karaburma.utils import general_helpers, files_helper, debug
+from karaburma.utils import general_helpers, files_helper, draw_helper
 
 
 class FindManager(TemplateMatchingElement):

@@ -42,7 +42,6 @@ def draw_custom_elements(screenshot_copy_debug, elements, element_type, rectangl
                                                                  rectangle_colour,
                                                                  rectangle_thickness)
 
-
 def draw_pattern_matching_elements(screenshot_copy_debug, elements, rectangle_colour, rectangle_thickness):
     for element in elements:
         if (element.get_label() != "non" and
@@ -99,7 +98,6 @@ def draw_tables(screenshot_copy_debug, screenshot_elements):
         # Draw all cells
         for cell in table.get_cells_area_element().get_list_cells():
             contours_helper.draw_rectangle_by_list_xywh(screenshot_copy_debug, [cell.get_roi_element().get_element_features()], TABLE_CELLS_COLOUR, TABLE_CELLS_THICKNES)
-
 
 def draw_elements(screenshot_copy_debug, screenshot_elements) -> np.ndarray:
     screenshot_copy_debug = general_helpers.extend_screenshot_by_rigth_border(screenshot_copy_debug, 120)
