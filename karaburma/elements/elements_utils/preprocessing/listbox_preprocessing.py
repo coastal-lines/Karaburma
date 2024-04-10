@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 import cv2
 import numpy as np
 from PIL import Image as PIL_Image
@@ -8,7 +10,7 @@ from karaburma.elements.objects.roi_element import RoiElement
 from karaburma.elements.objects.element import Element
 from karaburma.elements.objects.listbox_element import ListBoxElement
 from karaburma.utils.config_manager import ConfigManager
-from karaburma.utils.image_processing import filters_helper, morphological_helpers
+from karaburma.utils.image_processing import filters_helper, morphological_helpers, contours_helper
 
 
 class ListboxPreprocessing:
@@ -20,23 +22,22 @@ class ListboxPreprocessing:
                                                                          scroll_buttons_patterns,
                                                                          shift_threshold_for_scrolls)
 
-    def image_processing_for_listbox(self, image):
-        grey_ = filters_helper.convert_to_grayscale(image)
-        grey_ = filters_helper.levels_correction(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_1"])
-        grey_ = filters_helper.levels_correction(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_2"])
-        grey_ = morphological_helpers.erosion(grey_)
-        grey_ = filters_helper.levels_correction(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_3"])
-        grey_ = filters_helper.levels_correction(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_4"])
-
-        ret, grey_ = filters_helper.threshold(grey_, ConfigManager().config.elements_parameters.listbox.preprocessing["threshold_min"],
+    def image_processing_for_listbox(self, image: np.array) -> np.array:
+        gray = filters_helper.convert_to_grayscale(image)
+        gray_lv1 = filters_helper.levels_correction(gray, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_1"])
+        gray_lv2 = filters_helper.levels_correction(gray_lv1, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_2"])
+        gray_er = morphological_helpers.erosion(gray_lv2)
+        gray_lv3 = filters_helper.levels_correction(gray_er, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_3"])
+        gray_lv4 = filters_helper.levels_correction(gray_lv3, ConfigManager().config.elements_parameters.listbox.preprocessing["level_correction_4"])
+        _, gray_th = filters_helper.threshold(gray_lv4, ConfigManager().config.elements_parameters.listbox.preprocessing["threshold_min"],
                                               ConfigManager().config.elements_parameters.listbox.preprocessing["threshold_max"])
 
-        return grey_
+        return gray_th
 
-    def prepare_features_for_listbox(self, image):
-        grey_ = filters_helper.convert_to_grayscale(image)
-        colours = filters_helper.calculate_white_colour(grey_)
-        prepared_img = self.image_processing_for_listbox(grey_)
+    def prepare_features_for_listbox(self, image: np.array) -> np.array:
+        gray = filters_helper.convert_to_grayscale(image)
+        colours = filters_helper.calculate_white_colour(gray)
+        prepared_img = self.image_processing_for_listbox(gray)
 
         train_image_dimension = ConfigManager().config.elements_parameters.listbox.preprocessing["sample_dimension"]
         resized_prepared_img = np.array(PIL_Image.fromarray(prepared_img).resize(tuple(train_image_dimension), PIL_Image.BICUBIC))
@@ -51,16 +52,16 @@ class ListboxPreprocessing:
 
         return concatenated_features
 
-    def get_contours_for_listbox(self, image: np.array):
+    def get_contours_for_listbox(self, image: np.array) -> List[Tuple[int,int,int,int]]:
         filtered_contours = []
 
-        grey_ = self.image_processing_for_listbox(image)
+        gray = self.image_processing_for_listbox(image)
 
         min_w = ConfigManager().config.elements_parameters.listbox.contours_parameters["min_w"]
         max_w = ConfigManager().config.elements_parameters.listbox.contours_parameters["max_w"]
         min_h = ConfigManager().config.elements_parameters.listbox.contours_parameters["min_h"]
         max_h = ConfigManager().config.elements_parameters.listbox.contours_parameters["max_h"]
-        contours, hierarchy = cv2.findContours(grey_, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        contours, hierarchy = cv2.findContours(gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
         for i in range(len(contours)):
             x, y, w, h = cv2.boundingRect(contours[i])
             if (min_w < w < max_w and min_h < h < max_h):
@@ -75,8 +76,8 @@ class ListboxPreprocessing:
 
         return filtered_contours
 
-    def get_label_for_roi(self, cnt, image, shift):
-        x, y, w, h = cnt[0], cnt[1], cnt[2], cnt[3]
+    def get_label_for_roi(self, contour: Tuple[int,int,int,int], image: np.array, shift: int):
+        x, y, w, h = contour[0], contour[1], contour[2], contour[3]
         roi = image[y - shift:y + h + shift, x - shift:x + w + shift, :]
         concatenated_features = self.prepare_features_for_listbox(roi)
 
@@ -87,23 +88,26 @@ class ListboxPreprocessing:
 
         return most_common_label, predictions_proba
 
-    def prepare_roi_element(self, cnt, image, shift):
-        x_ = cnt[0] + shift
-        y_ = cnt[1] + shift
-        x2_ = cnt[0] + cnt[2] - shift
-        y2_ = cnt[1] + cnt[3] - shift
+    def prepare_roi_element(self, contour: Tuple[int,int,int,int], image: np.array, shift: int) -> RoiElement:
+        x_ = contour[0] + shift
+        y_ = contour[1] + shift
+        x2_ = contour[0] + contour[2] - shift
+        y2_ = contour[1] + contour[3] - shift
         w_ = x2_ - x_
         h_ = y2_ - y_
         roi_without_shift = image[y_:y2_, x_:x2_, :]
-        temp_roi = RoiElement(roi_without_shift, x_, y_, w_, h_)
 
-        return temp_roi
+        return RoiElement(roi_without_shift, x_, y_, w_, h_)
 
-    def listbox_element_classification(self, image: np.array):
+    def listbox_element_classification(self, image: np.array) -> List[ListBoxElement]:
         list_listboxes = []
 
         contours = self.get_contours_for_listbox(image)
         shift = 3 #TODO - move to config
+
+        temp_img = contours_helper.draw_rectangle_by_list_xywh(image, contours)
+        path = "c:\\Temp\\SlidersTest\\" + f"_prepared_contours_listbox_" + ".png"
+        cv2.imwrite(path, cv2.cvtColor(temp_img, cv2.COLOR_BGR2RGB))
 
         for cnt in contours:
             most_common_label, predictions_proba = self.get_label_for_roi(cnt, image, shift)

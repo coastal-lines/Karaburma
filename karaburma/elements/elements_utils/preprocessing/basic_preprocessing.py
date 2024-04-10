@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 import numpy as np
 import skimage
 import skimage as sk
@@ -5,26 +7,26 @@ import cv2
 from skimage.filters import threshold_mean
 
 from karaburma.elements.objects.roi_element import RoiElement
+from karaburma.elements.objects.screenshot_element import ImageSourceObject
 from karaburma.utils.config_manager import ConfigManager
 from karaburma.utils.image_processing import filters_helper, morphological_helpers, contours_helper, harris
 
 
 class BasicPreprocessing:
-    def prepare_image(self, image_source):
+    def prepare_image(self, image_source: ImageSourceObject):
         gr = filters_helper.convert_to_grayscale(image_source.get_current_image_source())
         sh = filters_helper.sharp(gr, "strong")
         er = morphological_helpers.erosion(sh)
-        th = er.copy() > sk.filters.threshold_local(er,
-                                                    block_size=ConfigManager().config.
-                                                    elements_parameters.common_element.
-                                                    preprocessing.contours_parameters["threshold_block_size"],
-                                                    offset=ConfigManager().config.elements_parameters.common_element.
-                                                    preprocessing.contours_parameters["threshold_offset"])
-        th = sk.img_as_ubyte(th)
+        th = er.copy() > sk.filters.threshold_local(
+            er,
+            block_size=ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["threshold_block_size"],
+            offset=ConfigManager().config.elements_parameters.common_element.
+            preprocessing.contours_parameters["threshold_offset"]
+        )
 
-        return th
+        return sk.img_as_ubyte(th)
 
-    def load_parameters(self):
+    def load_parameters(self) -> Tuple[int,int,int,int]:
         min_w = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["min_w"]
         min_h = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["min_h"]
         max_w = ConfigManager().config.elements_parameters.common_element.preprocessing.contours_parameters["max_w"]
@@ -47,7 +49,7 @@ class BasicPreprocessing:
 
         return result_contours
 
-    def find_contours_for_common_elements(self, image_source):
+    def find_contours_for_common_elements(self, image_source: ImageSourceObject) -> List[RoiElement]:
         list_of_roi = []
 
         th = self.prepare_image(image_source)
@@ -66,7 +68,7 @@ class BasicPreprocessing:
 
         return list_of_roi
 
-    def prepare_features_for_basic_elements(self, roi, dim):
+    def prepare_features_for_basic_elements(self, roi: np.ndarray, dim: List[int, int]):
         #number of harris coordinates for each sample
         harris_array = ConfigManager().config.elements_parameters.common_element.preprocessing["harris_array_size"]
 
