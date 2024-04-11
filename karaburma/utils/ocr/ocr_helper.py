@@ -64,6 +64,7 @@ def update_text_for_element(roi: np.ndarray) -> str:
     _, img = filters_helper.threshold(img, 127, 255)
     img = augmentation.bicubic_resize(img, (img.shape[1] * 1, img.shape[0] * 1))
 
-    return get_text(img, "--psm 3 --oem 3").replace(" ", "").replace("\n", "")
+    #return get_text(img, "--psm 3 --oem 3").replace(" ", "").replace("\n", "")
+    return get_text(img, "--psm 3 --oem 3").replace("\n", "")
 
 

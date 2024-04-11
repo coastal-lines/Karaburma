@@ -9,6 +9,8 @@ def set_general_attributes_to_element(current_element, element, current_element_
     current_element["y"] = int(element.get_roi_element().get_y())
     current_element["w"] = int(element.get_roi_element().get_w())
     current_element["h"] = int(element.get_roi_element().get_h())
+    current_element["center"] = (int(element.get_roi_element().get_x()) + (int(element.get_roi_element().get_w()) // 2),
+                                 int(element.get_roi_element().get_y()) + (int(element.get_roi_element().get_h()) // 2))
     current_element["label"] = element.get_label()
     current_element["prediction"] = element.get_prediction_value()
     current_element["orig_img_base64"] = files_helper.image_to_base64(element.get_roi_element().get_roi())

@@ -3,7 +3,6 @@ import skimage
 import numpy as np
 from skimage.filters import threshold_local, threshold_mean, threshold_minimum, threshold_otsu, threshold_li, \
     threshold_isodata, threshold_triangle, threshold_yen
-
 from karaburma.utils.logging_manager import LoggingManager
 
 
@@ -148,9 +147,8 @@ def convert_to_grayscale(img: np.ndarray):
     else:
         return img
 
-def convert_image_to_negative(image):
-    image = cv2.bitwise_not(image)
-    return image
+def convert_image_to_negative(image: np.ndarray) -> np.ndarray:
+    return cv2.bitwise_not(image)
 
 def calculate_white_colour(image):
     grey = convert_to_grayscale(image)

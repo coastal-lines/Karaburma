@@ -46,7 +46,8 @@ class ScrollElementDetectionsFeatures():
     def __get_rectangles(self, temp_table_roi):
         ref_gray = filters_helper.convert_to_grayscale(temp_table_roi)
         ref_gray_sharp = filters_helper.sharp(ref_gray, "strong")
-        ret, thresh = cv2.threshold(ref_gray_sharp, 180, 255, 0)
+
+        _, thresh = cv2.threshold(ref_gray_sharp, 180, 255, 0)
         filtered_rectangles = contours_helper.get_contours_after_approximation(thresh, 3)
 
         return filtered_rectangles
@@ -70,6 +71,7 @@ class ScrollElementDetectionsFeatures():
     def __init_scroll_button(self, source_element, x, y, w, h, button_type, button_side):
         button_absolute_x, button_absolute_y = general_helpers.calculate_absolute_coordinates(source_element, x, y)
         roi_element = RoiElement(source_element.get_roi()[y:y + h, x:x + h, :], button_absolute_x, button_absolute_y, button_side, button_side)
+
         return Element(button_type, 1.0, roi_element)
 
     def __init_v_scroll(self, source_element, x, y, w, h):
@@ -91,6 +93,7 @@ class ScrollElementDetectionsFeatures():
     def __init_scroll(self, source_element, first_button, second_button, x, y, w, h, scroll_type):
         temp_scroll_absolute_x, temp_scroll_absolute_y = general_helpers.calculate_absolute_coordinates(source_element, x, y)
         temp_scroll_roi = RoiElement(source_element.get_roi()[y:y + h, x:x + w, :], temp_scroll_absolute_x, temp_scroll_absolute_y, w, h, scroll_type)
+
         return ScrollElement(scroll_type, 0.0, temp_scroll_roi, first_button, second_button)
 
     def __try_to_detect_scrolls(self, rectangles, source_element: RoiElement):

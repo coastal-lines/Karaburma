@@ -17,8 +17,6 @@ from karaburma.utils.objects_tracking.displacement import OrbBfHomographicalDisp
 
 
 class TableElementFeatures(TablePreprocessing):
-    d = (1200, 1200)
-
     def __init__(self, table_model, common_model, common_element_features, scroll_buttons_patterns, scrollbar_shift_threshold):
         super().__init__()
         self.__tables_model = table_model

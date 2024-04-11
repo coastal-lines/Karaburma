@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import os
+
 from loguru import logger
 
 from karaburma.navigation.find_manager import FindManager
@@ -10,7 +11,7 @@ from karaburma.data.constants.enums.models_enum import ModelsEnum
 from karaburma.elements.features.basic_element_features import BasicElementFeatures
 from karaburma.elements.features.listbox_element_features import ListboxElementFeatures
 from karaburma.elements.features.table.table_element_features import TableElementFeatures
-from karaburma.utils import files_helper, json_output, debug
+from karaburma.utils import files_helper, json_output, draw_helper, general_helpers
 from karaburma.utils.config_manager import ConfigManager
 
 
@@ -76,7 +77,7 @@ class Karaburma:
     def find_element_in_base64image(self, element_type, base64image):
         image_source = self.find_manager.find_all_elements_in_base64image(base64image)
         image_source.update_current_elements([element for element in image_source.get_elements() if element.get_label() == element_type])
-        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        screenshot_copy_debug = draw_helper.draw_elements(image_source.get_current_image_source_copy(), image_source)
 
         return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
@@ -86,13 +87,13 @@ class Karaburma:
         if read_text:
             image_source.update_text_for_all_elements()
 
-        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        screenshot_copy_debug = draw_helper.draw_elements(image_source.get_current_image_source_copy(), image_source)
 
         return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
     def find_all_elements_include_patterns_in_base64image(self, pattern, mode, threshold, user_label, base64image):
         image_source = self.find_manager.find_all_elements_include_patterns_in_base64image(pattern, mode, threshold, user_label, base64image)
-        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        screenshot_copy_debug = draw_helper.draw_elements(image_source.get_current_image_source_copy(), image_source)
 
         #general_helpers.show(screenshot_copy_debug)
 
@@ -101,7 +102,8 @@ class Karaburma:
     def find_all_elements(self, *args):
         self.__check_source_mode(args)
         image_source = self.find_manager.find_all_elements(*args)
-        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        screenshot_copy_debug = draw_helper.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        general_helpers.show(screenshot_copy_debug)
 
         return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
@@ -109,15 +111,18 @@ class Karaburma:
         self.__check_source_mode(args)
         image_source = self.find_manager.find_all_elements(*args)
         image_source.update_text_for_all_elements()
-        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        screenshot_copy_debug = draw_helper.draw_elements(image_source.get_current_image_source_copy(), image_source)
 
         return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
     def find_element(self, element_type, *args):
         self.__check_source_mode(args)
         image_source = self.find_manager.find_all_elements(*args)
-        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        #screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
         image_source.update_current_elements([element for element in image_source.get_elements() if element.get_label() == element_type])
+
+        screenshot_copy_debug = draw_helper.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        general_helpers.show(screenshot_copy_debug)
 
         return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
@@ -126,7 +131,7 @@ class Karaburma:
             raise ValueError("Incorrect source mode. Please try to use '--source_mode screenshot'")
 
         image_source = self.find_manager.find_table_and_expand(table_index, read_text_from_cells)
-        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        screenshot_copy_debug = draw_helper.draw_elements(image_source.get_current_image_source_copy(), image_source)
 
         return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
@@ -140,14 +145,16 @@ class Karaburma:
 
     def find_element_by_patterns(self, patterns, mode="normal", threshold=0.8, user_label="", *args):
         image_source = self.find_manager.find_element_by_patterns(patterns, mode, threshold, user_label, *args)
-        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        screenshot_copy_debug = draw_helper.draw_elements(image_source.get_current_image_source_copy(), image_source)
+
+        general_helpers.show(screenshot_copy_debug)
 
         return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
     def find_all_elements_include_patterns(self, patterns, mode="normal", threshold=0.8, user_label="", *args):
         image_source = self.find_manager.find_all_elements_include_patterns(patterns, mode, threshold, user_label, *args)
-        screenshot_copy_debug = debug.draw_elements(image_source.get_current_image_source_copy(), image_source)
-
+        screenshot_copy_debug = draw_helper.draw_elements(image_source.get_current_image_source_copy(), image_source)
+        general_helpers.show(screenshot_copy_debug)
         return json_output.convert_object_into_json(image_source, screenshot_copy_debug)
 
 karaburma = None
@@ -157,8 +164,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # Add arguments
-    parser.add_argument('--host', help='host', required=True)
-    parser.add_argument('--port', help='port', required=True)
+    #parser.add_argument('--host', help='host', required=True)
+    #parser.add_argument('--port', help='port', required=True)
     parser.add_argument('--source_mode', help='source_mode: file or screenshot', required=True)
     parser.add_argument('--detection_mode', help='detection_mode: default', required=True)
     parser.add_argument('--logging', help='logging: False', required=True)
@@ -169,3 +176,5 @@ if __name__ == "__main__":
     # Config file should be in the root project folder. Ex: "E:\\Karaburma\\config.json"
     config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
     karaburma = Karaburma(config_path, args.source_mode, args.detection_mode, args.logging)
+
+result = karaburma.find_all_elements()

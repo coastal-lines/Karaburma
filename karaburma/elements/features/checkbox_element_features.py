@@ -10,7 +10,6 @@ from karaburma.elements.objects.roi_element import RoiElement
 
 
 class CheckboxElementFeatures():
-
     def try_to_find_squares(self, image):
         min_w = 7
         min_h = 7
@@ -21,6 +20,7 @@ class CheckboxElementFeatures():
         er = filters_helper.sharp(gr, "strong")
         th = er.copy() > threshold_local(er, block_size=5, offset=3)
         th = sk.img_as_ubyte(th)
+
         contours, hierarchy = contours_helper.get_contours(th)
 
         valid_squares = []
@@ -42,7 +42,6 @@ class CheckboxElementFeatures():
 
         rects = np.array([[x, y, x + w, y + h] for (x, y, w, h) in valid_squares])
         pick = imutils.object_detection.non_max_suppression(rects, probs=None, overlapThresh=0.5)
-
         return pick
 
     def try_to_find_text(self, image, squares):

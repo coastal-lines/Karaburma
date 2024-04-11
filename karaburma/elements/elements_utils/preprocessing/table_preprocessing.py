@@ -1,3 +1,4 @@
+import copy
 import math
 import cv2
 import skimage
@@ -5,6 +6,7 @@ import numpy as np
 import pandas as pd
 from PIL import Image as PIL_Image
 from skimage.filters import threshold_otsu
+from skimage.transform import probabilistic_hough_line
 from skimage.util import img_as_ubyte
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
@@ -13,7 +15,9 @@ from karaburma.elements.objects.roi_element import RoiElement
 from karaburma.elements.objects.screenshot_element import ImageSourceObject
 from karaburma.utils.config_manager import ConfigManager
 from karaburma.utils.image_processing import filters_helper, contours_helper, morphological_helpers
-from karaburma.utils import data_normalization
+from karaburma.utils import data_normalization, general_helpers
+
+import matplotlib.pyplot as plt
 
 
 class TablePreprocessing:
@@ -29,12 +33,13 @@ class TablePreprocessing:
         self.__image_source = screenshot
 
     def __resize_source_image_and_apply_filter(self, roi):
-
         grey_ = filters_helper.convert_to_grayscale(roi)
+
         imnp = np.array(grey_) / 255
         gamma = math.log(imnp.mean()) / math.log(0.1)
         new = ((imnp ** (1 / gamma)) * 255).astype(np.uint8)
         new = np.array(PIL_Image.fromarray(new).resize(ConfigManager().config.elements_parameters.table["fixed_size_for_preprocessing"], PIL_Image.BICUBIC))
+
         er = img_as_ubyte(morphological_helpers.erosion(new))
         er = morphological_helpers.erosion(er)
         dl = morphological_helpers.dilation(er)
@@ -44,6 +49,7 @@ class TablePreprocessing:
     def __find_structure(self, resized_image, features_size):
         otsu_binary = skimage.img_as_ubyte(resized_image.copy() > threshold_otsu(resized_image))
         contours, _ = cv2.findContours(otsu_binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+
         for contour in contours:
             x, y, w, h = cv2.boundingRect(contour)
             if (w < len(otsu_binary[0]) // 2):
@@ -86,12 +92,27 @@ class TablePreprocessing:
             X = np.sort(cluster_centers[:, 0])
             Y = np.sort(cluster_centers[:, 1])
 
+            '''
+            ImageDisplayer.show_image_draw_poins(copy.deepcopy(preprocessed_image), np.column_stack((X, Y)), "points")
+            plt.scatter(X, Y)
+            plt.title('График X и Y')
+            plt.xlabel('Значения X')
+            plt.ylabel('Значения Y')
+            plt.show()
+
+            ImageDisplayer.show_image_draw_poins(copy.deepcopy(preprocessed_image), np.column_stack((X, Y)), "points")
+            plt.plot(X, Y)
+            plt.title('График X и Y')
+            plt.xlabel('Значения X')
+            plt.ylabel('Значения Y')
+            plt.show()
+            '''
+
             original_min = np.min(X)
             original_max = np.max(X)
             desired_min = 0
             desired_max = 800
-            X_converted_values = (X - original_min) * (desired_max - desired_min) / (
-                        original_max - original_min) + desired_min
+            X_converted_values = (X - original_min) * (desired_max - desired_min) / (original_max - original_min) + desired_min
 
             original_min = np.min(Y)
             original_max = np.max(Y)
@@ -101,9 +122,31 @@ class TablePreprocessing:
 
             combined_array = np.column_stack((X_converted_values, Y_converted_values))
 
+            '''
+            white_image = np.ones((preprocessed_image.shape[0], preprocessed_image.shape[1], 3), dtype=np.uint8) * 255
+            combined_array2 = copy.deepcopy(combined_array)
+            for point in combined_array2:
+                color = (255, 0, 0)
+                radius = 6
+                x = 0
+                y = 0
+                cv2.circle(white_image, (x, y), radius, color, -1)  # -1 означает заполнение точки
+            '''
+
         except:
             print("Error. No cluster centres for: ")
             combined_array = [np.array([0, 0]) for _ in range(num_clusters)]
+
+        '''
+        lines = probabilistic_hough_line(preprocessed_image, threshold=10, line_length=5, line_gap=5)
+        bl = np.full((preprocessed_image.shape[0], preprocessed_image.shape[1]), 0, dtype=np.uint8)
+        #general_helpers.show(bl)
+        for line in lines:
+            p0, p1 = line
+            cv2.line(bl, p0, p1, (255, 255, 255), 1)
+
+        general_helpers.show(bl)
+        '''
 
         scaler = MinMaxScaler()
         combined_array = scaler.fit_transform(combined_array)
@@ -113,14 +156,16 @@ class TablePreprocessing:
     def __find_best_contours_for_table(self):
         list_of_roi = []
 
-        grey_ = filters_helper.convert_to_grayscale(self.image_source.get_current_image_source())
-        grey_ = filters_helper.levels_correction(grey_, ConfigManager().config.elements_parameters.table.preprocessing["level_correction_1"])
+        gray = filters_helper.convert_to_grayscale(self.image_source.get_current_image_source())
+        gray = filters_helper.levels_correction(gray, ConfigManager().config.elements_parameters.table.preprocessing["level_correction_1"])
+
         kernel1 = np.array(ConfigManager().config.elements_parameters.table.preprocessing["kernel1"])
-        grey_ = cv2.filter2D(src=grey_, ddepth=-1, kernel=kernel1)
-        grey_ = morphological_helpers.dilation(grey_)
+        gray = cv2.filter2D(src=gray, ddepth=-1, kernel=kernel1)
+        gray = morphological_helpers.dilation(gray)
+
 
         # Get contours
-        contours, hierarchy = contours_helper.get_contours_by_canny(grey_, 0, 255, True)
+        contours, hierarchy = contours_helper.get_contours_by_canny(gray, 0, 255, True)
         filtered_contours = contours
 
         # Adjust this threshold according to your specific use case

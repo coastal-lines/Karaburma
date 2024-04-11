@@ -34,7 +34,6 @@ def save_file2(img, path):
     cv.imwrite(path, img)
 
 def save_detected_regions(screenshot, svm_startX, svm_startY, svm_endX, svm_endY, image_number):
-
     path = str(image_number) + ".bmp"
     width = svm_endX - svm_startX
     height = svm_endY - svm_startY
@@ -48,9 +47,13 @@ def show(img, title=""):
     plt.imshow(img, cmap='gray')
     plt.show()
 
+def show_rgb(img, title=""):
+    plt.title(title)
+    plt.imshow(cv2.cvtColor(img, cv2.COLOR_RGBA2RGB))
+    plt.show()
+
 def draw_contours_and_show(img, rectangles):
     show(contours_helper.draw_rectangle_by_list_xywh(img, rectangles))
-
 
 def extend_screenshot_by_rigth_border(screenshot, additional_width=50, additional_height=0) -> np.ndarray:
     w = screenshot.shape[1] + additional_width
@@ -188,7 +191,6 @@ def fill_image_except_roi(img, start_x1, start_y1, end_x2, end_y2, colour=(0)):
     temp_image[start_y1:end_y2, start_x1:end_x2] = colour
     return temp_image
 
-
 def show_all_thresholds(image):
     binary_local, mean_binary, minimum_binary, otsu_binary, li_binary, isodata_binary, triangle_binary, yen_binary = try_threshold(image)
 
@@ -248,5 +250,5 @@ def calculate_similarity(before, after):
     # print(f"SSIM: {ssim_score:.2f}")
     return ssim_score
 
-def do_screenshot():
+def do_screenshot() -> np.array:
     return np.array(pyautogui.screenshot())

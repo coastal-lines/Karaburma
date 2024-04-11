@@ -1,4 +1,6 @@
 import random
+from typing import List, Tuple
+
 import cv2
 from decimal import Decimal
 import imutils
@@ -149,7 +151,9 @@ def draw_rectangle_by_contours(image, contours, color=(0, 255, 0)):
             x, y, w, h = rect
             point1 = (x, y)
             point2 = (x + w, y + h)
-            cv2.rectangle(image, point1, point2, color, 1)
+
+            if(x < image.shape[1] and y < image.shape[0]):
+                cv2.rectangle(image, point1, point2, color, 1)
     else:
         print("Contours were not found")
 
@@ -216,7 +220,7 @@ def draw_rectangle_and_label_for_element(image, element, color=(255, 0, 255), th
         color,
         thicknes)
 
-def filter_very_similar_contours(rectangles, threshold=0.5):
+def filter_very_similar_contours(rectangles: List[Tuple[int, int, int, int]], threshold=0.5) -> np.array:
     rectangles = np.array([[x, y, x + w, y + h] for (x, y, w, h) in rectangles])
     filtered_rectangles = imutils.object_detection.non_max_suppression(np.array(rectangles), probs=None, overlapThresh=threshold)
     filtered_converted_rectangles = np.array([[x, y, x2 - x, y2 - y] for (x, y, x2, y2) in filtered_rectangles])
