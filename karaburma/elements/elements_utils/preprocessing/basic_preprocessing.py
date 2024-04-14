@@ -68,12 +68,13 @@ class BasicPreprocessing:
 
         return list_of_roi
 
-    def prepare_features_for_basic_elements(self, roi: np.ndarray, dim: List[int, int]):
+    def prepare_features_for_basic_elements(self, roi: np.ndarray, dim: List[int]):
         #number of harris coordinates for each sample
         harris_array = ConfigManager().config.elements_parameters.common_element.preprocessing["harris_array_size"]
 
         gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         gray = cv2.resize(gray, dim)
+
         mean_binary = gray.copy() > threshold_mean(gray)
         mean_binary = skimage.img_as_ubyte(mean_binary)
         coordinates = harris.applay_harris_and_get_coordinates(mean_binary)

@@ -2,6 +2,7 @@ import numpy as np
 
 from karaburma.utils import general_helpers
 from karaburma.utils.image_processing import contours_helper
+from karaburma.utils.logging_manager import LoggingManager
 
 TABLE_COLOUR = (0, 246, 255)
 TABLE_THICKNES = 4
@@ -36,11 +37,12 @@ SLIDER_THICKNES = 2
 
 def draw_custom_elements(screenshot_copy_debug, elements, element_type, rectangle_colour, rectangle_thickness):
     for element in elements:
-        if (element.get_label() == element_type):
-            contours_helper.draw_rectangle_and_label_for_element(screenshot_copy_debug,
-                                                                 element,
-                                                                 rectangle_colour,
-                                                                 rectangle_thickness)
+        if element is not None:
+            if (element.get_label() == element_type):
+                contours_helper.draw_rectangle_and_label_for_element(screenshot_copy_debug,
+                                                                     element,
+                                                                     rectangle_colour,
+                                                                     rectangle_thickness)
 
 def draw_pattern_matching_elements(screenshot_copy_debug, elements, rectangle_colour, rectangle_thickness):
     for element in elements:
@@ -96,8 +98,12 @@ def draw_tables(screenshot_copy_debug, screenshot_elements):
         draw_custom_elements(screenshot_copy_debug, [table.get_cell_by_adress(1, 1)], "table_cell", TABLE_COLOUR, TABLE_SCROLLS_THICKNES)
 
         # Draw all cells
-        for cell in table.get_cells_area_element().get_list_cells():
-            contours_helper.draw_rectangle_by_list_xywh(screenshot_copy_debug, [cell.get_roi_element().get_element_features()], TABLE_CELLS_COLOUR, TABLE_CELLS_THICKNES)
+        try:
+            for cell in table.get_cells_area_element().get_list_cells():
+                contours_helper.draw_rectangle_by_list_xywh(screenshot_copy_debug, [cell.get_roi_element().get_element_features()], TABLE_CELLS_COLOUR, TABLE_CELLS_THICKNES)
+        except:
+            LoggingManager().log_information("Cells were not found.")
+
 
 def draw_elements(screenshot_copy_debug, screenshot_elements) -> np.ndarray:
     screenshot_copy_debug = general_helpers.extend_screenshot_by_rigth_border(screenshot_copy_debug, 120)
@@ -118,7 +124,5 @@ def draw_elements(screenshot_copy_debug, screenshot_elements) -> np.ndarray:
                          SLIDER_THICKNES)
 
     draw_pattern_matching_elements(screenshot_copy_debug, screenshot_elements.get_elements(), (0, 255, 0), 2)
-
-    #general_helpers.show(screenshot_copy_debug)
 
     return screenshot_copy_debug

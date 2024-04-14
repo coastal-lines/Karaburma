@@ -5,6 +5,7 @@ from karaburma.elements.objects.roi_element import RoiElement
 from karaburma.elements.objects.element import Element
 from karaburma.elements.objects.scroll_element import ScrollElement
 from karaburma.elements.objects.table.table_cells_element import TableCellsElement
+from karaburma.utils.logging_manager import LoggingManager
 
 
 class TableElement(Element):
@@ -39,13 +40,18 @@ class TableElement(Element):
         if(self.__cells_area_element != None):
             return self.__cells_area_element
         else:
-            raise Exception(f"Current table doesn't have any cells.")
+            LoggingManager().log_information("Current table doesn't have any cells.")
 
     def get_cell_by_adress(self, column_index: int, row_index: int):
-        custom_cell = [cell for cell in self.get_cells_area_element().get_list_cells()
-                       if cell.get_adress() == [column_index, row_index]][0]
-
-        return custom_cell
+        try:
+            custom_cell = [cell for cell in self.get_cells_area_element().get_list_cells()
+                           if cell.get_adress() == [column_index, row_index]][0]
+            return custom_cell
+        except:
+            LoggingManager().log_information(
+                f"Probably the table was not detected correctly. Cell {column_index}:{row_index} was not found."
+            )
+            return None
 
     def update_text_for_all_cells(self):
         for cell in self.get_cells_area_element().get_list_cells():
