@@ -13,11 +13,13 @@ from sklearn.svm._base import BaseLibSVM
 from karaburma.elements.features.basic_element_features import BasicElementFeatures
 from karaburma.elements.features.listbox_element_features import ListboxElementFeatures
 from karaburma.elements.features.table.table_element_features import TableElementFeatures
-from karaburma.utils.logging_manager import LoggingManager
 
+
+def get_model_prediction(classifier: BaseLibSVM, X_test: np.ndarray):
+    return classifier.predict(X_test)
 
 def get_model_accuracy(classifier: BaseLibSVM, X_test: np.ndarray, y_test: np.ndarray) -> float:
-    svm_predictions = classifier.predict(X_test)
+    svm_predictions = get_model_prediction(classifier, X_test)
     return accuracy_score(y_test, svm_predictions)
 
 def get_train_and_test_data(features: np.ndarray, labels: np.ndarray, test_size: float, random_state: int) -> Tuple[np.ndarray,np.ndarray,np.ndarray,np.ndarray]:
