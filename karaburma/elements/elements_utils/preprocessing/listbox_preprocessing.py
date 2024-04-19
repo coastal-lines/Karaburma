@@ -36,7 +36,7 @@ class ListboxPreprocessing:
 
     def prepare_features_for_listbox(self, image: np.array) -> np.array:
         gray = filters_helper.convert_to_grayscale(image)
-        colours = filters_helper.calculate_white_colour(gray)
+        colours = filters_helper.calculate_colours_percentage(gray)
         prepared_img = self.image_processing_for_listbox(gray)
 
         train_image_dimension = ConfigManager().config.elements_parameters.listbox.preprocessing["sample_dimension"]
