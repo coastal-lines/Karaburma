@@ -72,7 +72,7 @@ def load_grayscale_images_from_folder(folder_path):
 
     return files
 
-def save_image(roi, most_common_label="_", path=r""):
+def save_image(roi, most_common_label="_", path=""):
     cv2.imwrite(
         path +
         "\\" +
