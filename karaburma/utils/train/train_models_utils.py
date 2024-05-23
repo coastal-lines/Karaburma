@@ -5,7 +5,7 @@ import numpy as np
 
 import os
 from sklearn import svm
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
 from skimage.io import imread as sk_image_reader
 from sklearn.svm._base import BaseLibSVM
@@ -21,6 +21,15 @@ def get_model_prediction(classifier: BaseLibSVM, X_test: np.ndarray):
 def get_model_accuracy(classifier: BaseLibSVM, X_test: np.ndarray, y_test: np.ndarray) -> float:
     svm_predictions = get_model_prediction(classifier, X_test)
     return accuracy_score(y_test, svm_predictions)
+
+def get_model_precision_score(y_test: np.ndarray, y_pred: np.ndarray, pos_label="1") -> float:
+    return precision_score(y_test, y_pred, pos_label)
+
+def get_model_recall_score(y_test: np.ndarray, y_pred: np.ndarray) -> float:
+    return recall_score(y_test, y_pred)
+
+def get_model_f1_score(y_test: np.ndarray, y_pred: np.ndarray) -> float:
+    return recall_score(y_test, y_pred)
 
 def get_train_and_test_data(features: np.ndarray, labels: np.ndarray, test_size: float, random_state: int) -> Tuple[np.ndarray,np.ndarray,np.ndarray,np.ndarray]:
     return train_test_split(features, labels, test_size=test_size, random_state=random_state)
