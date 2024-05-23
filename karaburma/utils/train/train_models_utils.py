@@ -1,5 +1,5 @@
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Union
 import numpy as np
 
 
@@ -22,14 +22,14 @@ def get_model_accuracy(classifier: BaseLibSVM, X_test: np.ndarray, y_test: np.nd
     svm_predictions = get_model_prediction(classifier, X_test)
     return accuracy_score(y_test, svm_predictions)
 
-def get_model_precision_score(y_test: np.ndarray, y_pred: np.ndarray, pos_label="1") -> float:
-    return precision_score(y_test, y_pred, pos_label)
+def get_model_precision_score(y_test: np.ndarray, y_pred: np.ndarray, pos_label="1", average=None) -> Union[float, np.ndarray]:
+    return precision_score(y_test, y_pred, pos_label=pos_label, average=average)
 
-def get_model_recall_score(y_test: np.ndarray, y_pred: np.ndarray) -> float:
-    return recall_score(y_test, y_pred)
+def get_model_recall_score(y_test: np.ndarray, y_pred: np.ndarray, pos_label="1", average=None) -> Union[float, np.ndarray]:
+    return recall_score(y_test, y_pred, pos_label=pos_label, average=average)
 
-def get_model_f1_score(y_test: np.ndarray, y_pred: np.ndarray) -> float:
-    return recall_score(y_test, y_pred)
+def get_model_f1_score(y_test: np.ndarray, y_pred: np.ndarray, pos_label="1", average=None) -> Union[float, np.ndarray]:
+    return recall_score(y_test, y_pred, pos_label=pos_label, average=average)
 
 def get_train_and_test_data(features: np.ndarray, labels: np.ndarray, test_size: float, random_state: int) -> Tuple[np.ndarray,np.ndarray,np.ndarray,np.ndarray]:
     return train_test_split(features, labels, test_size=test_size, random_state=random_state)

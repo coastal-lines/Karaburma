@@ -14,7 +14,16 @@ from karaburma.utils import files_helper
 from karaburma.utils.config_manager import ConfigManager
 from karaburma.utils.train import train_models_module, train_models_utils
 
-def train_model_and_get_metrics(model_type: str, samples_directory: str, class_weight="balanced", kernel="rbf", c=1.0):
+def extract_metrics_for_each_class_from_multiclassed_svm_classifier(labels, precision_per_class, recall_per_class, f1_per_class):
+    for class_label, precision, recall, f1 in zip(labels, precision_per_class, recall_per_class, f1_per_class):
+        print("---")
+        print(f"class: {class_label}")
+        print(f"precision: {precision}")
+        print(f"recall: {recall}")
+        print(f"f1-score: {f1}")
+        print("---")
+
+def train_binary_model_and_get_metrics(model_type: str, samples_directory: str, class_weight="balanced", kernel="rbf", c=1.0, pos_label=None, average=None):
     features, labels = None, None
 
     match model_type:
@@ -30,14 +39,16 @@ def train_model_and_get_metrics(model_type: str, samples_directory: str, class_w
     y_pred = train_models_utils.get_model_prediction(svm_classifier, X_test)
 
     accuracy = train_models_utils.get_model_accuracy(svm_classifier, X_test, y_test)
-    precision = train_models_utils.get_model_precision_score(y_test, y_pred)
-    recall = train_models_utils.get_model_recall_score(y_test, y_pred)
-    f1 = train_models_utils.get_model_f1_score(y_test, y_pred)
+    precision = train_models_utils.get_model_precision_score(y_test, y_pred, pos_label, average)
+    recall = train_models_utils.get_model_recall_score(y_test, y_pred, pos_label, average)
+    f1 = train_models_utils.get_model_f1_score(y_test, y_pred, pos_label, average)
 
-    print(f"--- \n Model is: {model_type} \n accuracy: {accuracy} \n precision: {precision}, recall: {recall}, f1: {f1} --- \n")
+    print(f"--- \n Model is: {model_type} \n accuracy: {accuracy} \n precision: {precision}, recall: {recall}, f1-score: {f1} \n --- \n ")
+
+    if (model_type == "basic"):
+        extract_metrics_for_each_class_from_multiclassed_svm_classifier(labels, accuracy, precision, recall)
 
     return accuracy, precision, recall, f1
-
 
 if __name__ == "__main__":
     config_path = os.path.join(files_helper.get_project_root_path(), "config.json")
@@ -48,9 +59,9 @@ if __name__ == "__main__":
     listbox_samples = files_helper.get_absolute_path(ConfigManager().config.samples_path["listbox_samples"])
     table_samples = files_helper.get_absolute_path(ConfigManager().config.samples_path["table_samples"])
 
-    train_model_and_get_metrics("table", table_samples, "balanced", "rbf", 1.0)
-    #train_model_and_get_metrics("listbox", table_samples, "balanced", "linear", 1.0)
-    #train_model_and_get_metrics("basic", table_samples, "balanced", "linear", 5.0)
+    #train_binary_model_and_get_metrics("table", table_samples, "balanced", "rbf", 1.0, "table1", None)
+    #train_binary_model_and_get_metrics("listbox", listbox_samples, "balanced", "linear", 1.0, "listbox", None)
+    train_binary_model_and_get_metrics("basic", basic_samples, "balanced", "linear", 5.0, None, None)
 
     #debug_basic_features_visualization_pca(basic_samples, basic_samples_dim)
     #debug_table_features_visualization_pca(table_samples)
