@@ -99,8 +99,19 @@ from karaburma.api.main import KaraburmaApiService
 
   </details>
 
+
+## 
+####  
+#### Scatterplot of PCA:
+Table
+![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_5_PCA_tables_3.png?raw=true)
+Listbox
+![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_6_PCA_listboxes_2.png?raw=true)
+Basic
+![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_4_PCA_debug_basic_data_visualization_2.png?raw=true)
+
 #### Models metrics:
-(I continue experimenting with models, and currently metrics are not so impressive :) )
+(I continue experimenting with models, and currently metrics are not so impressive :nerd_face: )
 
 | Model   | Accuracy | Precision | Recall | F1 Score |
 |---------|----------|-----------|--------|----------|
@@ -120,6 +131,24 @@ from karaburma.api.main import KaraburmaApiService
 | slider      |       0.79  | 0.90   | 0.90     | 
 | none        |       0.87  | 0.67   | 0.67     |
 
+## 
+####  
+#### Confusion matrix:
+Basic model
+![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_1_ConfusionMatrixDisplay.png?raw=true)
 
+## 
+####  
+#### Accuracy vs C parameter:
+Table model
+![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_10_table_accuracy_vs_C.png?raw=true)
+
+Basic model
+![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_1_basic_accuracy_vc_C_1.png?raw=true)
+
+## 
+####  
+#### Accuracy vs training samples number:
+![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_7_table_learning_curve.png?raw=true)
 
 
