@@ -11,11 +11,11 @@ I had only screenshots and couldn't use tools like Selenium.
 This project was started as a framework for Assessment Delivery functional visual testing.
 
 
-#### Current features:
+#### Main features:
 - detect the most popular WPF elements
 - scrolling and reading the full text from a ListBox element
 - scrolling through the Table element in both directions and reading all table cells
-- flexible image search method (search using Affine and Pyramid operations)
+- flexible image search by template matching anf template scaling 
 - return coordinates of all elements in JSON format
 - supports a variety of computer vision methods for extensions
 
@@ -98,5 +98,28 @@ from karaburma.api.main import KaraburmaApiService
   ![Screenshot_6](https://github.com/coastal-lines/Lena/assets/70205794/8d7b7cb6-70a5-47b2-9a1e-29c174bf8faa)
 
   </details>
+
+#### Models metrics:
+(I continue experimenting with models, and currently metrics are not so impressive :) )
+
+| Model   | Accuracy | Precision | Recall | F1 Score |
+|---------|----------|-----------|--------|----------|
+| table   | 0.94     | 0.95      | 1.0    | 1.0      | 
+| listbox | 1.0      | 1.0       | 1.0    | 1.0      | 
+| basic   | 0.87     | 0.88      | 0.87   | 0.87     | 
+
+#### Basic model metrics:
+| Class       |   Precision | Recall | F1 Score |
+|-------------|-------------|--------|----------|
+| button      |        0.77 | 1.0    | 1.0      |
+| checkbox    |        0.94 | 1.0    | 1.0      | 
+| combobox    |        0.84 | 0.81   | 0.81     | 
+| scroll      |       0.88  | 0.84   | 0.84     | 
+| input       |       0.90  | 0.87   | 0.87     | 
+| radiobutton |        1.0  | 0.94   | 0.94     | 
+| slider      |       0.79  | 0.90   | 0.90     | 
+| none        |       0.87  | 0.67   | 0.67     |
+
+
 
 

@@ -43,10 +43,19 @@ def train_binary_model_and_get_metrics(model_type: str, samples_directory: str, 
     recall = train_models_utils.get_model_recall_score(y_test, y_pred, pos_label, average)
     f1 = train_models_utils.get_model_f1_score(y_test, y_pred, pos_label, average)
 
-    print(f"--- \n Model is: {model_type} \n accuracy: {accuracy} \n precision: {precision}, recall: {recall}, f1-score: {f1} \n --- \n ")
+    if (type(precision) is np.ndarray):
+        print(f"--- \n model is: {model_type} \n accuracy: {accuracy}")
 
-    if (model_type == "basic"):
-        extract_metrics_for_each_class_from_multiclassed_svm_classifier(labels, accuracy, precision, recall)
+        for class_label, precision,  in zip(svm_classifier.classes_, precision):
+            print(f"class_label: {class_label}, precision: {precision}")
+
+        for class_label, recall,  in zip(svm_classifier.classes_, recall):
+            print(f"class_label: {class_label}, recall: {recall}")
+
+        for class_label, f1, in zip(svm_classifier.classes_, f1):
+            print(f"class_label: {class_label}, f1: {f1}")
+    else:
+        print(f"--- \n model is: {model_type} \n accuracy: {accuracy} \n precision: {precision}, recall: {recall}, f1-score: {f1} \n --- \n ")
 
     return accuracy, precision, recall, f1
 
@@ -61,7 +70,9 @@ if __name__ == "__main__":
 
     #train_binary_model_and_get_metrics("table", table_samples, "balanced", "rbf", 1.0, "table1", None)
     #train_binary_model_and_get_metrics("listbox", listbox_samples, "balanced", "linear", 1.0, "listbox", None)
+    #train_binary_model_and_get_metrics("basic", basic_samples, "balanced", "linear", 5.0, None, "weighted")
     train_binary_model_and_get_metrics("basic", basic_samples, "balanced", "linear", 5.0, None, None)
+
 
     #debug_basic_features_visualization_pca(basic_samples, basic_samples_dim)
     #debug_table_features_visualization_pca(table_samples)
