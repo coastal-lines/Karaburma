@@ -149,6 +149,7 @@ Basic model
 ## 
 ####  
 #### Accuracy vs training samples number:
+Table model
 ![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_7_table_learning_curve.png?raw=true)
 
 
