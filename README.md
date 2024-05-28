@@ -10,6 +10,11 @@ I had only screenshots and couldn't use tools like Selenium.
 
 This project was started as a framework for Assessment Delivery functional visual testing.
 
+#### Demo video:
+Please click on the image for navigating for watching demo on Youtube:
+[![[Python]](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/cover__.jpg?raw=true)](https://www.youtube.com/watch?v=avtJyIaDSvE)
+
+
 
 #### Main features:
 - detect the most popular WPF elements
