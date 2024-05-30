@@ -50,9 +50,9 @@ from karaburma.api.main import KaraburmaApiService
   <summary>example: </summary>
   
   ```
-  lena = Lena(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
+  karaburma = Karaburma(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
   
-  json_elements = lena.find_all_elements()
+  json_elements = karaburma.find_all_elements()
   
   button1 = [element for element in json_elements.get('elements', []) if element.get('label') == 'button'][0]
   
@@ -67,9 +67,9 @@ from karaburma.api.main import KaraburmaApiService
   <summary>example: </summary>
   
   ```
-  lena = Lena(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
+  karaburma = Karaburma(config_path="config.json", source_mode="screenshot", detection_mode="default", logging=False)
   
-  json_elements = lena.find_listbox_and_expand_and_get_text()
+  json_elements = karaburma.find_listbox_and_expand_and_get_text()
 
   listbox = [element for element in json_elements.get('elements', []) if element.get('label') == 'listbox'][0]
 
