@@ -12,7 +12,7 @@ This project was started as a framework for Assessment Delivery functional visua
 
 #### Demo video:
 Please click on the image for navigating for watching demo on Youtube:
-[![[Python]](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/cover__.jpg?raw=true)](https://www.youtube.com/watch?v=avtJyIaDSvE)
+[![[Python]](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/cover__.jpg?raw=true)](https://www.youtube.com/watch?v=cNreyesPVEQ)
 
 
 
