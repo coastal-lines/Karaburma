@@ -1,2 +1,0 @@
-class CommonMlFindActions():
-    pass
