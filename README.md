@@ -109,11 +109,11 @@ from karaburma.api.main import KaraburmaApiService
 ####  
 #### Scatterplot of PCA:
 Table
-![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_5_PCA_tables_3.png?raw=true)
+![image](https://github.com/coastal-lines/Karaburma/blob/mas/karaburma/doc/images/Figure_5_PCA_tables_3.png?raw=true)
 Listbox
-![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_6_PCA_listboxes_2.png?raw=true)
+![image](https://github.com/coastal-lines/Karaburma/blob/mas/karaburma/doc/images/Figure_6_PCA_listboxes_2.png?raw=true)
 Basic
-![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_4_PCA_debug_basic_data_visualization_2.png?raw=true)
+![image](https://github.com/coastal-lines/Karaburma/blob/mas/karaburma/doc/images/Figure_4_PCA_debug_basic_data_visualization_2.png?raw=true)
 
 #### Models metrics:
 (I continue experimenting with models, and currently metrics are not so impressive :nerd_face: )
