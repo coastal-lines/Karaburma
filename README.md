@@ -140,21 +140,21 @@ Basic
 ####  
 #### Confusion matrix:
 Basic model
-![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_1_ConfusionMatrixDisplay.png?raw=true)
+![image](https://github.com/coastal-lines/Karaburma/blob/mas/karaburma/doc/images/Figure_1_ConfusionMatrixDisplay.png?raw=true)
 
 ## 
 ####  
 #### Accuracy vs C parameter:
 Table model
-![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_10_table_accuracy_vs_C.png?raw=true)
+![image](https://github.com/coastal-lines/Karaburma/blob/mas/karaburma/doc/images/Figure_10_table_accuracy_vs_C.png?raw=true)
 
 Basic model
-![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_1_basic_accuracy_vc_C_1.png?raw=true)
+![image](https://github.com/coastal-lines/Karaburma/blob/mas/karaburma/doc/images/Figure_1_basic_accuracy_vc_C_1.png?raw=true)
 
 ## 
 ####  
 #### Accuracy vs training samples number:
 Table model
-![image](https://github.com/coastal-lines/Karaburma/blob/master/karaburma/doc/images/Figure_7_table_learning_curve.png?raw=true)
+![image](https://github.com/coastal-lines/Karaburma/blob/mas/karaburma/doc/images/Figure_7_table_learning_curve.png?raw=true)
 
 
